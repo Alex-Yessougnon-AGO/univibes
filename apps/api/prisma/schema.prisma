@@ -1,0 +1,429 @@
+// Univibes — Prisma Schema
+// Documentation: docs/Database-Schema.sql
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =====================================================
+// ENUMS
+// =====================================================
+
+enum UserRole {
+  student
+  organizer
+  moderator
+  admin
+}
+
+enum EventStatus {
+  draft
+  pending
+  approved
+  rejected
+  archived
+}
+
+enum OrderStatus {
+  pending
+  paid
+  cancelled
+  refunded
+}
+
+enum PaymentStatus {
+  pending
+  success
+  failed
+  refunded
+}
+
+enum BoostStatus {
+  active
+  expired
+  cancelled
+}
+
+enum BoostType {
+  h24
+  h72
+  days7
+}
+
+// =====================================================
+// AUTH
+// =====================================================
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  role          UserRole @default(student)
+  emailVerified Boolean  @default(false) @map("email_verified")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  profile            Profile?
+  organizer          Organizer?
+  favorites          Favorite[]
+  orders             Order[]
+  notifications      Notification[]
+  refreshTokens      RefreshToken[]
+  emailVerifications EmailVerification[]
+  passwordResets     PasswordResetToken[]
+  issuedTickets      IssuedTicket[]
+  auditLogs          AuditLog[]
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+  @@map("refresh_tokens")
+}
+
+model EmailVerification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verifications")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  token     String   @unique
+  expiresAt DateTime @map("expires_at")
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+// =====================================================
+// PROFILES
+// =====================================================
+
+model Profile {
+  id         String   @id @default(uuid())
+  userId     String   @unique @map("user_id")
+  fullname   String
+  avatarUrl  String?  @map("avatar_url")
+  phone      String?
+  city       String?
+  university String?
+  faculty    String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("profiles")
+}
+
+// =====================================================
+// ORGANIZERS
+// =====================================================
+
+model Organizer {
+  id               String   @id @default(uuid())
+  userId           String   @unique @map("user_id")
+  organizationName String   @map("organization_name")
+  description      String?
+  logoUrl          String?  @map("logo_url")
+  websiteUrl       String?  @map("website_url")
+  instagramUrl     String?  @map("instagram_url")
+  verified         Boolean  @default(false)
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  events Event[]
+  boosts Boost[]
+
+  @@index([userId])
+  @@map("organizers")
+}
+
+// =====================================================
+// EVENTS
+// =====================================================
+
+model EventCategory {
+  id     String  @id @default(uuid())
+  name   String  @unique
+  slug   String  @unique
+  icon   String?
+  events Event[]
+
+  @@map("event_categories")
+}
+
+model Event {
+  id          String      @id @default(uuid())
+  organizerId String      @map("organizer_id")
+  categoryId  String?     @map("category_id")
+  title       String
+  slug        String      @unique
+  description String
+  coverImage  String?     @map("cover_image")
+  location    String
+  city        String
+  latitude    Decimal?    @db.Decimal(9, 6)
+  longitude   Decimal?    @db.Decimal(9, 6)
+  startDate   DateTime    @map("start_date")
+  endDate     DateTime    @map("end_date")
+  status      EventStatus @default(pending)
+  views       Int         @default(0)
+  isFree      Boolean     @default(false) @map("is_free")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  organizer Organizer      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  category  EventCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  favorites Favorite[]
+  tickets   Ticket[]
+  orders    Order[]
+  boosts    Boost[]
+
+  @@index([city])
+  @@index([status])
+  @@index([startDate])
+  @@index([categoryId])
+  @@index([organizerId])
+  @@map("events")
+}
+
+// =====================================================
+// FAVORITES
+// =====================================================
+
+model Favorite {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  eventId   String   @map("event_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@map("favorites")
+}
+
+// =====================================================
+// TICKETS & ORDERS
+// =====================================================
+
+model Ticket {
+  id          String   @id @default(uuid())
+  eventId     String   @map("event_id")
+  name        String
+  description String?
+  price       Decimal  @db.Decimal(12, 2)
+  quantity    Int
+  remaining   Int
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  event         Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  orderItems    OrderItem[]
+  issuedTickets IssuedTicket[]
+
+  @@index([eventId])
+  @@map("tickets")
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String      @map("user_id")
+  eventId   String      @map("event_id")
+  amount    Decimal     @db.Decimal(12, 2)
+  status    OrderStatus @default(pending)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event         Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  items         OrderItem[]
+  payment       Payment?
+  issuedTickets IssuedTicket[]
+
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String   @map("order_id")
+  ticketId  String   @map("ticket_id")
+  quantity  Int
+  unitPrice Decimal  @map("unit_price") @db.Decimal(12, 2)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  ticket        Ticket        @relation(fields: [ticketId], references: [id])
+  issuedTickets IssuedTicket[]
+
+  @@index([orderId])
+  @@map("order_items")
+}
+
+model Payment {
+  id                String        @id @default(uuid())
+  orderId           String        @unique @map("order_id")
+  provider          String
+  providerReference String?       @unique @map("provider_reference")
+  amount            Decimal       @db.Decimal(12, 2)
+  status            PaymentStatus @default(pending)
+  webhookReceivedAt DateTime?     @map("webhook_received_at")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  order  Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  boosts Boost[]
+
+  @@index([providerReference])
+  @@map("payments")
+}
+
+model IssuedTicket {
+  id          String    @id @default(uuid())
+  orderId     String    @map("order_id")
+  orderItemId String    @map("order_item_id")
+  userId      String    @map("user_id")
+  ticketId    String    @map("ticket_id")
+  qrCode      String    @unique @map("qr_code")
+  checkedIn   Boolean   @default(false) @map("checked_in")
+  checkedInAt DateTime? @map("checked_in_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  order     Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderItem OrderItem @relation(fields: [orderItemId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
+  ticket    Ticket    @relation(fields: [ticketId], references: [id])
+
+  @@index([userId])
+  @@index([orderId])
+  @@index([qrCode])
+  @@map("issued_tickets")
+}
+
+// =====================================================
+// BOOSTS
+// =====================================================
+
+model Boost {
+  id          String      @id @default(uuid())
+  eventId     String      @map("event_id")
+  organizerId String      @map("organizer_id")
+  boostType   BoostType   @map("boost_type")
+  startDate   DateTime    @map("start_date")
+  endDate     DateTime    @map("end_date")
+  status      BoostStatus @default(active)
+  paymentId   String?     @map("payment_id")
+  createdAt   DateTime    @default(now()) @map("created_at")
+
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  organizer Organizer @relation(fields: [organizerId], references: [id])
+  payment   Payment?  @relation(fields: [paymentId], references: [id])
+
+  @@index([eventId])
+  @@index([status])
+  @@index([endDate])
+  @@map("boosts")
+}
+
+// =====================================================
+// ADS
+// =====================================================
+
+model Ad {
+  id             String   @id @default(uuid())
+  advertiserName String   @map("advertiser_name")
+  bannerUrl      String   @map("banner_url")
+  targetCity     String?  @map("target_city")
+  clickUrl       String?  @map("click_url")
+  impressions    Int      @default(0)
+  clicks         Int      @default(0)
+  startDate      DateTime @map("start_date")
+  endDate        DateTime @map("end_date")
+  active         Boolean  @default(true)
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@index([targetCity])
+  @@map("ads")
+}
+
+// =====================================================
+// NOTIFICATIONS
+// =====================================================
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  type      String
+  title     String
+  body      String
+  data      Json?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([read])
+  @@map("notifications")
+}
+
+// =====================================================
+// AUDIT LOGS
+// =====================================================
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  actorId    String?  @map("actor_id")
+  action     String
+  entityType String   @map("entity_type")
+  entityId   String?  @map("entity_id")
+  metadata   Json?
+  ipAddress  String?  @map("ip_address")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId])
+  @@index([entityType])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

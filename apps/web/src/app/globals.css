@@ -1,0 +1,363 @@
+@import "tailwindcss";
+
+/* ===================================================
+   DESIGN TOKENS — UNIVIBES (Terra palette)
+   =================================================== */
+
+@theme {
+    /* Brand Palette — Warm Clay & Amber */
+    --color-clay-50: #f8f4f0;
+    --color-clay-100: #f0ebe6;
+    --color-clay-200: #e8e2dc;
+    --color-clay-500: #c4956a;
+    --color-clay-700: #7a4d3a;
+    --color-clay-900: #5a3828;
+    --color-clay-950: #2a1f18;
+    --color-amber-100: #f5eee6;
+    --color-amber-400: #d4a87a;
+    --color-amber-500: #c4956a;
+    --color-amber-600: #b0845a;
+    --color-warm-50: #faf8f6;
+    --color-warm-100: #f8f6f4;
+    --color-warm-200: #f2eee9;
+    --color-warm-400: #b0a69c;
+    --color-warm-500: #7a7068;
+    --color-warm-700: #4a4440;
+    --color-warm-900: #2a2725;
+    --color-warm-950: #151210;
+    --color-success: #3a7a5c;
+    --color-warning: #c4956a;
+    --color-error: #b33a3a;
+
+    /* Typography */
+    --font-sans:
+        var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+    --font-display:
+        var(--font-calistoga), "Calistoga", serif;
+
+    /* Border Radius */
+    --radius-xs: 0.25rem;
+    --radius-sm: 0.5rem;
+    --radius: 0.75rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-2xl: 2rem;
+    --radius-full: 9999px;
+}
+
+/* ===================================================
+   SEMANTIC TOKENS — Light Mode (Terra)
+   =================================================== */
+:root {
+    color-scheme: light;
+    --bg: #f8f6f4;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --overlay: rgba(255, 255, 255, 0.94);
+    --border: #e8e2dc;
+    --border-subtle: #f2eee9;
+    --text: #2a2725;
+    --text-secondary: #7a7068;
+    --text-tertiary: #b0a69c;
+    --brand: #7a4d3a;
+    --brand-hover: #664030;
+    --brand-subtle: #f0ebe6;
+    --brand-text: #7a4d3a;
+    --accent: #c4956a;
+    --accent-hover: #b0845a;
+    --accent-subtle: #f5eee6;
+    --gold: #c4956a;
+    --gold-hover: #b0845a;
+    --gold-subtle: #f5eee6;
+    --shadow-sm: 0 1px 2px rgba(42, 39, 37, 0.04), 0 1px 3px rgba(42, 39, 37, 0.06);
+    --shadow: 0 1px 3px rgba(42, 39, 37, 0.06), 0 4px 12px rgba(42, 39, 37, 0.06);
+    --shadow-md: 0 4px 6px rgba(42, 39, 37, 0.07), 0 12px 24px rgba(42, 39, 37, 0.08);
+    --shadow-lg:
+        0 10px 15px rgba(42, 39, 37, 0.08), 0 24px 48px rgba(42, 39, 37, 0.1);
+    --shadow-brand: 0 4px 14px rgba(122, 77, 58, 0.3);
+    --shadow-accent: 0 4px 14px rgba(196, 149, 106, 0.35);
+}
+
+/* ===================================================
+   SEMANTIC TOKENS — Dark Mode (Terra)
+   =================================================== */
+.dark {
+    color-scheme: dark;
+    --bg: #151210;
+    --surface: #1e1a18;
+    --surface-raised: #262220;
+    --overlay: rgba(30, 26, 24, 0.96);
+    --border: #2e2926;
+    --border-subtle: #221e1c;
+    --text: #f0ece8;
+    --text-secondary: #8e847c;
+    --text-tertiary: #5e5650;
+    --brand: #c4956a;
+    --brand-hover: #d4a87a;
+    --brand-subtle: #2a221c;
+    --brand-text: #c4956a;
+    --accent: #c4956a;
+    --accent-hover: #d4a87a;
+    --accent-subtle: #2a221c;
+    --gold: #c4956a;
+    --gold-hover: #d4a87a;
+    --gold-subtle: #2a221c;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5);
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4), 0 12px 24px rgba(0, 0, 0, 0.45);
+    --shadow-lg:
+        0 10px 15px rgba(0, 0, 0, 0.5), 0 24px 48px rgba(0, 0, 0, 0.5);
+    --shadow-brand: 0 4px 14px rgba(196, 149, 106, 0.3);
+    --shadow-accent: 0 4px 14px rgba(196, 149, 106, 0.25);
+}
+
+/* ===================================================
+   TAILWIND v4 INLINE THEME MAPPING
+   =================================================== */
+@theme inline {
+    --color-background: var(--bg);
+    --color-surface: var(--surface);
+    --color-border: var(--border);
+    --color-foreground: var(--text);
+    --color-muted: var(--text-secondary);
+    --color-brand: var(--brand);
+    --color-brand-subtle: var(--brand-subtle);
+    --color-accent: var(--accent);
+    --color-accent-subtle: var(--accent-subtle);
+    --color-gold: var(--gold);
+    --color-gold-subtle: var(--gold-subtle);
+    --font-sans: var(--font-inter), "Inter", system-ui, sans-serif;
+    --font-display: var(--font-calistoga), "Calistoga", serif;
+}
+
+/* ===================================================
+   BASE STYLES
+   =================================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    min-height: 100dvh;
+}
+
+:focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ===================================================
+   CUSTOM UTILITIES
+   =================================================== */
+.card-base {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+.card-hover {
+    transition:
+        transform 200ms ease,
+        box-shadow 200ms ease;
+}
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.glass {
+    background: var(--overlay);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+}
+
+.text-gradient-accent {
+    background: linear-gradient(135deg, #c4956a, #d4a87a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-gradient-brand {
+    background: linear-gradient(135deg, #7a4d3a 0%, #c4956a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--border-subtle) 0%,
+        var(--border) 50%,
+        var(--border-subtle) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 400ms ease forwards;
+}
+
+/* ── View Transitions ─────────────────────────── */
+:root {
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
+  --duration-move: 400ms;
+}
+
+@keyframes vt-fade {
+  from { filter: blur(3px); opacity: 0; }
+  to { filter: blur(0); opacity: 1; }
+}
+
+@keyframes vt-slide {
+  from { translate: var(--slide-offset); }
+  to { translate: 0; }
+}
+
+/* Directional navigation */
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
+    var(--duration-move) ease-in-out both vt-slide;
+}
+::view-transition-old(.nav-forward) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade reverse,
+    var(--duration-move) ease-in-out both vt-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
+    var(--duration-move) ease-in-out both vt-slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade reverse,
+    var(--duration-move) ease-in-out both vt-slide reverse;
+}
+
+/* Shared element morph */
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-move);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: vt-blur;
+}
+@keyframes vt-blur {
+  30% { filter: blur(3px); }
+}
+
+/* Persistent navbar — no animation during transitions */
+::view-transition-group(persistent-nav) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(persistent-nav) {
+  display: none;
+}
+::view-transition-new(persistent-nav) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* ── iOS Safe Area ────────────────────────────── */
+.safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-area-pt {
+    padding-top: env(safe-area-inset-top, 0px);
+}
+.safe-area-pl {
+    padding-left: env(safe-area-inset-left, 0px);
+}
+.safe-area-pr {
+    padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Touch scrolling for horizontal scroll containers */
+.scroll-container-touch {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Small-screen text constraints */
+.text-balance {
+    text-wrap: balance;
+}
+
+/* Line clamp */
+.line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+}

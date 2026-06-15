@@ -1,0 +1,12 @@
+onlyBuiltDependencies:
+  - sharp
+  - "@img/sharp-linux-x64"
+  - "@img/sharp-linux-arm64"
+  - "@img/sharp-libvips-linux-x64"
+  - "@img/sharp-libvips-linux-arm64"
+  - "@swc/core"
+  - bcrypt
+  - prisma
+  - "@prisma/client"
+  - "@prisma/engines"
+  - "@nestjs/core"
