@@ -1,10 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Calistoga } from "next/font/google";
-import { MotionConfig } from "framer-motion";
-import { ThemeProvider } from "@/components/providers/theme-provider";
-import { OfflineIndicator } from "@/components/shared/offline-indicator";
-import { PageTransition } from "@/components/layout/page-transition";
-import { Toaster } from "sonner";
 import "./globals.css";
 
 const inter = Inter({
@@ -63,24 +58,7 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${calistoga.variable}`}>
       <body className="min-h-dvh flex flex-col antialiased">
-        <ThemeProvider defaultTheme="light" enableSystem>
-          <MotionConfig reducedMotion="user">
-            <OfflineIndicator />
-            <PageTransition>
-              {children}
-            </PageTransition>
-          </MotionConfig>
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                color: "var(--text)",
-              },
-            }}
-          />
-        </ThemeProvider>
+        {children}
       </body>
     </html>
   );

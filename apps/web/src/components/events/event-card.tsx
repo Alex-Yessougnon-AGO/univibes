@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { ViewTransition } from "react";
 import { motion } from "framer-motion";
 import { Heart, MapPin, Calendar, Eye } from "lucide-react";

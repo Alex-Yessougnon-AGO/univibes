@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Home, Search, Ticket, Heart, User } from "lucide-react";
