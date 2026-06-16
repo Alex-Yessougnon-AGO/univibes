@@ -5,6 +5,7 @@ onlyBuiltDependencies:
   - "@img/sharp-libvips-linux-x64"
   - "@img/sharp-libvips-linux-arm64"
   - "@swc/core"
+  - "@parcel/watcher"
   - bcrypt
   - prisma
   - "@prisma/client"
