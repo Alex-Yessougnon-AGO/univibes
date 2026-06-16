@@ -114,8 +114,8 @@ export default function DashboardPage() {
           </div>
         </Link>
         <Link href="/dashboard/events" className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 card-hover flex items-center gap-4 shadow-[var(--shadow-sm)]">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-900/10 flex items-center justify-center">
-            <Calendar className="w-5 h-5 text-amber-500" />
+          <div className="w-12 h-12 rounded-xl bg-[var(--accent-subtle)] flex items-center justify-center">
+            <Calendar className="w-5 h-5 text-[var(--accent)]" />
           </div>
           <div>
             <h3 className="font-semibold text-sm text-[var(--text)]">Gérer mes événements</h3>

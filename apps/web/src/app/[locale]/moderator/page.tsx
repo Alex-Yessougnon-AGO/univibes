@@ -19,7 +19,7 @@ export default function ModeratorDashboardPage() {
       <header className="sticky top-0 z-40 glass border-b border-[var(--border)]">
         <div className="flex items-center justify-between h-14 px-4 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center">
+            <div className="w-7 h-7 rounded-lg bg-[var(--brand)] flex items-center justify-center">
               <Shield className="w-4 h-4 text-white" />
             </div>
             <span className="font-extrabold text-sm text-[var(--text)]">Modération</span>
@@ -38,7 +38,7 @@ export default function ModeratorDashboardPage() {
           <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)]">
             <div className="p-4 border-b border-[var(--border)]">
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-amber-500" />
+                <Clock className="w-4 h-4 text-[var(--accent)]" />
                 <span className="text-xs font-semibold text-[var(--text)]">En attente</span>
               </div>
             </div>

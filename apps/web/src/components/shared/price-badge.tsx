@@ -17,7 +17,7 @@ export function PriceBadge({ isFree, price, className, variant = "pill" }: Price
       className={cn(
         base,
         isFree
-          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+          ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
           : "bg-[var(--gold-subtle)] text-[var(--gold)]",
         className
       )}

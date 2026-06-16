@@ -29,7 +29,7 @@ export default function ModeratorLogsPage() {
       <header className="sticky top-0 z-40 glass border-b border-[var(--border)]">
         <div className="flex items-center justify-between h-14 px-4 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-amber-500 flex items-center justify-center"><Clock className="w-4 h-4 text-white" /></div>
+            <div className="w-7 h-7 rounded-lg bg-[var(--brand)] flex items-center justify-center"><Clock className="w-4 h-4 text-white" /></div>
             <span className="font-extrabold text-sm text-[var(--text)]">Journal d'actions</span>
           </div>
         </div>

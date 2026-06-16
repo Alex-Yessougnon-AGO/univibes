@@ -63,8 +63,8 @@ export default function OnboardingPage() {
         {step === 1 && (
           <motion.div initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
             <div className="text-center">
-              <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 flex items-center justify-center mx-auto mb-4">
-                <Bell className="w-7 h-7 text-amber-500" />
+              <div className="w-16 h-16 rounded-2xl bg-[var(--brand-subtle)] border border-[var(--brand)]/15 flex items-center justify-center mx-auto mb-4">
+                <Bell className="w-7 h-7 text-[var(--brand)]" />
               </div>
               <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Qu&apos;est-ce qui te branche ?</h1>
               <p className="text-sm text-[var(--text-secondary)] mt-1.5">Sélectionne tes centres d&apos;intérêt pour des recommandations sur mesure.</p>

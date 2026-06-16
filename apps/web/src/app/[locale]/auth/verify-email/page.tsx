@@ -18,10 +18,10 @@ export default function VerifyEmailPage() {
       </header>
       <main className="flex-1 flex items-center justify-center px-5 pb-12">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center max-w-sm">
-          <div className="w-20 h-20 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 flex items-center justify-center mx-auto mb-6">
-            <Mail className="w-10 h-10 text-amber-500" />
+          <div className="w-20 h-20 rounded-2xl bg-[var(--brand-subtle)] border border-[var(--brand)]/15 flex items-center justify-center mx-auto mb-6">
+            <Mail className="w-10 h-10 text-[var(--brand)]" />
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/50 text-[11px] font-semibold text-amber-600 tracking-wide mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
             <Sparkles className="w-3 h-3" />
             Vérifie ton email
           </span>

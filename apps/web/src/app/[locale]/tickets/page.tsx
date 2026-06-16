@@ -30,7 +30,7 @@ export default function TicketsPage() {
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
         <section className="relative pt-8 pb-8 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-emerald-500/3 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-[var(--accent)]/3 to-transparent pointer-events-none" />
 
           <div className="relative max-w-3xl mx-auto px-4 sm:px-6">
             <motion.div

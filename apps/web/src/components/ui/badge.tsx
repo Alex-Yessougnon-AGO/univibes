@@ -9,8 +9,8 @@ interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 const variantStyles: Record<BadgeVariant, string> = {
   default: "bg-[var(--brand-subtle)] text-[var(--brand-text)]",
-  success: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  warning: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  success: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400",
+  warning: "bg-[var(--accent-subtle)] text-[var(--accent)] dark:bg-[var(--accent-subtle)]/20 dark:text-rose-400",
   error: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
   gold: "bg-[var(--gold-subtle)] text-[var(--gold)]",
   soft: "bg-[var(--border-subtle)] text-[var(--text-secondary)]",

@@ -18,7 +18,7 @@ export default function ModeratorEventsPage() {
       <header className="sticky top-0 z-40 glass border-b border-[var(--border)]">
         <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center shadow-sm">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[var(--shadow-brand)]">
               <ShieldCheck className="w-4 h-4 text-white" />
             </div>
             <span className="font-[family-name:var(--font-display)] text-base text-[var(--text)] tracking-tight">Modération</span>
@@ -33,7 +33,7 @@ export default function ModeratorEventsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
         >
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-800/30 text-[11px] font-semibold text-amber-600 dark:text-amber-400 tracking-wide mb-4">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
             <ShieldCheck className="w-3 h-3" />
             File de modération
           </span>

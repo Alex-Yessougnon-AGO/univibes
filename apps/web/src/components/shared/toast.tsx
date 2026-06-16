@@ -33,7 +33,7 @@ const styles: Record<ToastType, string> = {
   success: "border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/30 dark:border-emerald-800 dark:text-emerald-300",
   error: "border-red-200 bg-red-50 text-red-800 dark:bg-red-950/30 dark:border-red-800 dark:text-red-300",
   info: "border-[var(--brand)]/20 bg-[var(--brand-subtle)] text-[var(--brand-text)]",
-  warning: "border-amber-200 bg-amber-50 text-amber-800 dark:bg-amber-950/30 dark:border-amber-800 dark:text-amber-300",
+  warning: "border-[var(--accent)]/20 bg-[var(--accent-subtle)] text-[var(--accent)] dark:bg-[var(--accent-subtle)]/20 dark:border-rose-800 dark:text-rose-400",
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {

@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
       <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
           <h2 className="font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-amber-500" />
+            <Calendar className="w-4 h-4 text-[var(--accent)]" />
             Événements en attente de validation
           </h2>
           <div className="space-y-3">

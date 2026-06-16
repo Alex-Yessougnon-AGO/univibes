@@ -18,10 +18,10 @@ export default function CheckoutCancelPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="text-center max-w-md"
           >
-            <div className="w-20 h-20 rounded-2xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200/50 flex items-center justify-center mx-auto mb-6">
-              <XCircle className="w-10 h-10 text-amber-500" />
+            <div className="w-20 h-20 rounded-2xl bg-[var(--brand-subtle)] border border-[var(--brand)]/15 flex items-center justify-center mx-auto mb-6">
+              <XCircle className="w-10 h-10 text-[var(--brand)]" />
             </div>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-200/50 text-[11px] font-semibold text-amber-600 tracking-wide mb-4">Paiement annulé</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">Paiement annulé</span>
             <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">Achat annulé</h1>
             <p className="text-sm text-[var(--text-secondary)] mb-8 leading-relaxed">Tu as annulé la réservation. Aucun montant n&apos;a été débité. Tu peux réessayer quand tu veux.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">

@@ -42,7 +42,7 @@ export default function AdminAdDetailPage() {
           <motion.div variants={fadeUp} className="grid grid-cols-3 gap-4 mb-6">
             {[
               { icon: Eye, color: "var(--brand)", label: "Impressions", value: "12.4k" },
-              { icon: MousePointer, color: "text-amber-500", label: "Clics", value: "843" },
+              { icon: MousePointer, color: "text-[var(--accent)]", label: "Clics", value: "843" },
               { icon: TrendingUp, color: "text-emerald-500", label: "CTR", value: "6.8%" },
             ].map((stat, i) => (
               <motion.div
