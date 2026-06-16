@@ -2,7 +2,7 @@
 
 ## Problem
 
-Un étudiants en Afrique francophone veut découvrir des événements près de chez lui — soirées, conférences, hackathons — mais l'information est éparpillée sur WhatsApp, Instagram, affiches papier. Il n'existe pas de point central où trouver, réserver et gérer sa vie étudiante. Côté organisateur, les assos passent des heures à promouvoir sans vraie solution de billetterie.
+Un étudiant au Bénin veut découvrir des événements près de chez lui — soirées, conférences, hackathons — mais l'information est éparpillée sur WhatsApp, Instagram, affiches papier. Il n'existe pas de point central où trouver, réserver et gérer sa vie étudiante. Côté organisateur, les assos passent des heures à promouvoir sans vraie solution de billetterie.
 
 ## Solution
 

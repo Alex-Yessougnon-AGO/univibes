@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { getCategoryIcon } from "@/lib/icon-map";
 import type { EventCategory } from "@/lib/mock-data";
 
 interface CategoryChipProps {
@@ -8,6 +9,8 @@ interface CategoryChipProps {
 }
 
 export function CategoryChip({ category, size = "md", className }: CategoryChipProps) {
+  const Icon = getCategoryIcon(category.icon);
+
   return (
     <span
       className={cn(
@@ -18,7 +21,7 @@ export function CategoryChip({ category, size = "md", className }: CategoryChipP
       )}
       style={{ backgroundColor: category.color }}
     >
-      <span>{category.icon}</span>
+      <Icon className={cn(size === "sm" ? "w-3 h-3" : "w-3.5 h-3.5")} />
       {category.name}
     </span>
   );
@@ -44,22 +47,25 @@ export function CategoryGrid({ categories, selected, onSelect }: CategoryGridPro
       >
         Tous
       </button>
-      {categories.map((cat) => (
-        <button
-          key={cat.id}
-          onClick={() => onSelect?.(cat.slug)}
-          className={cn(
-            "px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5",
-            selected === cat.slug
-              ? "text-white shadow-sm"
-              : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
-          )}
-          style={selected === cat.slug ? { backgroundColor: cat.color } : undefined}
-        >
-          <span>{cat.icon}</span>
-          {cat.name}
-        </button>
-      ))}
+      {categories.map((cat) => {
+        const CatIcon = getCategoryIcon(cat.icon);
+        return (
+          <button
+            key={cat.id}
+            onClick={() => onSelect?.(cat.slug)}
+            className={cn(
+              "px-4 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-1.5",
+              selected === cat.slug
+                ? "text-white shadow-sm"
+                : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
+            )}
+            style={selected === cat.slug ? { backgroundColor: cat.color } : undefined}
+          >
+            <CatIcon className="w-3.5 h-3.5" />
+            {cat.name}
+          </button>
+        );
+      })}
     </div>
   );
 }

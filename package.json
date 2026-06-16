@@ -2,6 +2,7 @@
   "name": "univibes",
   "version": "0.0.1",
   "private": true,
+  "packageManager": "pnpm@11.6.0",
   "engines": {
     "node": ">=20",
     "pnpm": ">=9"

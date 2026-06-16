@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowLeft, Check, Upload, Plus, X, Sparkles } from "lucide-react";
+import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CATEGORIES } from "@/lib/mock-data";
@@ -113,7 +114,7 @@ export default function NewEventPage() {
                     )}
                     style={form.category === cat.slug ? { backgroundColor: cat.color } : undefined}
                   >
-                    {cat.icon} {cat.name}
+                    <CategoryIcon name={cat.icon} className="w-3.5 h-3.5" /> {cat.name}
                   </button>
                 ))}
               </div>

@@ -75,7 +75,7 @@ export function isValidEmail(email: string): boolean {
 }
 
 export function isValidPhone(phone: string): boolean {
-  // Format Bénin / Afrique de l'Ouest : +229XXXXXXXX
+  // Format Bénin : +229XXXXXXXX
   const re = /^\+?[0-9]{8,15}$/;
   return re.test(phone);
 }

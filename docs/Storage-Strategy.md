@@ -8,7 +8,7 @@ Provider : Cloudinary
 
 | Avantage | Détail |
 |----------|--------|
-| CDN mondial | Livraison rapide en Afrique |
+| CDN mondial | Livraison rapide au Bénin |
 | Transformations auto | Redimensionnement, compression, WebP |
 | Plan gratuit | 25 GB stockage, 25 GB bande passante/mois |
 | Sécurisé | Upload signé, accès contrôlé |

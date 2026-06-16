@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Sparkles, Calendar, MapPin, TrendingUp, Users, ChevronRight, Bell } from "lucide-react";
+import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EventCard } from "@/components/events/event-card";
@@ -95,8 +96,8 @@ export default function StudentHomePage() {
                   href={`/explore?category=${cat.slug}`}
                   className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--brand)]/20 hover:shadow-[var(--shadow-sm)] transition-all shrink-0"
                 >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg" style={{ backgroundColor: `${cat.color}15` }}>
-                    {cat.icon}
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${cat.color}15` }}>
+                    <CategoryIcon name={cat.icon} className="w-4 h-4" style={{ color: cat.color }} />
                   </div>
                   <span className="text-sm font-medium text-[var(--text)] whitespace-nowrap">{cat.name}</span>
                 </Link>

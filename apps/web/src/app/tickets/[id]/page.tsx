@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Calendar, MapPin, QrCode, Download, Share2, Sparkles, X } from "lucide-react";
+import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BottomNav } from "@/components/layout/bottom-nav";
@@ -78,7 +79,7 @@ export default function TicketDetailPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-3 left-3 right-3">
                   <span className="inline-block px-2.5 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-[10px] font-semibold uppercase tracking-wider">
-                    {ticket.event.category.icon} {ticket.event.category.name}
+                    <CategoryIcon name={ticket.event.category.icon} className="w-3 h-3 mr-1" /> {ticket.event.category.name}
                   </span>
                 </div>
               </div>

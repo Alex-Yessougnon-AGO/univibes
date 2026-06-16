@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, SlidersHorizontal, Grid3X3, List, MapPin, Sparkles } from "lucide-react";
+import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { EventCard } from "@/components/events/event-card";
 import { Badge } from "@/components/ui/badge";
@@ -114,12 +115,11 @@ export default function ExplorePage() {
               className={cn(
                 "px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5",
                 selectedCategory === cat.slug
-                  ? "text-white shadow-[var(--shadow-sm)]"
+                  ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
                   : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
               )}
-              style={selectedCategory === cat.slug ? { backgroundColor: cat.color } : undefined}
             >
-              <span>{cat.icon}</span>
+              <CategoryIcon name={cat.icon} className="w-3.5 h-3.5" />
               {cat.name}
             </button>
           ))}
@@ -233,12 +233,11 @@ export default function ExplorePage() {
                     className={cn(
                       "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 shrink-0 whitespace-nowrap",
                       selectedCategory === cat.slug
-                        ? "text-white shadow-[var(--shadow-sm)]"
+                        ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
                         : "border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--border-subtle)]"
                     )}
-                    style={selectedCategory === cat.slug ? { backgroundColor: cat.color } : undefined}
                   >
-                    <span>{cat.icon}</span>
+                    <CategoryIcon name={cat.icon} className="w-3.5 h-3.5" />
                     {cat.name}
                   </button>
                 ))}
@@ -316,7 +315,7 @@ export default function ExplorePage() {
                   >
                     {selectedCategory && (
                       <Badge variant="soft" className="flex items-center gap-1.5 px-2.5 py-1">
-                        {CATEGORIES.find((c) => c.slug === selectedCategory)?.icon}{" "}
+                        <CategoryIcon name={CATEGORIES.find((c) => c.slug === selectedCategory)?.icon ?? ""} className="w-3 h-3" />
                         {CATEGORIES.find((c) => c.slug === selectedCategory)?.name}
                         <button onClick={() => setSelectedCategory("")} className="hover:text-[var(--text)] transition-colors">
                           <X className="w-3 h-3" />

@@ -46,8 +46,8 @@ Flutter
 
 | Provider | Région |
 |----------|--------|
-| FedaPay | Bénin / Afrique de l'Ouest |
-| Kkiapay | Bénin / Afrique de l'Ouest |
+| FedaPay | Bénin |
+| Kkiapay | Bénin |
 
 ---
 

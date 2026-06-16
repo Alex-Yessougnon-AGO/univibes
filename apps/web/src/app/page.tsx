@@ -11,6 +11,7 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
 import { EVENTS, CATEGORIES, ORGANIZERS, CITIES } from "@/lib/mock-data";
 import type { MockEvent } from "@/lib/mock-data";
+import { getCategoryIcon } from "@/lib/icon-map";
 import { cn, formatShortDate, formatTime, formatCurrency } from "@/lib/utils";
 
 const FEATURED_EVENTS = EVENTS.filter((e) => e.isFavorited || e.views > 5000).slice(0, 5);
@@ -132,22 +133,32 @@ export default function Home() {
                 </Link>
               </Button>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-              {CATEGORIES.map((cat) => (
-                <Link
-                  key={cat.id}
-                  href={`/explore?category=${cat.slug}`}
-                  className="group flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--brand)]/20 hover:shadow-[var(--shadow-md)] transition-all duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] text-center"
-                >
-                  <div
-                    className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl transition-transform duration-300 group-hover:scale-110"
-                    style={{ backgroundColor: `${cat.color}15` }}
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+              {CATEGORIES.map((cat) => {
+                const CatIcon = getCategoryIcon(cat.icon);
+                return (
+                  <Link
+                    key={cat.id}
+                    href={`/explore?category=${cat.slug}`}
+                    className="group relative flex flex-col items-center gap-3 p-5 sm:p-6 rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--brand)]/20 transition-all duration-300 overflow-hidden"
                   >
-                    <span>{cat.icon}</span>
-                  </div>
-                  <span className="text-xs font-semibold text-[var(--text)]">{cat.name}</span>
-                </Link>
-              ))}
+                    {/* Hover glow */}
+                    <div
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                      style={{
+                        background: `radial-gradient(ellipse at 50% 0%, ${cat.color}20 0%, transparent 70%)`
+                      }}
+                    />
+                    <div
+                      className="relative w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg"
+                      style={{ backgroundColor: `${cat.color}18` }}
+                    >
+                      <CatIcon className="w-5 h-5" style={{ color: cat.color }} />
+                    </div>
+                    <span className="relative text-xs font-semibold text-[var(--text)]">{cat.name}</span>
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -331,7 +342,7 @@ export default function Home() {
                   <span className="font-extrabold text-base text-[var(--text)]">Univibes</span>
                 </div>
                 <p className="text-sm text-[var(--text-secondary)] leading-relaxed max-w-xs">
-                  La plateforme de référence pour découvrir et promouvoir les événements étudiants en Afrique francophone.
+                  La plateforme de référence pour découvrir et promouvoir les événements étudiants au Bénin.
                 </p>
               </div>
               <div>

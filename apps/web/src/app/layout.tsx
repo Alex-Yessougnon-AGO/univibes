@@ -26,13 +26,12 @@ export const metadata: Metadata = {
     template: "%s | Univibes",
   },
   description:
-    "Découvre, partage et rejoins tous les événements universitaires de ta ville. La plateforme de référence pour la vie étudiante en Afrique francophone.",
+    "Découvre, partage et rejoins tous les événements universitaires de ta ville. La plateforme de référence pour la vie étudiante au Bénin.",
   keywords: [
     "événements",
     "étudiants",
     "université",
     "Bénin",
-    "Afrique",
     "campus",
   ],
   authors: [{ name: "Univibes" }],

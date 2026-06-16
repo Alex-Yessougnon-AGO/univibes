@@ -6,7 +6,7 @@ export type MockCategory = {
   id: string;
   name: string;
   slug: string;
-  icon: string;
+  icon: string;  // Lucide icon name (e.g. "music", "mic", "sparkles")
   color: string;
 };
 
@@ -66,44 +66,44 @@ export const CATEGORIES: MockCategory[] = [
     id: "cat-1",
     name: "Musique",
     slug: "musique",
-    icon: "🎵",
+    icon: "music",
     color: "#7C3AED",
   },
   {
     id: "cat-2",
     name: "Conférences",
     slug: "conferences",
-    icon: "🎤",
+    icon: "mic",
     color: "#0F5132",
   },
-  { id: "cat-3", name: "Galas", slug: "galas", icon: "✨", color: "#D4AF37" },
+  { id: "cat-3", name: "Galas", slug: "galas", icon: "sparkles", color: "#D4AF37" },
   {
     id: "cat-4",
     name: "Hackathons",
     slug: "hackathons",
-    icon: "💻",
+    icon: "code",
     color: "#0EA5E9",
   },
-  { id: "cat-5", name: "Sports", slug: "sports", icon: "⚽", color: "#DC2626" },
+  { id: "cat-5", name: "Sports", slug: "sports", icon: "trophy", color: "#DC2626" },
   {
     id: "cat-6",
     name: "Culture",
     slug: "culture",
-    icon: "🎨",
+    icon: "palette",
     color: "#EA580C",
   },
   {
     id: "cat-7",
     name: "Networking",
     slug: "networking",
-    icon: "🤝",
+    icon: "handshake",
     color: "#0891B2",
   },
   {
     id: "cat-8",
     name: "Afterwork",
     slug: "afterwork",
-    icon: "🥂",
+    icon: "glass-water",
     color: "#BE185D",
   },
 ];
@@ -117,14 +117,10 @@ export const CITIES: string[] = [
   "Abomey-Calavi",
   "Porto-Novo",
   "Parakou",
-  "Lomé",
-  "Dakar",
-  "Abidjan",
-  "Ouagadougou",
-  "Bamako",
-  "Niamey",
-  "Yaoundé",
-  "Douala",
+  "Bohicon",
+  "Lokossa",
+  "Natitingou",
+  "Kandi",
 ];
 
 // =====================================================
@@ -140,8 +136,8 @@ export const UNIVERSITIES: string[] = [
   "UNSTIM",
   "Université de Parakou",
   "UCAO",
-  "Université Cheikh Anta Diop",
-  "Université de Lomé",
+  "Université de Lokossa",
+  "Université de Natitingou",
 ];
 
 // =====================================================

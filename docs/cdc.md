@@ -457,4 +457,4 @@ Plateforme Univibes permettant :
 * Paiements en ligne
 * Monétisation par publicité et boosts
 
-avec une architecture moderne, évolutive et prête à être déployée à grande échelle dans les universités africaines.
+avec une architecture moderne, évolutive et prête à être déployée à grande échelle dans les universités béninoises.

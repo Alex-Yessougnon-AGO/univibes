@@ -32,21 +32,12 @@ export function BottomNav() {
                   : "text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
               )}
             >
-              <div className="relative">
-                <motion.div
-                  animate={{ scale: active ? 1 : 0.85, opacity: active ? 1 : 0.5 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 20, mass: 0.5 }}
-                >
-                  <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
-                </motion.div>
-                {active && (
-                  <motion.div
-                    layoutId="bottom-nav-indicator"
-                    className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full bg-[var(--brand)]"
-                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                  />
-                )}
-              </div>
+              <motion.div
+                animate={{ scale: active ? 1.1 : 0.85, opacity: active ? 1 : 0.5 }}
+                transition={{ type: "spring", stiffness: 400, damping: 20, mass: 0.5 }}
+              >
+                <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
+              </motion.div>
               <motion.span
                 className="text-[10px] font-medium leading-none"
                 animate={{ fontWeight: active ? 600 : 500 }}

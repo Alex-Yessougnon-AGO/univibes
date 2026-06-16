@@ -25,7 +25,7 @@ VISUAL_DENSITY     = 5   → Équilibré : cards riches sans être étouffantes
 ```
 
 **Pourquoi ces valeurs ?**
-Univibes s'adresse à des étudiants de 18-25 ans en Afrique francophone. L'interface doit sentir *Spotify pour les events* : énergique, visuelle, premium mais accessible. Pas trop minimaliste (on affiche des affiches d'événements colorées), pas trop dense (mobile-first oblige).
+Univibes s'adresse à des étudiants de 18-25 ans au Bénin. L'interface doit sentir *Spotify pour les events* : énergique, visuelle, premium mais accessible. Pas trop minimaliste (on affiche des affiches d'événements colorées), pas trop dense (mobile-first oblige).
 
 ---
 
@@ -151,7 +151,7 @@ Ce skill avec sa base de 161 palettes et 57 paires typographiques va répondre �
 ```
 /ui-ux-pro-max
 → "Je construis une plateforme événementielle étudiante, 
-   mobile-first, Afrique francophone. Couleurs : vert profond + or.
+   mobile-first, Bénin. Couleurs : vert profond + or.
    Recommande-moi un style UI, des variantes de palette, 
    et des guidelines UX critiques pour ce type de produit."
 ```

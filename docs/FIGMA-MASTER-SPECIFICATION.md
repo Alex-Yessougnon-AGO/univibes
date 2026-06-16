@@ -10,7 +10,7 @@ Status : Design Ready
 
 # Vision Design
 
-Créer la plateforme événementielle étudiante la plus moderne d'Afrique francophone.
+Créer la plateforme événementielle étudiante la plus moderne du Bénin.
 
 L'utilisateur doit ressentir :
 

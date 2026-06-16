@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Check, CreditCard, Smartphone, ArrowRight, Sparkles, X, Minus, Plus } from "lucide-react";
+import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BottomNav } from "@/components/layout/bottom-nav";
@@ -106,7 +107,7 @@ export default function CheckoutPage() {
                 <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 text-left shadow-[var(--shadow)] mb-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center">
-                      <span className="text-xl">{event.category.icon}</span>
+                      <CategoryIcon name={event.category.icon} className="w-5 h-5" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-sm text-[var(--text)]">{event.title}</h3>

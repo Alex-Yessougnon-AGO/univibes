@@ -23,6 +23,7 @@ import {
   Plus,
   X,
 } from "lucide-react";
+import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BottomNav } from "@/components/layout/bottom-nav";
@@ -106,7 +107,7 @@ export default function EventDetailPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <Badge variant="soft" className="mb-3">
-                      <span className="mr-1">{event.category.icon}</span>
+                      <CategoryIcon name={event.category.icon} className="w-3.5 h-3.5 mr-1" />
                       {event.category.name}
                     </Badge>
                     <h1 className="text-2xl md:text-3xl font-[family-name:var(--font-display)] text-[var(--text)] leading-tight tracking-tight">
