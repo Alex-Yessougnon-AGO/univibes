@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Clock, Sparkles } from "lucide-react";
+import { Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { fadeUp, containerStagger } from "@/lib/motion";
 
 const LOGS = [
   { action: "Approbation événement", actor: "Modérateur #1", target: "Hackathon IA & Data", date: "12 juil. 2025 14:32", type: "approve" },
@@ -15,13 +16,21 @@ export default function AuditLogsPage() {
   return (
     <div className="min-h-dvh bg-[var(--bg)]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Journal d'audit</h1>
-          <p className="text-sm text-[var(--text-secondary)] mb-6">Toutes les actions admin et modérateur.</p>
+        <motion.div variants={containerStagger(0.06)} initial="hidden" animate="visible">
+          <motion.div variants={fadeUp}>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Journal d'audit</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">Toutes les actions admin et modérateur.</p>
+          </motion.div>
 
-          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
             {LOGS.map((log, i) => (
-              <div key={i} className="flex items-center justify-between p-4 hover:bg-[var(--border-subtle)] transition-colors border-b border-[var(--border)] last:border-b-0">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + i * 0.06, duration: 0.35, ease: [0.25, 0.1, 0, 1] }}
+                className="flex items-center justify-between p-4 hover:bg-[var(--border-subtle)] transition-colors border-b border-[var(--border)] last:border-b-0"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-[var(--border-subtle)] flex items-center justify-center">
                     <Clock className="w-4 h-4 text-[var(--text-tertiary)]" />
@@ -35,9 +44,9 @@ export default function AuditLogsPage() {
                   </div>
                 </div>
                 <span className="text-xs text-[var(--text-tertiary)]">{log.date}</span>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>

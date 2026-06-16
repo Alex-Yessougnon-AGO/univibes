@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "@/lib/motion";
 import { Search, Check, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -18,16 +19,18 @@ export default function AdminPayoutsPage() {
   return (
     <div className="min-h-dvh bg-[var(--bg)]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Retraits organisateurs</h1>
-          <p className="text-sm text-[var(--text-secondary)] mb-6">Gère les demandes de retrait des organisateurs.</p>
+        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div variants={fadeUp}>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Retraits organisateurs</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">Gère les demandes de retrait des organisateurs.</p>
+          </motion.div>
 
-          <div className="relative mb-6">
+          <motion.div variants={fadeUp} className="relative mb-6">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
             <input type="text" placeholder="Rechercher..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30" />
-          </div>
+          </motion.div>
 
-          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
             {PAYOUTS.map((p) => (
               <div key={p.id} className="flex items-center justify-between p-4 hover:bg-[var(--border-subtle)] transition-colors border-b border-[var(--border)] last:border-b-0">
                 <div>
@@ -47,7 +50,7 @@ export default function AdminPayoutsPage() {
                 </div>
               </div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>

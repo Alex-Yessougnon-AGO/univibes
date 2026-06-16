@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "@/lib/motion";
 import { AlertTriangle, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -22,9 +23,11 @@ export default function ReportsPage() {
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-6">Signalements</h1>
-          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
+          <motion.div variants={fadeUp}>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-6">Signalements</h1>
+          </motion.div>
+          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
             {REPORTS.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-sm text-[var(--text-secondary)]">Aucun signalement en attente.</p>
@@ -43,7 +46,7 @@ export default function ReportsPage() {
                 </div>
               ))
             )}
-          </div>
+          </motion.div>
         </motion.div>
       </main>
     </div>

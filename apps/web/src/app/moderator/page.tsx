@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/motion";
+import { fadeUp, staggerContainer } from "@/lib/motion";
 import { Shield, Check, X, Clock, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -29,7 +29,7 @@ export default function ModeratorDashboardPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div initial="hidden" animate="visible" variants={{ hidden: {}, visible: {} }}>
+        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
           <motion.div variants={fadeUp} className="mb-8">
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">File de modération</h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1">{PENDING.length} événement{PENDING.length > 1 ? "s" : ""} en attente de validation</p>

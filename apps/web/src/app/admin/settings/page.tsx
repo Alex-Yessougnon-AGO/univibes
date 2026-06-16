@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { fadeUp, containerStagger } from "@/lib/motion";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState({
@@ -17,11 +18,13 @@ export default function AdminSettingsPage() {
   return (
     <div className="min-h-dvh bg-[var(--bg)]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Paramètres</h1>
-          <p className="text-sm text-[var(--text-secondary)] mb-6">Configuration générale de la plateforme.</p>
+        <motion.div variants={containerStagger(0.07)} initial="hidden" animate="visible">
+          <motion.div variants={fadeUp}>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Paramètres</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">Configuration générale de la plateforme.</p>
+          </motion.div>
 
-          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]">
+          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]">
             <Input label="Commission billetterie (%)" type="number" value={settings.commission} onChange={(e) => setSettings({ ...settings, commission: e.target.value })} />
             <Input label="Événements max par organisateur" type="number" value={settings.maxEventsPerOrg} onChange={(e) => setSettings({ ...settings, maxEventsPerOrg: e.target.value })} />
             
@@ -41,8 +44,14 @@ export default function AdminSettingsPage() {
               </select>
             </div>
 
-            <Button variant="primary" size="md"><Save className="w-4 h-4" /> Enregistrer</Button>
-          </div>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.35, ease: [0.25, 0.1, 0, 1] }}
+            >
+              <Button variant="primary" size="md"><Save className="w-4 h-4" /> Enregistrer</Button>
+            </motion.div>
+          </motion.div>
         </motion.div>
       </div>
     </div>
