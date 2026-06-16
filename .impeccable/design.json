@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-16T00:00:00.000Z",
+  "title": "Design System: Univibes — NOVA",
+  "extensions": {
+    "colorMeta": {
+      "brand": { "role": "primary", "displayName": "Deep Violet", "canonical": "oklch(50% 0.23 280)", "purpose": "Primary actions, interactive elements, brand iconography" },
+      "accent": { "role": "secondary", "displayName": "Rose", "canonical": "oklch(58% 0.22 350)", "purpose": "Promotional CTAs, free badges, highlight elements" },
+      "gold": { "role": "tertiary", "displayName": "Light Rose", "canonical": "oklch(65% 0.18 350)", "purpose": "Price badges despite 'gold' naming" },
+      "bg": { "role": "neutral", "displayName": "Warm Off-White", "canonical": "oklch(97% 0.005 280)", "purpose": "Page background" },
+      "surface": { "role": "neutral", "displayName": "Pure White", "canonical": "oklch(100% 0 0)", "purpose": "Card surfaces" },
+      "border": { "role": "neutral", "displayName": "Lavender Border", "canonical": "oklch(88% 0.015 280)", "purpose": "Card borders, dividers" },
+      "text": { "role": "neutral", "displayName": "Deep Ink", "canonical": "oklch(10% 0.02 280)", "purpose": "Primary text, headings" },
+      "text-secondary": { "role": "neutral", "displayName": "Muted Lavender", "canonical": "oklch(45% 0.02 280)", "purpose": "Secondary text, metadata" },
+      "success": { "role": "semantic", "displayName": "Success Green", "canonical": "oklch(55% 0.15 160)", "purpose": "Confirmed states" },
+      "error": { "role": "semantic", "displayName": "Error Red", "canonical": "oklch(55% 0.2 30)", "purpose": "Error states" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display (Calistoga)", "purpose": "Hero headlines only. Never cards, buttons, or body." },
+      "body": { "displayName": "Body (Inter)", "purpose": "All body text, metadata, labels, buttons, data." }
+    },
+    "shadows": [
+      { "name": "shadow-sm", "value": "0 1px 2px rgba(15,10,30,0.04), 0 1px 3px rgba(15,10,30,0.06)", "purpose": "Subtle separation for small UI elements" },
+      { "name": "shadow", "value": "0 1px 3px rgba(15,10,30,0.06), 0 4px 12px rgba(15,10,30,0.06)", "purpose": "Default card separation from background" },
+      { "name": "shadow-md", "value": "0 4px 6px rgba(15,10,30,0.07), 0 12px 24px rgba(15,10,30,0.08)", "purpose": "Card hover state" },
+      { "name": "shadow-lg", "value": "0 10px 15px rgba(15,10,30,0.08), 0 24px 48px rgba(15,10,30,0.1)", "purpose": "Modals, popovers" },
+      { "name": "shadow-brand", "value": "0 4px 14px rgba(124,58,237,0.3)", "purpose": "Primary buttons at rest" },
+      { "name": "shadow-accent", "value": "0 4px 14px rgba(236,72,153,0.35)", "purpose": "Accent buttons at rest" }
+    ],
+    "motion": [
+      { "name": "interactive-spring", "value": "type: spring, stiffness: 400, damping: 17, mass: 0.5", "purpose": "Button hover/tap feedback" },
+      { "name": "card-hover-spring", "value": "type: spring, stiffness: 300, damping: 20, mass: 0.8", "purpose": "Card hover lift" },
+      { "name": "duration-exit", "value": "150ms", "purpose": "View Transition exit duration" },
+      { "name": "duration-enter", "value": "210ms", "purpose": "View Transition enter duration" },
+      { "name": "transition-medium", "value": "200ms ease", "purpose": "Standard state transitions (hover, focus)" }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1440px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Default CTA button with violet background and brand shadow.",
+      "html": "<button class=\"ds-btn-primary\">Explorer les événements</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 24px; font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 500; border: none; border-radius: 12px; background: #7c3aed; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(124,58,237,0.3); transition: background 0.15s, box-shadow 0.15s, transform 0.15s; } .ds-btn-primary:hover { background: #6d28d9; box-shadow: 0 6px 20px rgba(124,58,237,0.35); transform: scale(1.02); } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #7c3aed; outline-offset: 2px; border-radius: 4px; } .ds-btn-primary:disabled { opacity: 0.5; pointer-events: none; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary CTA with transparent background and lavender border.",
+      "html": "<button class=\"ds-btn-outline\">Créer un compte</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 24px; font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 500; border: 1px solid #e8e2f0; border-radius: 12px; background: transparent; color: #0f0a1e; cursor: pointer; transition: background 0.15s, transform 0.15s; } .ds-btn-outline:hover { background: #f4f0fa; transform: scale(1.02); } .ds-btn-outline:active { transform: scale(0.97); } .ds-btn-outline:focus-visible { outline: 2px solid #7c3aed; outline-offset: 2px; border-radius: 4px; }"
+    },
+    {
+      "name": "Accent Button",
+      "kind": "button",
+      "refersTo": "button-accent",
+      "description": "Promotional CTA with rose background and rose shadow.",
+      "html": "<button class=\"ds-btn-accent\">Devenir organisateur</button>",
+      "css": ".ds-btn-accent { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 24px; font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 500; border: none; border-radius: 12px; background: #ec4899; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(236,72,153,0.35); transition: background 0.15s, box-shadow 0.15s, transform 0.15s; } .ds-btn-accent:hover { background: #db2777; transform: scale(1.02); } .ds-btn-accent:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Standard Event Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "Standard event card with 4:3 image and content below.",
+      "html": "<article class=\"ds-card-event\"><div class=\"ds-card-img\"></div><div class=\"ds-card-body\"><h3 class=\"ds-card-title\">Soirée de Gala Université</h3><div class=\"ds-card-meta\"><span>15 Juin 2026</span><span>Abomey-Calavi</span></div><div class=\"ds-card-footer\"><span class=\"ds-card-org\">AEUAC</span><span class=\"ds-card-price\">5 000 FCFA</span></div></div></article>",
+      "css": ".ds-card-event { border-radius: 16px; background: #fff; border: 1px solid #e8e2f0; overflow: hidden; transition: transform 0.2s ease, box-shadow 0.2s ease; } .ds-card-event:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(15,10,30,0.07), 0 12px 24px rgba(15,10,30,0.08); } .ds-card-img { aspect-ratio: 4/3; background: linear-gradient(135deg, #f4f0fa, #e8e2f0); position: relative; } .ds-card-body { padding: 16px; } .ds-card-title { font-family: Inter, system-ui, sans-serif; font-size: 14px; font-weight: 700; color: #0f0a1e; line-height: 1.3; margin: 0 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } .ds-card-meta { display: flex; gap: 12px; font-size: 12px; color: #6b6478; margin-bottom: 12px; } .ds-card-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f4f0fa; padding-top: 12px; } .ds-card-org { font-size: 12px; color: #6b6478; } .ds-card-price { padding: 4px 10px; font-size: 12px; font-weight: 700; color: #ec4899; background: #fdf2f8; border-radius: 9999px; }"
+    },
+    {
+      "name": "Featured Event Card",
+      "kind": "card",
+      "refersTo": "card-featured",
+      "description": "Hero card for featured events — image with gradient overlay and text on image.",
+      "html": "<a class=\"ds-card-featured\"><div class=\"ds-card-feat-img\"></div><div class=\"ds-card-feat-overlay\"></div><div class=\"ds-card-feat-content\"><span class=\"ds-card-feat-chip\">Concert</span><h3 class=\"ds-card-feat-title\">Festival de Musique 2026</h3><div class=\"ds-card-feat-meta\"><span>12 Juil 2026</span><span>Cotonou</span></div></div></a>",
+      "css": ".ds-card-featured { position: relative; display: block; border-radius: 16px; overflow: hidden; aspect-ratio: 16/10; min-width: 340px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; } .ds-card-featured:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(15,10,30,0.07), 0 12px 24px rgba(15,10,30,0.08); } .ds-card-featured:hover .ds-card-feat-img { transform: scale(1.05); } .ds-card-feat-img { position: absolute; inset: 0; background: linear-gradient(135deg, #7c3aed33, #ec489933); transition: transform 0.5s ease; } .ds-card-feat-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%); } .ds-card-feat-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 16px; } .ds-card-feat-chip { display: inline-flex; padding: 2px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600; color: #fff; background: #7c3aed; } .ds-card-feat-title { color: #fff; font-family: Inter, system-ui, sans-serif; font-size: 18px; font-weight: 700; line-height: 1.2; margin: 6px 0 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } .ds-card-feat-meta { display: flex; gap: 12px; color: rgba(255,255,255,0.8); font-size: 12px; }"
+    },
+    {
+      "name": "Category Chip",
+      "kind": "chip",
+      "refersTo": "chip-category",
+      "description": "Filled pill chip with leading icon per category.",
+      "html": "<span class=\"ds-chip-cat\"><svg class=\"ds-chip-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M8 12l2 2 4-4\"/></svg>Concert</span>",
+      "css": ".ds-chip-cat { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 9999px; font-size: 12px; font-weight: 600; color: #fff; background: #7c3aed; } .ds-chip-icon { width: 12px; height: 12px; }"
+    },
+    {
+      "name": "Search Input (Double Bezel)",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Hero search bar with double-bezel pattern and city selector.",
+      "html": "<div class=\"ds-search-wrap\"><div class=\"ds-search-inner\"><svg class=\"ds-search-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"M21 21l-4.35-4.35\"/></svg><input class=\"ds-search-input\" type=\"text\" placeholder=\"Rechercher un événement...\" /><button class=\"ds-search-btn\">Rechercher</button></div></div>",
+      "css": ".ds-search-wrap { padding: 6px; border-radius: 24px; background: #f4f0fa; } .ds-search-inner { display: flex; align-items: center; background: #fff; border-radius: 18px; border: 1px solid #e8e2f0; overflow: hidden; transition: box-shadow 0.3s, border-color 0.3s; } .ds-search-inner:focus-within { box-shadow: 0 4px 6px rgba(15,10,30,0.07), 0 12px 24px rgba(15,10,30,0.08); border-color: rgba(124,58,237,0.4); } .ds-search-icon { width: 16px; height: 16px; margin-left: 12px; color: #a89fb8; flex-shrink: 0; } .ds-search-input { flex: 1; border: none; background: transparent; padding: 14px 12px; font-size: 14px; color: #0f0a1e; outline: none; font-family: Inter, system-ui, sans-serif; } .ds-search-input::placeholder { color: #a89fb8; } .ds-search-btn { display: none; } @media (min-width: 640px) { .ds-search-btn { display: inline-flex; align-items: center; height: 32px; padding: 0 16px; margin-right: 6px; border: none; border-radius: 9999px; background: #7c3aed; color: #fff; font-size: 13px; font-weight: 500; cursor: pointer; font-family: Inter, system-ui, sans-serif; } }"
+    },
+    {
+      "name": "Bottom Navigation (Mobile)",
+      "kind": "nav",
+      "refersTo": "nav-bottom",
+      "description": "Mobile bottom navigation bar with 5 tabs and spring active state.",
+      "html": "<nav class=\"ds-bottom-nav\"><a class=\"ds-nav-item ds-nav-active\"><svg class=\"ds-nav-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><path d=\"M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z\"/></svg><span class=\"ds-nav-label\">Accueil</span></a><a class=\"ds-nav-item\"><svg class=\"ds-nav-icon ds-nav-inactive\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"M21 21l-4.35-4.35\"/></svg><span class=\"ds-nav-label ds-label-inactive\">Explorer</span></a><a class=\"ds-nav-item\"><svg class=\"ds-nav-icon ds-nav-inactive\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" y1=\"3\" x2=\"12\" y2=\"15\"/></svg><span class=\"ds-nav-label ds-label-inactive\">Billets</span></a></nav>",
+      "css": ".ds-bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: space-around; align-items: center; height: 64px; padding: 0 8px; background: rgba(255,255,255,0.94); backdrop-filter: blur(16px); border-top: 1px solid #e8e2f0; } .ds-nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 12px; border-radius: 12px; min-width: 52px; text-decoration: none; } .ds-nav-active { color: #7c3aed; } .ds-nav-icon { width: 20px; height: 20px; } .ds-nav-inactive { opacity: 0.5; color: #a89fb8; } .ds-nav-label { font-size: 10px; font-weight: 600; line-height: 1; font-family: Inter, system-ui, sans-serif; } .ds-label-inactive { font-weight: 500; color: #a89fb8; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Campus Pulse",
+    "overview": "Univibes speaks the visual language of a premium student lifestyle brand — energetic, confident, and unmistakably modern. The system pairs a bold violet primary with a rose accent against warm-toned neutrals, creating an atmosphere that feels both sophisticated and approachable. This is not a corporate event platform; it is the digital hub of student life in Benin.",
+    "keyCharacteristics": [
+      "Bold violet + rose palette with warm neutral grounds",
+      "Generous rounded corners (12-24px on containers)",
+      "Calistoga display type for expressive headings, Inter body for clean readability",
+      "Glassmorphism reserved for transient UI (navbar, overlays) — never on content cards",
+      "Horizontal scroll as a discovery pattern (mobile-native)",
+      "Card-based content hierarchy with clear visual weight differentiation"
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "The violet primary leads every screen. The rose accent is used on ≤15% of elements — rarity is its power.", "section": "colors" },
+      { "name": "The Warm Ground Rule", "body": "Neutrals are never pure gray or pure white. Every neutral is tinted toward violet at chroma ≤0.02.", "section": "colors" },
+      { "name": "The Contrast Rule", "body": "Two adjacent type sizes must differ by at least 1.25×.", "section": "typography" },
+      { "name": "The No-Emoji Rule", "body": "Never use emoji or decorative glyphs in body text. Icons are always inline SVGs from Lucide.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Cards and surfaces are flat at rest. Shadows appear only as interactive feedback: hover, focus, elevation, or modal state.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use violet as the dominant color. Rose is an accent, not a primary.",
+      "Do use Calistoga for display headings only — never for body text, button labels, or data.",
+      "Do keep card radii at 16px for consistency.",
+      "Do use the double-bezel pattern for search and featured inputs.",
+      "Do use spring animations for interactive feedback.",
+      "Do always provide skeleton loading states that match the component shape.",
+      "Do use View Transitions for page navigation (fade + slide with shared element morph).",
+      "Do keep featured event cards in a horizontal scroll on mobile with snap points.",
+      "Do respect the Flat-By-Default Rule: surfaces flat at rest, shadows on interaction."
+    ],
+    "donts": [
+      "Don't use gradient text — decorative, never meaningful. Use solid brand color instead.",
+      "Don't make cards identical in size and structure on the same page.",
+      "Don't use a generic white hero with centered text.",
+      "Don't use glassmorphism on content cards. Reserve for transient UI only.",
+      "Don't use em dashes in copy. Use commas, colons, or periods.",
+      "Don't animate CSS layout properties. Use transforms.",
+      "Don't use side-stripe borders on cards or list items.",
+      "Don't try to make Eventbrite or Facebook Events.",
+      "Don't add empty states with just 'Aucun résultat'.",
+      "Don't put text over event posters without a readable gradient overlay.",
+      "Don't use modal as the first solution for overlays.",
+      "Don't add decorative motion that doesn't convey state."
+    ]
+  }
+}

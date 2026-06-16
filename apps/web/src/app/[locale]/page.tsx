@@ -22,14 +22,23 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const scrollFeatured = (direction: "left" | "right") => {
+    scrollRef.current?.scrollBy({ left: direction === "left" ? -400 : 400, behavior: "smooth" });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowLeft") { scrollFeatured("left"); e.preventDefault(); }
+    if (e.key === "ArrowRight") { scrollFeatured("right"); e.preventDefault(); }
+  };
+
   return (
     <>
       <Navbar />
-      <main className="flex-1 pb-20 md:pb-0">
+      <main className="flex-1 pb-24 md:pb-0">
         {/* ============================================= */}
         {/* HERO — Premium Terra */}
         {/* ============================================= */}
-        <section className="relative min-h-[90dvh] flex items-center overflow-hidden bg-gradient-to-b from-[var(--brand-subtle)] via-[var(--bg)] to-[var(--bg)]">
+        <section className="relative min-h-[90dvh] max-sm:min-h-[80dvh] flex items-center overflow-hidden bg-gradient-to-b from-[var(--brand-subtle)] via-[var(--bg)] to-[var(--bg)]">
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-[var(--brand)]/4 blur-[120px]" />
             <div className="absolute top-1/3 -left-20 w-80 h-80 rounded-full bg-[var(--accent)]/4 blur-[100px]" />
@@ -45,7 +54,7 @@ export default function Home() {
 
               <h1 className="font-[family-name:var(--font-display)] text-4xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight text-[var(--text)] mb-6 text-balance">
                 Découvre tout ce qui se passe<br />
-                <span className="text-gradient-brand">sur ton campus</span>
+                <span className="text-[var(--brand)]">sur ton campus</span>
               </h1>
 
               <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-xl leading-relaxed mb-10">
@@ -119,7 +128,7 @@ export default function Home() {
         {/* ============================================= */}
         {/* CATEGORIES — Macro whitespace */}
         {/* ============================================= */}
-        <section className="py-24 md:py-32">
+        <section className="py-16 md:py-28">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-12">
               <div>
@@ -127,7 +136,8 @@ export default function Home() {
                 <h2 className="font-[family-name:var(--font-display)] text-3xl sm:text-4xl md:text-5xl leading-tight text-[var(--text)]">
                   Parcourir par catégorie
                 </h2>
-              </div>                  <Button variant="ghost" size="sm" className="rounded-full hidden sm:inline-flex" asChild>
+              </div>
+              <Button variant="ghost" size="sm" className="rounded-full hidden sm:inline-flex" asChild>
                 <Link href="/explore" transitionTypes={["nav-forward"]}>
                   Voir tout <ChevronRight className="w-4 h-4" />
                 </Link>
@@ -166,7 +176,7 @@ export default function Home() {
         {/* ============================================= */}
         {/* FEATURED EVENTS — Double-bezel cards */}
         {/* ============================================= */}
-        <section className="py-24 md:py-32 bg-[var(--brand-subtle)]/40">
+        <section className="py-16 md:py-28 bg-[var(--brand-subtle)]/40">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-12">
               <div>
@@ -181,14 +191,14 @@ export default function Home() {
               </div>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => scrollRef.current?.scrollBy({ left: -400, behavior: "smooth" })}
+                  onClick={() => scrollFeatured("left")}
                   className="w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--surface)] flex items-center justify-center hover:bg-[var(--border-subtle)] transition-colors"
                   aria-label="Défiler vers la gauche"
                 >
                   <ChevronRight className="w-4 h-4 rotate-180" />
                 </button>
                 <button
-                  onClick={() => scrollRef.current?.scrollBy({ left: 400, behavior: "smooth" })}
+                  onClick={() => scrollFeatured("right")}
                   className="w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--surface)] flex items-center justify-center hover:bg-[var(--border-subtle)] transition-colors"
                   aria-label="Défiler vers la droite"
                 >
@@ -198,7 +208,11 @@ export default function Home() {
             </div>
             <div
               ref={scrollRef}
-              className="flex gap-5 overflow-x-auto scrollbar-hide scroll-container-touch pb-2 -mx-4 px-4 snap-x snap-mandatory"
+              onKeyDown={handleKeyDown}
+              tabIndex={0}
+              role="region"
+              aria-label="Événements à la une, défilez avec les flèches gauche et droite"
+              className="flex gap-5 overflow-x-auto scrollbar-hide scroll-container-touch pb-2 -mx-4 px-4 snap-x snap-mandatory focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-2 focus:ring-offset-transparent rounded-2xl"
             >
               {FEATURED_EVENTS.map((event) => (
                 <div key={event.id} className="snap-start shrink-0 w-[300px] sm:w-[340px] md:w-[440px]">
@@ -212,7 +226,7 @@ export default function Home() {
         {/* ============================================= */}
         {/* UPCOMING EVENTS */}
         {/* ============================================= */}
-        <section className="py-24 md:py-32">
+        <section className="py-16 md:py-28">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-12">
               <div>
@@ -224,7 +238,8 @@ export default function Home() {
                   Événements à venir
                 </h2>
                 <p className="text-[var(--text-secondary)] text-sm mt-2">Ne rate pas les prochains rendez-vous</p>
-              </div>                  <Button variant="ghost" size="sm" className="rounded-full hidden sm:inline-flex" asChild>
+              </div>
+              <Button variant="ghost" size="sm" className="rounded-full hidden sm:inline-flex" asChild>
                 <Link href="/explore" transitionTypes={["nav-forward"]}>
                   Voir tout <ChevronRight className="w-4 h-4" />
                 </Link>
@@ -235,7 +250,8 @@ export default function Home() {
                 <EventCard key={event.id} event={event} variant="standard" />
               ))}
             </div>
-            <div className="mt-12 text-center">                  <Button variant="outline" size="lg" className="rounded-full px-8" asChild>
+            <div className="mt-12 text-center">
+              <Button variant="outline" size="lg" className="rounded-full px-8" asChild>
                 <Link href="/explore" transitionTypes={["nav-forward"]}>
                   Voir tous les événements
                   <ArrowRight className="w-4 h-4" />
@@ -248,7 +264,7 @@ export default function Home() {
         {/* ============================================= */}
         {/* TOP ORGANIZERS */}
         {/* ============================================= */}
-        <section className="py-24 md:py-32 bg-[var(--border-subtle)]/60">
+        <section className="py-16 md:py-28 bg-[var(--border-subtle)]/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-12">
               <div>
@@ -295,7 +311,7 @@ export default function Home() {
         {/* ============================================= */}
         {/* CTA BANNER — Brand gradient */}
         {/* ============================================= */}
-        <section className="py-24 md:py-32">
+        <section className="py-16 md:py-28">
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] p-10 md:p-14 text-center">
               <div className="absolute inset-0 pointer-events-none">
