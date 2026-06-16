@@ -15,6 +15,10 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
+  // Strip locale prefix for active detection (e.g. /fr/explore → /explore)
+  const pathWithoutLocale = '/' + pathname.split('/').slice(2).join('/');
+  const isRootWithoutLocale = pathname.split('/').length === 2;
+  const isActive = (href: string) => href === '/' ? isRootWithoutLocale : pathWithoutLocale === href;
   const { theme, setTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -57,7 +61,7 @@ export function Navbar() {
                 transitionTypes={["nav-forward"]}
                 className={cn(
                   "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
-                  pathname === link.href
+                  isActive(link.href)
                     ? "bg-[var(--brand-subtle)] text-[var(--brand-text)]"
                     : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--border-subtle)]"
                 )}
@@ -121,7 +125,7 @@ export function Navbar() {
                 transitionTypes={["nav-forward"]}
                 className={cn(
                   "flex items-center px-3 py-2.5 rounded-xl text-sm font-medium transition-colors",
-                  pathname === link.href
+                  isActive(link.href)
                     ? "bg-[var(--brand-subtle)] text-[var(--brand-text)]"
                     : "text-[var(--text)] hover:bg-[var(--border-subtle)]"
                 )}

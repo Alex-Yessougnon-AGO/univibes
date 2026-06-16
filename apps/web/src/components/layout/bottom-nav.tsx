@@ -15,11 +15,14 @@ const NAV_ITEMS = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  // Strip locale prefix for active detection (e.g. /fr/explore → /explore)
+  const pathWithoutLocale = '/' + pathname.split('/').slice(2).join('/');
+  const isRootWithoutLocale = pathname.split('/').length === 2;
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden glass border-t border-[var(--border)] safe-area-pb">
       <div className="flex items-center justify-around h-16 px-2">
         {NAV_ITEMS.map(({ href, icon: Icon, label }) => {
-          const active = pathname === href;
+          const active = href === '/' ? isRootWithoutLocale : pathWithoutLocale === href;
           return (
             <Link
               key={href}
