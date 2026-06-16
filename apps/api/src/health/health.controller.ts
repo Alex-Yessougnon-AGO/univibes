@@ -2,6 +2,7 @@ import { Controller, Get, Logger } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import Redis from 'ioredis';
 import { PrismaService } from '../prisma/prisma.service';
+import { Public } from '../common/decorators/public.decorator';
 
 @ApiTags('health')
 @Controller('health')
@@ -20,6 +21,7 @@ export class HealthController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: "Statut de l'API" })
   async check() {
     let dbStatus = 'ok';

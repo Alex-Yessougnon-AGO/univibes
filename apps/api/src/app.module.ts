@@ -1,10 +1,25 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module';
 import { LoggerModule } from './common/logger/logger.module';
 import { AuditModule } from './common/audit/audit.module';
 import { HealthController } from './health/health.controller';
+import { AuthModule } from './auth/auth.module';
+import { JwtAuthGuard } from './auth/strategies/jwt-auth.guard';
+import { UsersModule } from './users/users.module';
+import { OrganizersModule } from './organizers/organizers.module';
+import { EventsModule } from './events/events.module';
+import { CategoriesModule } from './categories/categories.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { BoostsModule } from './boosts/boosts.module';
+import { AdsModule } from './ads/ads.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -29,21 +44,31 @@ import { HealthController } from './health/health.controller';
     LoggerModule,
     AuditModule,
 
-    // Modules métier (décommentés au fur et à mesure)
-    // AuthModule,
-    // UsersModule,
-    // OrganizersModule,
-    // EventsModule,
-    // CategoriesModule,
-    // FavoritesModule,
-    // TicketsModule,
-    // OrdersModule,
-    // PaymentsModule,
-    // NotificationsModule,
-    // BoostsModule,
-    // AdsModule,
-    // AdminModule,
+    // Modules métier
+    AuthModule,
+    UsersModule,
+    OrganizersModule,
+    EventsModule,
+    CategoriesModule,
+    FavoritesModule,
+    TicketsModule,
+    OrdersModule,
+    PaymentsModule,
+    NotificationsModule,
+    BoostsModule,
+    AdsModule,
+    AdminModule,
   ],
   controllers: [HealthController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
