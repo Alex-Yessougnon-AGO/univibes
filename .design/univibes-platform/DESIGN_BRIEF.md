@@ -16,43 +16,49 @@ Univibes est un hub de vie étudiante : catalogue d'événements, billetterie, p
 
 ## Aesthetic Direction
 
-- **Philosophy**: Warm modernist — éditorial, généreux en espace, typographie contrastée, une palette terreuse sophistiquée.
-- **Tone**: Énergique mais posé. Pas d'urgence artificielle. De la chaleur sans familiarité excessive.
-- **Reference points**: Airbnb (générosité des cards), Spotify (énergie des sections), Linear (clarté des dashboards).
-- **Anti-references**: Eventbrite (trop dense, pas assez visuel), Facebook Events (confus, laid), sites institutionnels (froids, rigides).
+- **Philosophy**: Digital night — vibrant, électrique, contrasté. Une palette violet/rose qui évoque la vie nocturne et la créativité étudiante.
+- **Tone**: Énergique, audacieux, moderne. Du punch sans être agressif.
+- **Reference points**: Spotify (énergie des sections), Twitch (communauté), VSCO (esthétique curated mais avec plus de contraste).
+- **Anti-references**: Eventbrite (trop dense, pas assez visuel), sites institutionnels (froids, rigides), banques (sérieux, sans personnalité).
 
-## Palette — Terra
+## Palette — NOVA
 
-Direction unique : tons terreux, chauds, sophistiqués. Zéro vert, zéro couleur vive.
+Direction unique : violet électrique, rose fluo, neutres teintés violet. Digital, nuit, club.
 
 ### Light Mode
 
 | Token | Color | Hex |
 |---|---|---|
-| Brand primary | Rich clay | `#7A4D3A` |
-| Brand hover | Deep clay | `#664030` |
-| Brand subtle | Warm cream | `#F0EBE6` |
-| Accent | Warm amber | `#C4956A` |
-| Accent hover | Deep amber | `#B0845A` |
-| Accent subtle | Pale amber | `#F5EEE6` |
-| Surface | White | `#FFFFFF` |
-| Background | Warm off-white | `#F8F6F4` |
-| Text primary | Warm black | `#2A2725` |
-| Text secondary | Warm grey | `#7A7068` |
-| Text tertiary | Light warm | `#B0A69C` |
-| Border | Warm border | `#E8E2DC` |
-| Border subtle | Warm light | `#F2EEE9` |
-| Error | Deep rose | `#B33A3A` |
-| Success | Muted emerald | `#3A7A5C` |
+| Brand primary | Violet vibrant | `#7C3AED` |
+| Brand hover | Violet profond | `#6D28D9` |
+| Brand subtle | Lavande | `#F5F0FF` |
+| Accent | Rose fluo | `#EC4899` |
+| Accent hover | Rose foncé | `#DB2777` |
+| Accent subtle | Rose pâle | `#FDF2F8` |
+| Gold | Rose clair | `#F472B6` |
+| Gold hover | Rose vif | `#E11D48` |
+| Surface | Blanc | `#FFFFFF` |
+| Background | Gris lavande | `#FAF8FC` |
+| Text primary | Almost black | `#0F0A1E` |
+| Text secondary | Gris violet | `#6B6478` |
+| Text tertiary | Violet clair | `#A89FB8` |
+| Border | Lavande bordure | `#E8E2F0` |
+| Border subtle | Lavande pâle | `#F4F0FA` |
+| Error | Rouge | `#EF4444` |
+| Success | Émeraude | `#10B981` |
 
 ### Dark Mode
 
 | Token | Color | Hex |
 |---|---|---|
-| Brand primary | Warm amber | `#C4956A` |
-| Background | Warm dark | `#151210` |
-| Surface | Raised dark | `#1E1A18` |
-| Text | Warm light | `#F0ECE8` |
+| Brand primary | Violet clair | `#C084FC` |
+| Brand hover | Lavande clair | `#D4A0FF` |
+| Background | Noir violet | `#0A0A12` |
+| Surface | Gris violet foncé | `#1A1625` |
+| Surface raised | Violet foncé | `#221E33` |
+| Accent | Rose | `#F472B6` |
+| Text | Blanc lavande | `#F0ECF8` |
+| Text secondary | Gris perle | `#8E84A4` |
 
 Shadows teintées avec la couleur brand (var(--brand) en alpha).
 
