@@ -96,3 +96,41 @@ staging → pre-prod
 develop → active dev
 feature/*, hotfix/*
 ```
+
+## Learnings & Pitfalls (pour les agents IA)
+
+Consulter `.claude/learnings.md` pour le détail complet. Règles essentielles :
+
+### 1. Conflit de nom `t`
+**Ne JAMAIS utiliser `t` comme variable locale** dans `.map()`, `.find()`,
+`.reduce()`, `.filter()`. `t` est réservé à `useTranslations()`.
+→ Utiliser `ticket`/`tk`/`ti` pour les tickets, `e`/`event` pour les events.
+
+### 2. Pathname locale-aware
+- Navigation locale : importer `usePathname`/`useRouter` depuis **`@/i18n/routing`**
+  (retourne le chemin SANS préfixe locale)
+- Vérification de route active : utiliser **`next/navigation`**
+  (retourne le chemin AVEC préfixe locale)
+
+### 3. Clés de traduction
+Toujours ajouter les clés dans **les deux fichiers** :
+`apps/web/messages/en.json` + `apps/web/messages/fr.json`
+
+### 4. JSX expressions
+Toujours fermer `{condition && (...)}` par `)}` (pas seulement `)`).
+
+### 5. Playwright + middleware
+```ts
+await page.goto("/fr", { waitUntil: "domcontentloaded" });
+await page.waitForLoadState("networkidle");
+await page.waitForURL(/\/en/, { timeout: 10000 });
+```
+
+### 6. Tests Playwright sur cette machine
+```bash
+PLAYWRIGHT_BROWSERS_PATH=/home/alex/.cache/ms-playwright npx playwright test
+```
+
+### 7. Prisma + pnpm
+Toujours lancer `pnpm db:generate` manuellement après `pnpm install` ou
+changement de schéma (`.pnpmfile.cjs` désactive le postinstall).
