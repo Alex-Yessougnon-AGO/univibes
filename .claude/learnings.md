@@ -197,6 +197,49 @@ ajouter `SENTRY_AUTH_TOKEN` dans les env vars Vercel.
 
 ---
 
+## 9. Hoisting des fonctions avec TypeScript strict
+
+### Problème
+Une `function declaration` est **hoisted** (remontée) en haut de son scope.
+Quand elle est définie après un garde (`if (!x) return`), elle est considérée
+comme déclarée **avant** le garde par TypeScript, donc `x` reste `possibly undefined`.
+
+### Symptôme
+```
+Type error: 'invoice' is possibly 'undefined'.
+```
+
+### Code fautif
+```tsx
+const invoice = data.find(...);
+
+if (!invoice) return <Error />;
+
+// ❌ function declaration est hoisted → TypeScript voit invoice comme undefined
+function handleAction(action: string) {
+  console.log(invoice.orderNumber); // Error!
+}
+```
+
+### Correction
+```tsx
+const invoice = data.find(...);
+
+if (!invoice) return <Error />;
+
+// ✅ const arrow function n'est PAS hoisted → TypeScript sait que invoice existe
+const handleAction = (action: string) => {
+  console.log(invoice.orderNumber); // ✅
+};
+```
+
+### Règle
+**Toujours utiliser `const fn = () => {}`** plutôt que `function fn() {}`
+pour les fonctions définies après un guard clause (`if (!x) return`).
+Les `const` ne sont pas hoisted et préservent le narrowing de TypeScript.
+
+---
+
 ## Résumé des patterns à suivre
 
 | Fichier | Import `usePathname` depuis |
