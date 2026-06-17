@@ -1,11 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useState } from "react";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
-import { ArrowLeft, Bell, Shield, Trash2, User, Sparkles, Moon, Sun } from "lucide-react";
+import { ArrowLeft, Bell, Shield, Trash2, User, Sparkles, Moon, Sun, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/providers/theme-provider";
@@ -36,6 +36,9 @@ const SETTINGS_SECTIONS = [
 
 export default function SettingsPage() {
   const t = useTranslations();
+  const locale = useLocale();
+  const pathname = usePathname();
+  const router = useRouter();
   const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState<Record<string, boolean>>({
     reminders: true,
@@ -48,6 +51,10 @@ export default function SettingsPage() {
   });
 
   const toggle = (key: string) => setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  const switchLocale = (newLocale: string) => {
+    router.replace(pathname, { locale: newLocale });
+  };
 
   return (
     <div className="min-h-dvh flex flex-col bg-[var(--bg)]">
@@ -85,8 +92,10 @@ export default function SettingsPage() {
           className="max-w-2xl mx-auto px-4 sm:px-6 pb-12 space-y-6"
         >
           {/* Apparence */}
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)]">
-            <h2 className="font-semibold text-sm text-[var(--text)] mb-3">Apparence</h2>
+          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] space-y-4">
+            <h2 className="font-semibold text-sm text-[var(--text)]">Apparence</h2>
+
+            {/* Theme toggle */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl bg-[var(--border-subtle)] flex items-center justify-center">
@@ -106,6 +115,43 @@ export default function SettingsPage() {
                   theme === "dark" ? "translate-x-6" : "translate-x-0.5"
                 )} />
               </button>
+            </div>
+
+            {/* Language selector */}
+            <div className="pt-3 border-t border-[var(--border-subtle)]">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-[var(--border-subtle)] flex items-center justify-center">
+                  <Languages className="w-4 h-4 text-[var(--text-secondary)]" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-[var(--text)]">{t("nav.language")}</p>
+                </div>
+              </div>
+              <div className="flex mt-3 rounded-xl border border-[var(--border)] overflow-hidden">
+                <button
+                  onClick={() => switchLocale("fr")}
+                  className={cn(
+                    "flex-1 py-2.5 text-sm font-medium transition-colors",
+                    locale === "fr"
+                      ? "bg-[var(--brand)] text-white"
+                      : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--border-subtle)]"
+                  )}
+                >
+                  🇫🇷 {t("nav.french")}
+                </button>
+                <div className="w-px bg-[var(--border)]" />
+                <button
+                  onClick={() => switchLocale("en")}
+                  className={cn(
+                    "flex-1 py-2.5 text-sm font-medium transition-colors",
+                    locale === "en"
+                      ? "bg-[var(--brand)] text-white"
+                      : "bg-transparent text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--border-subtle)]"
+                  )}
+                >
+                  🇬🇧 {t("nav.english")}
+                </button>
+              </div>
             </div>
           </motion.div>
 

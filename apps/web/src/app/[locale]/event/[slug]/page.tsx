@@ -54,7 +54,7 @@ export default function EventDetailPage() {
     setTicketQuantity(1);
   };
 
-  const totalTicketsRemaining = event.tickets?.reduce((sum, t) => sum + t.remaining, 0) ?? 0;
+  const totalTicketsRemaining = event.tickets?.reduce((sum, ti) => sum + ti.remaining, 0) ?? 0;
 
   return (
     <>
@@ -397,7 +397,7 @@ export default function EventDetailPage() {
       {/* Buy ticket modal */}
       <AnimatePresence>
         {showBuyModal && selectedTicket && (() => {
-          const ticket = event.tickets?.find((t) => t.id === selectedTicket);
+          const ticket = event.tickets?.find((ti) => ti.id === selectedTicket);
           return (
             <motion.div
               initial={{ opacity: 0 }}
@@ -431,31 +431,31 @@ export default function EventDetailPage() {
 
                 {/* Ticket type selection */}
                 <div className="space-y-2.5">
-                  {event.tickets?.map((t) => (
+                  {event.tickets?.map((tk) => (
                     <button
-                      key={t.id}
-                      onClick={() => { setSelectedTicket(t.id); setTicketQuantity(1); }}
+                      key={tk.id}
+                      onClick={() => { setSelectedTicket(tk.id); setTicketQuantity(1); }}
                       className={cn(
                         "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-200 text-left",
-                        selectedTicket === t.id
+                        selectedTicket === tk.id
                           ? "border-[var(--brand)] bg-[var(--brand-subtle)]"
                           : "border-[var(--border)] hover:border-[var(--brand)]/30"
                       )}
                     >
                       <div>
-                        <h4 className="font-semibold text-sm text-[var(--text)]">{t.name}</h4>
-                        {t.description && (
-                          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t.description}</p>
+                        <h4 className="font-semibold text-sm text-[var(--text)]">{tk.name}</h4>
+                        {tk.description && (
+                          <p className="text-xs text-[var(--text-secondary)] mt-0.5">{tk.description}</p>
                         )}
                         <p className={cn(
                           "text-xs mt-1",
-                          t.remaining < 10 ? "text-[var(--error)]" : "text-[var(--text-tertiary)]"
+                          tk.remaining < 10 ? "text-[var(--error)]" : "text-[var(--text-tertiary)]"
                         )}>
-                          {t.remaining} / {t.total} {t("event.remaining")}
+                          {tk.remaining} / {tk.total} {t("event.remaining")}
                         </p>
                       </div>
-                      <span className={cn("font-bold text-base", t.price === 0 ? "text-[var(--success)]" : "text-[var(--brand)]")}>
-                        {t.price === 0 ? t("event.free") : formatCurrency(t.price)}
+                      <span className={cn("font-bold text-base", tk.price === 0 ? "text-[var(--success)]" : "text-[var(--brand)]")}>
+                        {tk.price === 0 ? t("event.free") : formatCurrency(tk.price)}
                       </span>
                     </button>
                   ))}
