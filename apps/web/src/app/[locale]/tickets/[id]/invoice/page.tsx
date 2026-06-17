@@ -96,9 +96,9 @@ export default function InvoicePage() {
   const StatusIcon = statusConfig[invoice.status].icon;
   const statusBadgeVariant = statusConfig[invoice.status].variant;
 
-  function handleSimulatedAction(action: string) {
+  const handleSimulatedAction = (action: string) => {
     console.log(`[Invoice] ${action} clicked for ${invoice.orderNumber}`);
-  }
+  };
 
   return (
     <>
