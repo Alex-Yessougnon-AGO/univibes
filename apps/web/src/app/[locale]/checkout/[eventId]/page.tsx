@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -21,6 +22,7 @@ const PAYMENT_METHODS = [
 ];
 
 export default function CheckoutPage() {
+  const t = useTranslations();
   const params = useParams();
   const event = EVENTS.find((e) => e.slug === params.eventId);
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
@@ -33,9 +35,9 @@ export default function CheckoutPage() {
   if (!event) {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-[var(--bg)]">
-        <h2 className="font-semibold text-[var(--text)]">Événement introuvable</h2>
+        <h2 className="font-semibold text-[var(--text)]">{t("common.search")} introuvable</h2>
         <Button variant="outline" size="sm" className="mt-4" asChild>
-          <Link href="/explore">Retour à l&apos;exploration</Link>
+          <Link href="/explore">{t("common.back")}</Link>
         </Button>
       </div>
     );
@@ -73,10 +75,10 @@ export default function CheckoutPage() {
             >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 {step === "confirm" ? <Check className="w-3 h-3" /> : <CreditCard className="w-3 h-3" />}
-                {step === "confirm" ? "Confirmation" : step === "payment" ? "Paiement" : "Achat"}
+                {step === "confirm" ? t("checkout.confirmed") : step === "payment" ? t("checkout.paymentMethod") : t("checkout.title")}
               </span>
               <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
-                {step === "confirm" ? "Réservation confirmée !" : "Finaliser la réservation"}
+                {step === "confirm" ? t("checkout.confirmed") : t("checkout.title")}
               </h1>
               <p className="text-sm text-[var(--text-secondary)] mt-1">{event.title}</p>
             </motion.div>
@@ -98,10 +100,10 @@ export default function CheckoutPage() {
                   <Check className="w-10 h-10 text-emerald-600" />
                 </div>
                 <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
-                  {quantity > 1 ? "Tes billets sont réservés !" : "Ton billet est réservé !"}
+                  {quantity > 1 ? t("checkout.quantity") : t("checkout.confirmed")}
                 </h2>
                 <p className="text-sm text-[var(--text-secondary)] max-w-sm mx-auto leading-relaxed mb-8">
-                  On t&apos;a envoyé un email avec ton{quantity > 1 ? "s" : ""} QR code. Présente-le à l&apos;entrée le jour J.
+                  {t("checkout.confirmedDesc")}
                 </p>
 
                 <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 text-left shadow-[var(--shadow)] mb-6">
@@ -115,20 +117,20 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Billet</span><span className="text-[var(--text)] font-medium">{ticket?.name}</span></div>
-                    <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Quantité</span><span className="text-[var(--text)] font-medium">{quantity}</span></div>
-                    <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Total</span><span className="text-lg font-extrabold text-[var(--brand)]">{formatCurrency(total)}</span></div>
+                    <div className="flex justify-between">                    <span className="text-[var(--text-tertiary)]">{t("checkout.chooseTicket")}</span><span className="text-[var(--text)] font-medium">{ticket?.name}</span></div>
+                    <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("checkout.quantity")}</span><span className="text-[var(--text)] font-medium">{quantity}</span></div>
+                    <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("checkout.total")}</span><span className="text-lg font-extrabold text-[var(--brand)]">{formatCurrency(total)}</span></div>
                   </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Button variant="outline" size="md" asChild>
-                    <Link href="/tickets">Voir mes billets</Link>
+                    <Link href="/tickets">{t("checkout.seeTickets")}</Link>
                   </Button>
                   <Button variant="primary" size="md" asChild>
                     <Link href="/explore">
-                      <span className="hidden sm:inline">Explorer d&apos;autres événements</span>
-                      <span className="sm:hidden">Explorer</span>
+                      <span className="hidden sm:inline">{t("home.discoverEvents")}</span>
+                      <span className="sm:hidden">{t("nav.explore")}</span>
                     </Link>
                   </Button>
                 </div>
@@ -145,25 +147,25 @@ export default function CheckoutPage() {
                 {/* Step 1: Choose ticket */}
                 {step === "ticket" && (
                   <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4">
-                    <h2 className="font-semibold text-[var(--text)]">Choisis ton billet</h2>
-                    {event.tickets?.map((t) => (
+                    <h2 className="font-semibold text-[var(--text)]">{t("checkout.chooseTicket")}</h2>
+                    {event.tickets?.map((tk) => (
                       <button
-                        key={t.id}
-                        onClick={() => { setSelectedTicket(t.id); setQuantity(1); }}
+                        key={tk.id}
+                        onClick={() => { setSelectedTicket(tk.id); setQuantity(1); }}
                         className={cn(
                           "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left",
-                          selectedTicket === t.id
+                          selectedTicket === tk.id
                             ? "border-[var(--brand)] bg-[var(--brand-subtle)]"
                             : "border-[var(--border)] hover:border-[var(--brand)]/30"
                         )}
                       >
                         <div>
-                          <h3 className="font-semibold text-sm text-[var(--text)]">{t.name}</h3>
-                          {t.description && <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t.description}</p>}
-                          <p className="text-xs text-[var(--text-tertiary)] mt-1">{t.remaining} / {t.total} restants</p>
+                          <h3 className="font-semibold text-sm text-[var(--text)]">{tk.name}</h3>
+                          {tk.description && <p className="text-xs text-[var(--text-secondary)] mt-0.5">{tk.description}</p>}
+                          <p className="text-xs text-[var(--text-tertiary)] mt-1">{tk.remaining} / {tk.total} {t("event.tickets")}</p>
                         </div>
-                        <span className={cn("font-bold text-base", t.price === 0 ? "text-emerald-600" : "text-[var(--brand)]")}>
-                          {t.price === 0 ? "Gratuit" : formatCurrency(t.price)}
+                        <span className={cn("font-bold text-base", tk.price === 0 ? "text-emerald-600" : "text-[var(--brand)]")}>
+                          {tk.price === 0 ? t("event.free") : formatCurrency(tk.price)}
                         </span>
                       </button>
                     ))}
@@ -171,7 +173,7 @@ export default function CheckoutPage() {
                     {selectedTicket && ticket && (
                       <div className="pt-4 border-t border-[var(--border)] space-y-4">
                         <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--border-subtle)]">
-                          <span className="text-sm font-medium text-[var(--text)]">Quantité</span>
+                          <span className="text-sm font-medium text-[var(--text)]">{t("checkout.quantity")}</span>
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -192,14 +194,14 @@ export default function CheckoutPage() {
                         </div>
 
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-[var(--text-secondary)]">Total</span>
+                          <span className="text-sm text-[var(--text-secondary)]">{t("checkout.total")}</span>
                           <span className="text-xl font-extrabold text-[var(--brand)] font-[family-name:var(--font-display)]">
                             {formatCurrency(total)}
                           </span>
                         </div>
 
                         <Button variant="primary" size="lg" className="w-full" onClick={() => setStep("payment")}>
-                          Continuer vers le paiement
+                          {t("checkout.continue")}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </div>
@@ -210,8 +212,8 @@ export default function CheckoutPage() {
                 {/* Step 2: Payment method */}
                 {step === "payment" && (
                   <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4">
-                    <h2 className="font-semibold text-[var(--text)]">Mode de paiement</h2>
-                    <p className="text-sm text-[var(--text-secondary)]">Sélectionne ton moyen de paiement préféré</p>
+                    <h2 className="font-semibold text-[var(--text)]">{t("checkout.paymentMethod")}</h2>
+                    <p className="text-sm text-[var(--text-secondary)]">{t("checkout.selectPayment")}</p>
 
                     {PAYMENT_METHODS.map((method) => (
                       <button
@@ -241,9 +243,9 @@ export default function CheckoutPage() {
                       <div className="rounded-xl bg-[var(--border-subtle)] p-4 space-y-2 text-sm">
                         <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Billet</span><span className="text-[var(--text)] font-medium">{ticket?.name} × {quantity}</span></div>
                         <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Sous-total</span><span className="text-[var(--text)] font-medium">{formatCurrency(total)}</span></div>
-                        <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Frais</span><span className="text-[var(--text)] font-medium">Gratuits</span></div>
+                        <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Frais</span><span className="text-[var(--text)] font-medium">{t("event.free")}</span></div>
                         <div className="flex justify-between pt-2 border-t border-[var(--border)]">
-                          <span className="font-semibold text-[var(--text)]">Total</span>
+                          <span className="font-semibold text-[var(--text)]">{t("checkout.total")}</span>
                           <span className="text-lg font-extrabold text-[var(--brand)] font-[family-name:var(--font-display)]">{formatCurrency(total)}</span>
                         </div>
                       </div>
@@ -256,17 +258,17 @@ export default function CheckoutPage() {
                         >
                           <X className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                           <div>
-                            <p className="text-sm font-semibold text-red-700 dark:text-red-400">Paiement refusé</p>
+                              <p className="text-sm font-semibold text-red-700 dark:text-red-400">{t("checkout.pay", { amount: "" })} refusé</p>
                             <p className="text-xs text-red-600/80 dark:text-red-400/70 mt-0.5">
-                              Vérifie tes informations ou réessaie avec un autre moyen de paiement
+                                {t("checkout.cancelledDesc")}
                             </p>
                           </div>
                         </motion.div>
                       )}
 
                       <div className="flex gap-3">
-                        <Button variant="outline" size="md" className="flex-1" onClick={() => setStep("ticket")}>
-                          Retour
+                          <Button variant="outline" size="md" className="flex-1" onClick={() => setStep("ticket")}>
+                          {t("common.back")}
                         </Button>
                         <Button
                           variant="primary"
@@ -278,10 +280,10 @@ export default function CheckoutPage() {
                           {loading ? (
                             <span className="flex items-center gap-2">
                               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                              Paiement…
+                              {t("checkout.processing")}
                             </span>
                           ) : (
-                            <>Payer {formatCurrency(total)}</>
+                            <>{t("checkout.pay", { amount: formatCurrency(total) })}</>
                           )}
                         </Button>
                       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -71,6 +72,7 @@ const FAQ = [
 ];
 
 export default function PricingPage() {
+  const t = useTranslations();
   const [annual, setAnnual] = useState(false);
 
   return (
@@ -83,14 +85,14 @@ export default function PricingPage() {
             <motion.div initial="hidden" animate="visible" variants={containerStagger(0.07)}>
               <motion.span variants={fadeUp} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-6">
                 <Sparkles className="w-3 h-3" />
-                Tarifs
+                {t("pricing.title")}
               </motion.span>
               <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl font-[family-name:var(--font-display)] text-[var(--text)] leading-tight tracking-tight mb-4">
-                Des tarifs pour chaque association
+                {t("pricing.title")}
               </motion.h1>
               <motion.p variants={fadeUp} className="text-base text-[var(--text-secondary)] max-w-xl mx-auto leading-relaxed">
-                    Commence gratuitement et passe en Premium quand tu es prêt à développer tes événements.
-                  </motion.p>
+                {t("pricing.subtitle")}
+              </motion.p>
             </motion.div>
           </div>
         </section>
@@ -117,13 +119,13 @@ export default function PricingPage() {
                 )}
 
                 <div className="mb-6">
-                  <h2 className="font-semibold text-lg text-[var(--text)]">{plan.name}</h2>
-                  <p className="text-xs text-[var(--text-secondary)] mt-1">{plan.desc}</p>
+                  <h2 className="font-semibold text-lg text-[var(--text)]">{plan.name === "Gratuit" ? t("pricing.free") : plan.name === "Premium" ? t("pricing.pro") : plan.name === "Sponsor" ? t("pricing.enterprise") : plan.name}</h2>
+                  <p className="text-xs text-[var(--text-secondary)] mt-1">{plan.name === "Gratuit" ? t("pricing.starterDesc") : plan.name === "Premium" ? t("pricing.proDesc") : plan.name === "Sponsor" ? t("pricing.enterpriseDesc") : plan.desc}</p>
                 </div>
 
                 <div className="mb-6">
                   <span className="text-3xl font-extrabold text-[var(--text)] font-[family-name:var(--font-display)]">{plan.price}</span>
-                  {plan.period && <span className="text-sm text-[var(--text-secondary)] ml-1">{plan.period}</span>}
+                  {plan.period && <span className="text-sm text-[var(--text-secondary)] ml-1">{plan.period === "/ mois" ? t("pricing.month") : plan.period}</span>}
                 </div>
 
                 <ul className="space-y-2.5 mb-6 flex-1">
@@ -142,7 +144,7 @@ export default function PricingPage() {
                   asChild
                 >
                   <Link href={plan.name === "Sponsor" ? "/contact" : "/register?role=organizer"}>
-                    {plan.cta}
+                    {plan.cta === "Nous contacter" ? t("pricing.ctaContact") : plan.cta === "Commencer gratuitement" ? t("pricing.cta") : plan.cta === "Passer en Premium" ? t("pricing.cta") : plan.cta}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </Button>
@@ -154,7 +156,7 @@ export default function PricingPage() {
         {/* FAQ */}
         <section className="py-16 bg-[var(--border-subtle)]/50">
           <div className="max-w-3xl mx-auto px-4 sm:px-6">
-            <h2 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] text-center mb-8">Questions fréquentes</h2>
+            <h2 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] text-center mb-8">{t("pricing.faq")}</h2>
             <div className="space-y-3">
               {FAQ.map((item) => (
                 <details key={item.q} className="group rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">

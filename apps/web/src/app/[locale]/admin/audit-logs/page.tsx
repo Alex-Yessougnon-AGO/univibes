@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -13,13 +14,14 @@ const LOGS = [
 ];
 
 export default function AuditLogsPage() {
+  const t = useTranslations();
   return (
     <div className="min-h-dvh bg-[var(--bg)]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <motion.div variants={containerStagger(0.06)} initial="hidden" animate="visible">
           <motion.div variants={fadeUp}>
-            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Journal d'audit</h1>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">Toutes les actions admin et modérateur.</p>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("admin.auditLogs")}</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.auditLogsDesc")}</p>
           </motion.div>
 
           <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">

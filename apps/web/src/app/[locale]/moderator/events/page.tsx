@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -11,6 +12,7 @@ import { EVENTS } from "@/lib/mock-data";
 import { formatShortDate } from "@/lib/utils";
 
 export default function ModeratorEventsPage() {
+  const t = useTranslations();
   const pendingEvents = EVENTS.filter((e) => !e.isFavorited);
 
   return (
@@ -21,9 +23,9 @@ export default function ModeratorEventsPage() {
             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[var(--shadow-brand)]">
               <ShieldCheck className="w-4 h-4 text-white" />
             </div>
-            <span className="font-[family-name:var(--font-display)] text-base text-[var(--text)] tracking-tight">Modération</span>
+            <span className="font-[family-name:var(--font-display)] text-base text-[var(--text)] tracking-tight">{t("moderator.title")}</span>
           </div>
-          <Link href="/" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors font-medium">Voir le site</Link>
+          <Link href="/" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors font-medium">{t("home.discoverEvents")}</Link>
         </div>
       </header>
 
@@ -35,10 +37,10 @@ export default function ModeratorEventsPage() {
         >
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
             <ShieldCheck className="w-3 h-3" />
-            File de modération
+            {t("moderator.title")}
           </span>
-          <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">Événements en attente</h1>
-          <p className="text-sm text-[var(--text-secondary)] mb-6">{pendingEvents.length} événement{pendingEvents.length > 1 ? "s" : ""} à valider</p>
+          <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">{t("moderator.pendingEvents")}</h1>
+          <p className="text-sm text-[var(--text-secondary)] mb-6">{pendingEvents.length} {t("moderator.pendingEvents").toLowerCase()}</p>
         </motion.div>
 
         <motion.div
@@ -69,14 +71,14 @@ export default function ModeratorEventsPage() {
                       <span>{event.location}</span>
                     </div>
                   </div>
-                  <Badge variant="warning">En attente</Badge>
+                  <Badge variant="warning">{t("admin.pendingApproval")}</Badge>
                 </div>
                 <p className="text-xs text-[var(--text-tertiary)] mt-2 line-clamp-2 leading-relaxed">{event.description}</p>
                 <div className="flex items-center gap-2 mt-3">
-                  <Button variant="primary" size="sm" className="bg-emerald-600 hover:bg-emerald-700">Approuver</Button>
-                  <Button variant="danger" size="sm">Refuser</Button>
+                  <Button variant="primary" size="sm" className="bg-emerald-600 hover:bg-emerald-700">{t("admin.approve")}</Button>
+                  <Button variant="danger" size="sm">{t("admin.reject")}</Button>
                   <Button variant="outline" size="sm" asChild>
-                    <Link href={`/event/${event.slug}`}>Prévisualiser</Link>
+                    <Link href={`/event/${event.slug}`}>{t("common.viewMore")}</Link>
                   </Button>
                 </div>
               </div>

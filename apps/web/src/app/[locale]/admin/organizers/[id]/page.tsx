@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { ArrowLeft, Check, X, Ban } from "lucide-react";
@@ -9,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { fadeUp, containerStagger } from "@/lib/motion";
 
 export default function AdminOrganizerDetailPage() {
+  const t = useTranslations();
   const [suspended, setSuspended] = useState(false);
 
   return (
@@ -17,7 +19,7 @@ export default function AdminOrganizerDetailPage() {
         <motion.div variants={containerStagger(0.07)} initial="hidden" animate="visible">
           <motion.div variants={fadeUp}>
             <Link href="/admin/organizers" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] mb-6 group">
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" /> Retour
+              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" /> {t("common.back")}
             </Link>
           </motion.div>
 
@@ -38,19 +40,19 @@ export default function AdminOrganizerDetailPage() {
                     <Check className="w-4 h-4 text-[var(--brand)]" />
                   </motion.div>
                 </div>
-                <p className="text-sm text-[var(--text-secondary)]">contact@clubculturel.com · Vérifié</p>
+                <p className="text-sm text-[var(--text-secondary)]">contact@clubculturel.com · {t("admin.verified")}</p>
               </div>
             </div>
             <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.3, duration: 0.3, ease: [0.25, 0.1, 0, 1] }}>
-              <Badge variant={suspended ? "error" : "success"}>{suspended ? "Suspendu" : "Actif"}</Badge>
+              <Badge variant={suspended ? "error" : "success"}>{suspended ? t("admin.suspended") : t("admin.active")}</Badge>
             </motion.div>
           </motion.div>
 
           <motion.div variants={fadeUp} className="grid grid-cols-3 gap-4 mb-6">
             {[
-              { label: "Événements", value: "24" },
-              { label: "Revenus", value: "450k" },
-              { label: "Abonnés", value: "1.2k" },
+              { label: t("admin.events_stats"), value: "24" },
+              { label: t("admin.revenue"), value: "450k" },
+              { label: t("admin.subscribers"), value: "1.2k" },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -71,9 +73,9 @@ export default function AdminOrganizerDetailPage() {
             transition={{ delay: 0.6, duration: 0.35, ease: [0.25, 0.1, 0, 1] }}
             className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 space-y-3"
           >
-            <h3 className="font-semibold text-sm text-[var(--text)]">Actions</h3>
+            <h3 className="font-semibold text-sm text-[var(--text)]">{t("admin.actions")}</h3>
             <Button variant={suspended ? "outline" : "danger"} size="sm" className="w-full" onClick={() => setSuspended(!suspended)}>
-              {suspended ? <><Check className="w-4 h-4" /> Réactiver</> : <><Ban className="w-4 h-4" /> Suspendre</>}
+              {suspended ? <><Check className="w-4 h-4" /> {t("admin.reactivate")}</> : <><Ban className="w-4 h-4" /> {t("admin.suspend")}</>}
             </Button>
           </motion.div>
         </motion.div>

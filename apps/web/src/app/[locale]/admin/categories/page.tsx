@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ const INITIAL_CATS = [
 ];
 
 export default function AdminCategoriesPage() {
+  const t = useTranslations();
   const [categories, setCategories] = useState(INITIAL_CATS);
   const [newName, setNewName] = useState("");
 
@@ -32,13 +34,13 @@ export default function AdminCategoriesPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         <motion.div variants={containerStagger(0.06)} initial="hidden" animate="visible">
           <motion.div variants={fadeUp}>
-            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Catégories</h1>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">Gère les catégories d&apos;événements.</p>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("admin.categories")}</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.categoriesDesc")}</p>
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex items-center gap-2 mb-6">
-            <Input placeholder="Nouvelle catégorie" value={newName} onChange={(e) => setNewName(e.target.value)} className="flex-1" />
-            <Button variant="primary" size="md" onClick={addCategory}><Plus className="w-4 h-4" /> Ajouter</Button>
+            <Input placeholder={t("admin.newCategory")} value={newName} onChange={(e) => setNewName(e.target.value)} className="flex-1" />
+            <Button variant="primary" size="md" onClick={addCategory}><Plus className="w-4 h-4" /> {t("admin.add")}</Button>
           </motion.div>
 
           <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
@@ -55,7 +57,7 @@ export default function AdminCategoriesPage() {
                   <span className="text-xs text-[var(--text-tertiary)] ml-2">/{cat.slug}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xs text-[var(--text-secondary)]">{cat.events} événements</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t("admin.eventsCount", { count: cat.events })}</span>
                   <button className="p-1.5 rounded-lg hover:bg-[var(--border-subtle)] text-[var(--text-tertiary)]"><Pencil className="w-3.5 h-3.5" /></button>
                   <button className="p-1.5 rounded-lg hover:bg-red-50 text-red-400"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>

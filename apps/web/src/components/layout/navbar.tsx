@@ -1,21 +1,17 @@
 "use client";
 import { Link } from "@/i18n/routing";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Search, Moon, Sun, Bell, Menu, X, ChevronDown, Plus } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Search, Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "@/components/providers/theme-provider";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
-const NAV_LINKS = [
-  { href: "/", label: "Accueil" },
-  { href: "/explore", label: "Explorer" },
-];
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export function Navbar() {
+  const t = useTranslations();
   const pathname = usePathname();
-  // Strip locale prefix for active detection (e.g. /fr/explore → /explore)
   const pathWithoutLocale = '/' + pathname.split('/').slice(2).join('/');
   const isRootWithoutLocale = pathname.split('/').length === 2;
   const isActive = (href: string) => href === '/' ? isRootWithoutLocale : pathWithoutLocale === href;
@@ -23,6 +19,11 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+
+  const NAV_LINKS = [
+    { href: "/", label: t("nav.home") },
+    { href: "/explore", label: t("nav.explore") },
+  ];
 
   useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
@@ -48,7 +49,7 @@ export function Navbar() {
               <span className="text-white font-black text-sm">UV</span>
             </div>
             <span className="font-extrabold text-lg text-[var(--text)] hidden sm:block tracking-tight">
-              Univibes
+              {t("common.appName")}
             </span>
           </Link>
 
@@ -76,16 +77,19 @@ export function Navbar() {
             {/* Search */}
             <Link href="/explore" className="hidden sm:flex items-center gap-2 px-3 h-9 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] text-sm hover:border-[var(--brand)]/50 transition-colors min-w-[180px]">
               <Search className="w-4 h-4" />
-              <span>Rechercher…</span>
+              <span>{t("common.search")}…</span>
               <kbd className="ml-auto text-xs bg-[var(--border-subtle)] px-1.5 py-0.5 rounded">⌘K</kbd>
             </Link>
+
+            {/* Language switcher */}
+            <LanguageSwitcher />
 
             {/* Dark mode toggle */}
             {mounted && (
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className="w-9 h-9 rounded-xl border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--border-subtle)] transition-colors"
-                aria-label="Changer de thème"
+                aria-label={t("nav.settings")}
               >
                 {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
@@ -94,7 +98,7 @@ export function Navbar() {
             {/* CTA */}
             <Button variant="primary" size="sm" className="hidden sm:flex gap-1.5" asChild>
               <Link href="/login">
-                <span>Connexion</span>
+                <span>{t("nav.login")}</span>
               </Link>
             </Button>
 
@@ -133,16 +137,40 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {/* Language switcher in mobile menu */}
             <div className="pt-2 border-t border-[var(--border)]">
+              <p className="px-3 py-1.5 text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">
+                {t("nav.language")}
+              </p>
+              <div className="flex gap-1 px-3 pb-2">
+                <Link
+                  href={pathWithoutLocale}
+                  locale="fr"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium border border-[var(--border)] bg-[var(--surface)] text-[var(--text)]"
+                >
+                  🇫🇷 {t("nav.french")}
+                </Link>
+                <Link
+                  href={pathWithoutLocale}
+                  locale="en"
+                  onClick={() => setMobileOpen(false)}
+                  className="flex-1 text-center px-3 py-2 rounded-lg text-sm font-medium border border-[var(--border)] bg-[var(--surface)] text-[var(--text)]"
+                >
+                  🇬🇧 {t("nav.english")}
+                </Link>
+              </div>
+            </div>
+            <div className="border-t border-[var(--border)] pt-2">
               <Button variant="primary" size="md" className="w-full" asChild>
-                <Link href="/login" onClick={() => setMobileOpen(false)}>Connexion</Link>
+                <Link href="/login" onClick={() => setMobileOpen(false)}>{t("nav.login")}</Link>
               </Button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Spacer to prevent content from hiding under fixed navbar */}
+      {/* Spacer */}
       <div className="h-16" />
     </>
   );

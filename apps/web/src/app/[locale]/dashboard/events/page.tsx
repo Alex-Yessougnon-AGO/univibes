@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -29,6 +30,7 @@ const statusLabel = (status?: string) => {
 };
 
 export default function DashboardEventsPage() {
+  const t = useTranslations();
   return (
     <motion.div
       initial="hidden"
@@ -37,13 +39,13 @@ export default function DashboardEventsPage() {
     >
       <motion.div variants={fadeUp} className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Mes événements</h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-0.5">{EVENTS.length} événement{EVENTS.length > 1 ? "s" : ""}</p>
+          <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("admin.events")}</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-0.5">{EVENTS.length} {t("admin.events")}</p>
         </div>
         <Button variant="primary" size="md" asChild>
           <Link href="/dashboard/events/new">
             <Plus className="w-4 h-4" />
-            Nouvel événement
+            {t("hero.createEvent")}
           </Link>
         </Button>
       </motion.div>
@@ -53,10 +55,10 @@ export default function DashboardEventsPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-[var(--border)] bg-[var(--border-subtle)]/50">
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Événement</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden sm:table-cell">Date</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.events")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden sm:table-cell">{t("event.date")}</th>
                 <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden md:table-cell">Statut</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden lg:table-cell">Vues</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden lg:table-cell">{t("event.views")}</th>
                 <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden lg:table-cell">Prix</th>
                 <th className="w-10 px-4 py-3.5" />
               </tr>
@@ -86,7 +88,7 @@ export default function DashboardEventsPage() {
                   </td>
                   <td className="px-4 py-3.5 hidden lg:table-cell">
                     <span className="text-sm font-medium text-[var(--brand)]">
-                      {event.isFree ? "Gratuit" : formatCurrency(event.lowestPrice ?? 0)}
+                      {event.isFree ? t("event.free") : formatCurrency(event.lowestPrice ?? 0)}
                     </span>
                   </td>
                   <td className="px-4 py-3.5">

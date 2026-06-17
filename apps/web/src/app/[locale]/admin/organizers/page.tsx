@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { Search, ChevronRight, Check } from "lucide-react";
@@ -15,6 +16,7 @@ const ORGS = [
 ];
 
 export default function AdminOrganizersPage() {
+  const t = useTranslations();
   const [search, setSearch] = useState("");
 
   return (
@@ -22,13 +24,13 @@ export default function AdminOrganizersPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <motion.div variants={containerStagger(0.06)} initial="hidden" animate="visible">
           <motion.div variants={fadeUp}>
-            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Organisateurs</h1>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">Tous les organisateurs de la plateforme.</p>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("admin.organizers")}</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.organizersDesc")}</p>
           </motion.div>
 
           <motion.div variants={fadeUp} className="relative mb-6">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
-            <input type="text" placeholder="Rechercher..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30" />
+            <input type="text" placeholder={t("admin.searchPlaceholder")} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30" />
           </motion.div>
 
           <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
@@ -47,7 +49,7 @@ export default function AdminOrganizersPage() {
                         <span className="font-medium text-sm text-[var(--text)]">{org.name}</span>
                         {org.verified && <Check className="w-3.5 h-3.5 text-[var(--brand)]" />}
                       </div>
-                      <p className="text-xs text-[var(--text-secondary)]">{org.events} événements · CA {org.revenue}</p>
+                      <p className="text-xs text-[var(--text-secondary)]">{t("admin.eventsCount", { count: org.events })} · CA {org.revenue}</p>
                     </div>
                   </div>
                   <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)]" />

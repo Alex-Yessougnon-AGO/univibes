@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -12,6 +13,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
+  const t = useTranslations();
   const [form, setForm] = useState({
     fullname: "",
     email: "",
@@ -44,7 +46,7 @@ export default function RegisterPage() {
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[var(--shadow-brand)] transition-transform duration-300 group-hover:scale-105">
             <span className="text-white font-black text-sm tracking-tight">UV</span>
           </div>
-          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)] tracking-tight">Univibes</span>
+          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)] tracking-tight">UnivVibes</span>
         </Link>
       </header>
 
@@ -59,7 +61,7 @@ export default function RegisterPage() {
           <motion.div variants={fadeUp} className="flex justify-center mb-6">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-semibold text-[var(--brand-text)] tracking-wide">
               <Sparkles className="w-3 h-3" />
-              {step === 1 ? "Rejoins la communauté" : "Presque fini !"}
+              {step === 1 ? t("auth.welcome") : t("common.almostDone")}
             </span>
           </motion.div>
 
@@ -73,12 +75,12 @@ export default function RegisterPage() {
           {/* Title */}
           <motion.div variants={fadeUp} className="text-center mb-8">
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
-              Créer un compte
+              {t("auth.createAccount")}
             </h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1.5 max-w-64 mx-auto leading-relaxed">
               {step === 1
-                ? "Rejoins la communauté Univibes"
-                : "Choisis ton rôle pour commencer"}
+                ? t("auth.welcome") + " " + t("common.appName")
+                : t("auth.chooseRole")}
             </p>
           </motion.div>
 
@@ -96,7 +98,7 @@ export default function RegisterPage() {
                   {step > 1 ? <Check className="w-4 h-4" /> : "1"}
                 </div>
                 <span className={`text-xs font-medium ${step >= 1 ? "text-[var(--text)]" : "text-[var(--text-tertiary)]"}`}>
-                  Infos
+                  {t("common.info")}
                 </span>
               </div>
               <div className="flex-1 h-px bg-[var(--border)] relative">
@@ -116,7 +118,7 @@ export default function RegisterPage() {
                   2
                 </div>
                 <span className={`text-xs font-medium ${step >= 2 ? "text-[var(--text)]" : "text-[var(--text-tertiary)]"}`}>
-                  Rôle
+                  {t("common.role")}
                 </span>
               </div>
             </div>
@@ -139,14 +141,14 @@ export default function RegisterPage() {
                     className="space-y-4"
                   >
                     <Input
-                      label="Nom complet"
+                      label={t("profile.fullName")}
                       placeholder="Jean Kouamé"
                       value={form.fullname}
                       onChange={(e) => updateField("fullname", e.target.value)}
                       required
                     />
                     <Input
-                      label="Email"
+                      label={t("auth.email")}
                       type="email"
                       placeholder="jean@email.com"
                       value={form.email}
@@ -154,20 +156,20 @@ export default function RegisterPage() {
                       required
                     />
                     <Input
-                      label="Téléphone"
+                      label={t("profile.phone")}
                       type="tel"
                       placeholder="+229 01 23 45 67"
                       value={form.phone}
                       onChange={(e) => updateField("phone", e.target.value)}
                     />
                     <Input
-                      label="Université"
+                      label={t("profile.university")}
                       placeholder="UAC - Université d'Abomey-Calavi"
                       value={form.university}
                       onChange={(e) => updateField("university", e.target.value)}
                     />
                     <Input
-                      label="Mot de passe"
+                      label={t("auth.password")}
                       type={showPassword ? "text" : "password"}
                       placeholder="Min. 8 caractères"
                       value={form.password}
@@ -180,7 +182,7 @@ export default function RegisterPage() {
                       required
                     />
                     <Button variant="primary" size="lg" className="w-full mt-2" type="submit">
-                      Continuer
+                      {t("common.continue")}
                       <ArrowRight className="w-4 h-4" />
                     </Button>
                   </motion.div>
@@ -194,7 +196,7 @@ export default function RegisterPage() {
                     className="space-y-4"
                   >
                     <p className="text-sm text-[var(--text-secondary)] mb-1">
-                      Tu souhaites utiliser Univibes en tant que :
+                      {t("auth.onboarding.interests")}
                     </p>
 
                     <button
@@ -213,9 +215,9 @@ export default function RegisterPage() {
                           <GraduationCap className="w-5 h-5" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-sm text-[var(--text)]">Étudiant</h3>
+                          <h3 className="font-semibold text-sm text-[var(--text)]">{t("profile.student")}</h3>
                           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                            Découvre et réserve des événements
+                            {t("auth.onboarding.studentDesc")}
                           </p>
                         </div>
                       </div>
@@ -237,9 +239,9 @@ export default function RegisterPage() {
                           <CalendarCheck className="w-5 h-5" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-sm text-[var(--text)]">Organisateur</h3>
+                          <h3 className="font-semibold text-sm text-[var(--text)]">{t("profile.organizer")}</h3>
                           <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                            Crée et promeut tes événements
+                            {t("auth.onboarding.organizerDesc")}
                           </p>
                         </div>
                       </div>
@@ -255,11 +257,11 @@ export default function RegisterPage() {
                       {loading ? (
                         <span className="flex items-center gap-2">
                           <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Création…
+                          {t("common.creating")}
                         </span>
                       ) : (
                         <>
-                          Créer mon compte
+                          {t("auth.createMyAccount")}
                           <ArrowRight className="w-4 h-4" />
                         </>
                       )}
@@ -273,12 +275,12 @@ export default function RegisterPage() {
           {/* Login link */}
           <motion.div variants={fadeUp} className="mt-8 text-center">
             <p className="text-sm text-[var(--text-secondary)]">
-              Déjà un compte ?{" "}
+              {t("auth.hasAccount")}{" "}
               <Link
                 href="/login"
                 className="text-[var(--brand)] font-semibold hover:text-[var(--brand-hover)] transition-colors"
               >
-                Se connecter
+                {t("auth.signIn")}
               </Link>
             </p>
           </motion.div>

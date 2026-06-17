@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useParams } from "next/navigation";
@@ -25,11 +26,11 @@ Avant toute chose, demande-toi : pourquoi cet événement ? Vendre des billets ?
 
 ## 3. Soigner la communication
 
-Une belle affiche, c'est bien. Une stratégie de communication sur plusieurs canaux (WhatsApp, Instagram, Univibes), c'est mieux. Poste régulièrement pour créer de l'attente.
+Une belle affiche, c'est bien. Une stratégie de communication sur plusieurs canaux (WhatsApp, Instagram, UnivVibes), c'est mieux. Poste régulièrement pour créer de l'attente.
 
 ## 4. Utiliser les bons outils
 
-Univibes te permet de créer ton événement en quelques minutes, de gérer ta billetterie et de suivre tes statistiques en temps réel. Profites-en !
+UnivVibes te permet de créer ton événement en quelques minutes, de gérer ta billetterie et de suivre tes statistiques en temps réel. Profites-en !
 
 ## 5. Prévoir l'après-événement
 
@@ -43,6 +44,7 @@ Remercie les participants, recueille leurs avis et commence déjà à préparer 
 };
 
 export default function BlogArticlePage() {
+  const t = useTranslations();
   const params = useParams();
   const slug = params.slug as string;
   const article = ARTICLES[slug];

@@ -1,4 +1,4 @@
-# Univibes — Agent guide
+# UnivVibes — Agent guide
 
 pnpm workspace monorepo (3 apps, 4 packages). Student event platform (Next.js 16 + NestJS 10 + Prisma + PostgreSQL + Redis).
 
@@ -46,7 +46,8 @@ pnpm dev:admin                   # Next.js on :3002
 
 ## Architecture notes
 
-- **API modules are all commented out** — only `PrismaModule` + `LoggerModule` + `AuditModule` + `HealthController` are wired in `app.module.ts`. Business modules (Auth, Events, Orders, etc.) need to be uncommented and built.
+- **API modules are all wired in `app.module.ts`** — Auth, Users, Events, Orders, Payments, Notifications, etc. are all imported.
+- **i18n** — Web app uses `next-intl` v4 with `fr`/`en` locales. All routes require `[locale]` prefix. Message files exist but `useTranslations` is wired in critical pages (navbar, bottom-nav, landing, login, explore, event-card). New pages created with full i18n support.
 - **API uses global pipes** — `ValidationPipe` with `whitelist: true`, `forbidNonWhitelisted: true`, `transform: true`.
 - **API uses global interceptors** — `TransformInterceptor` wraps responses.
 - **API uses global exception filters** — `SentryFilter` (all unhandled → Sentry) then `HttpExceptionFilter` (structured JSON).

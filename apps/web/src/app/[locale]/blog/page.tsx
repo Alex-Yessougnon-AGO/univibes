@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -34,9 +35,9 @@ const ARTICLES = [
   },
   {
     slug: "comment-booster-sa-visibilite-sur-univibes",
-    title: "Comment booster la visibilité de ton événement sur Univibes",
-    excerpt: "Les meilleures pratiques pour faire décoller ton événement grâce aux outils de promotion Univibes.",
-    author: "Univibes Team",
+    title: "Comment booster la visibilité de ton événement sur UnivVibes",
+    excerpt: "Les meilleures pratiques pour faire décoller ton événement grâce aux outils de promotion UnivVibes.",
+    author: "UnivVibes Team",
     date: "2 juin 2025",
     category: "Organisateurs",
     image: "https://picsum.photos/seed/blog3/800/400",
@@ -46,7 +47,7 @@ const ARTICLES = [
     slug: "pourquoi-la-billetterie-en-ligne-est-essentielle",
     title: "Pourquoi la billetterie en ligne est essentielle pour tes événements",
     excerpt: "Fini les listes WhatsApp et les cash à l'entrée. Découvre pourquoi la billetterie digitale change la donne.",
-    author: "Univibes Team",
+    author: "UnivVibes Team",
     date: "28 mai 2025",
     category: "Billetterie",
     image: "https://picsum.photos/seed/blog4/800/400",
@@ -55,7 +56,7 @@ const ARTICLES = [
   {
     slug: "interview-d-un-organisateur-qui-cartonne",
     title: "Interview : Comment ce club étudiant a rempli sa salle en 48h",
-    excerpt: "Retour d'expérience du Club Culturel UAC qui a vendu 200 billets en deux jours grâce à Univibes.",
+    excerpt: "Retour d'expérience du Club Culturel UAC qui a vendu 200 billets en deux jours grâce à UnivVibes.",
     author: "Alex Koffi",
     date: "20 mai 2025",
     category: "Témoignages",
@@ -67,6 +68,7 @@ const ARTICLES = [
 const CATEGORIES = ["Tous", "Conseils", "Organisateurs", "Billetterie", "Témoignages", "Sélections"];
 
 export default function BlogPage() {
+  const t = useTranslations();
   return (
     <>
       <Navbar />

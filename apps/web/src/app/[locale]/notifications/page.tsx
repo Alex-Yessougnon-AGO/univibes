@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -27,7 +28,7 @@ const INITIAL_NOTIFICATIONS: Notification[] = [
   { id: "n2", type: "reminder", title: "Rappel : HackBénin demain", description: "Le hackathon commence dans 24h. Prépare ton laptop !", time: "Il y a 1h", read: false },
   { id: "n3", type: "favorite", title: "Nouvel événement favori", description: "La Nuit des Arts est maintenant dans tes favoris", time: "Il y a 3h", read: false },
   { id: "n4", type: "boost", title: "Boost activé", description: "L'AfroBeats Night est en boost pour 72h", time: "Il y a 6h", read: true },
-  { id: "n5", type: "system", title: "Bienvenue sur Univibes", description: "Explore les événements près de chez toi !", time: "Hier", read: true },
+  { id: "n5", type: "system", title: "Bienvenue sur UnivVibes", description: "Explore les événements près de chez toi !", time: "Hier", read: true },
   { id: "n6", type: "ticket", title: "Rappel de paiement", description: "Ta réservation pour Speed Networking est en attente de paiement", time: "Hier", read: true, actionable: true },
 ];
 
@@ -40,6 +41,7 @@ const typeConfig = {
 };
 
 export default function NotificationsPage() {
+  const t = useTranslations();
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [filter, setFilter] = useState<"all" | "unread">("all");
 
@@ -63,13 +65,13 @@ export default function NotificationsPage() {
             >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 <Bell className="w-3 h-3" />
-                Notifications
+                {t("nav.notifications")}
               </span>
 
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">
-                    Notifications
+                  {t("common.noResults")}
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)]">
                     {unreadCount} non lue{unreadCount !== 1 ? "s" : ""}
@@ -78,7 +80,7 @@ export default function NotificationsPage() {
                 {unreadCount > 0 && (
                   <Button variant="ghost" size="sm" className="text-xs gap-1.5" onClick={markAllRead}>
                     <Check className="w-3.5 h-3.5" />
-                    Tout marquer lu
+                    Marquer tout comme lu
                   </Button>
                 )}
               </div>
@@ -95,7 +97,7 @@ export default function NotificationsPage() {
         >
           <div className="flex items-center gap-2">
             {[
-              { key: "all", label: "Toutes", count: notifications.length },
+              { key: "all", label: t("explore.allCategories"), count: notifications.length },
               { key: "unread", label: "Non lues", count: unreadCount },
             ].map((tab) => (
               <button
@@ -195,7 +197,7 @@ export default function NotificationsPage() {
                   <Bell className="w-8 h-8 text-[var(--text-tertiary)]" />
                 </motion.div>
                 <h3 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
-                  Aucune notification
+                  {t("nav.notifications")}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] mb-2 max-w-xs mx-auto leading-relaxed">
                   Tu es à jour ! On te préviendra ici dès qu&apos;il se passe quelque chose — confirmation de billet, rappel d&apos;événement ou nouvelle de tes organisateurs préférés.

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -7,6 +8,7 @@ import { Mail, Check, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function UnsubscribePage() {
+  const t = useTranslations();
   const [unsubscribed, setUnsubscribed] = useState(false);
 
   return (

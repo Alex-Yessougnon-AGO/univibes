@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -21,11 +22,12 @@ export default function ProfilePage() {
     city: "Cotonou",
     faculty: "FASEG",
   });
+  const t = useTranslations();
 
   const menuItems = [
-    { icon: User, label: "Mes informations", href: "#" },
-    { icon: Mail, label: "Notifications", href: "#", badge: "3" },
-    { icon: Settings, label: "Paramètres", href: "#" },
+    { icon: User, label: t("profile.personalInfo"), href: "#" },
+    { icon: Mail, label: t("profile.notifications"), href: "#", badge: "3" },
+    { icon: Settings, label: t("nav.settings"), href: "#" },
   ];
 
   return (
@@ -45,7 +47,7 @@ export default function ProfilePage() {
           >
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-6">
               <Sparkles className="w-3 h-3" />
-              Mon profil
+              {t("profile.title")}
             </span>
 
             <div className="relative w-24 h-24 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-brand)] overflow-hidden">
@@ -69,17 +71,17 @@ export default function ProfilePage() {
           {/* Profile info card */}
           <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-[var(--text)]">Profil</h2>
+              <h2 className="font-semibold text-[var(--text)]">{t("nav.profile")}</h2>
               <Button variant="ghost" size="sm" onClick={() => setEditing(!editing)}>
-                {editing ? "Enregistrer" : "Modifier"}
+                {editing ? t("common.save") : t("profile.edit")}
               </Button>
             </div>
             <div className={`space-y-4 transition-opacity duration-300 ${editing ? "" : "opacity-70 pointer-events-none"}`}>
-              <Input label="Nom complet" value={profile.fullname} onChange={(e) => setProfile({ ...profile, fullname: e.target.value })} />
+              <Input label={t("profile.fullName")} value={profile.fullname} onChange={(e) => setProfile({ ...profile, fullname: e.target.value })} />
               <Input label="Email" type="email" value={profile.email} onChange={(e) => setProfile({ ...profile, email: e.target.value })} />
-              <Input label="Téléphone" value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} />
-              <Input label="Université" value={profile.university} onChange={(e) => setProfile({ ...profile, university: e.target.value })} />
-              <Input label="Ville" value={profile.city} onChange={(e) => setProfile({ ...profile, city: e.target.value })} />
+              <Input label={t("profile.phone")} value={profile.phone} onChange={(e) => setProfile({ ...profile, phone: e.target.value })} />
+              <Input label={t("profile.university")} value={profile.university} onChange={(e) => setProfile({ ...profile, university: e.target.value })} />
+              <Input label={t("profile.city")} value={profile.city} onChange={(e) => setProfile({ ...profile, city: e.target.value })} />
             </div>
           </motion.div>
 
@@ -103,8 +105,8 @@ export default function ProfilePage() {
           <motion.div variants={fadeUp} className="grid grid-cols-3 gap-3">
             {[
               { label: "Événements", value: "12" },
-              { label: "Favoris", value: "8" },
-              { label: "Billets", value: "4" },
+              { label: t("nav.favorites"), value: "8" },
+              { label: t("nav.tickets"), value: "4" },
             ].map((stat) => (
               <div key={stat.label} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 text-center shadow-[var(--shadow-sm)]">
                 <p className="text-2xl font-extrabold text-[var(--brand)] font-[family-name:var(--font-display)]">{stat.value}</p>
@@ -117,7 +119,7 @@ export default function ProfilePage() {
           <motion.div variants={fadeUp}>
             <button className="w-full flex items-center justify-center gap-2 p-4 text-sm font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/10 rounded-2xl transition-colors border border-rose-200/50 dark:border-rose-900/30">
               <LogOut className="w-4 h-4" />
-              Déconnexion
+              {t("nav.logout")}
             </button>
           </motion.div>
         </motion.div>

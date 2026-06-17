@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 
 export default function ErrorPage({
@@ -7,6 +8,7 @@ export default function ErrorPage({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations();
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center bg-[var(--bg)] px-4">
       <div className="text-center max-w-sm">

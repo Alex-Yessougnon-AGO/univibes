@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { Cookie } from "lucide-react";
@@ -8,6 +9,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { fadeUp, containerStagger } from "@/lib/motion";
 
 export default function CookiesPage() {
+  const t = useTranslations();
   return (
     <>
       <Navbar />

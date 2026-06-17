@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
 import { CreditCard, Search, Sparkles } from "lucide-react";
@@ -21,6 +22,7 @@ const statusVariant = (s: string) => {
 };
 
 export default function AdminPaymentsPage() {
+  const t = useTranslations();
   const [search, setSearch] = useState("");
 
   return (
@@ -30,15 +32,15 @@ export default function AdminPaymentsPage() {
       variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
     >
       <motion.div variants={fadeUp}>
-        <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Paiements</h1>
-        <p className="text-sm text-[var(--text-secondary)] mb-6">Suivi des transactions</p>
+        <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("admin.payments")}</h1>
+        <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.paymentsManagementDesc")}</p>
       </motion.div>
 
       <motion.div variants={fadeUp} className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: "Total transactions", value: "12.4M FCFA" },
-          { label: "Réussies", value: "11.2M FCFA" },
-          { label: "En attente", value: "1.2M FCFA" },
+          { label: t("admin.totalTransactions"), value: "12.4M FCFA" },
+          { label: t("admin.successful"), value: "11.2M FCFA" },
+          { label: t("admin.pendingTransactions"), value: "1.2M FCFA" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 shadow-[var(--shadow-sm)]">
             <p className="text-xl font-extrabold text-[var(--brand)] font-[family-name:var(--font-display)]">{s.value}</p>
@@ -53,7 +55,7 @@ export default function AdminPaymentsPage() {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
             <input
               type="text"
-              placeholder="Rechercher une transaction..."
+              placeholder={t("admin.searchPayments")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full h-10 pl-10 pr-3 bg-[var(--bg)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] placeholder:text-[var(--text-tertiary)] outline-none focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)]"
@@ -64,12 +66,12 @@ export default function AdminPaymentsPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-[var(--border)] bg-[var(--border-subtle)]/50">
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">ID</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Client</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden md:table-cell">Événement</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden sm:table-cell">Montant</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden lg:table-cell">Méthode</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Statut</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.tableId")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.tableClient")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden md:table-cell">{t("admin.tableEvent")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden sm:table-cell">{t("admin.tableAmount")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden lg:table-cell">{t("admin.tableMethod")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.tableStatus")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border-subtle)]">

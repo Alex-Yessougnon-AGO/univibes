@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -20,6 +21,7 @@ const MOCK_TICKETS = [
 ];
 
 export default function TicketDetailPage() {
+  const t = useTranslations();
   const params = useParams();
   const ticket = MOCK_TICKETS.find((t) => t.id === params.id);
   const [showQR, setShowQR] = useState(false);
@@ -27,9 +29,9 @@ export default function TicketDetailPage() {
   if (!ticket) {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-[var(--bg)]">
-        <h2 className="font-semibold text-[var(--text)]">Billet introuvable</h2>
+        <h2 className="font-semibold text-[var(--text)]">{t("ticket.title")} introuvable</h2>
         <Button variant="outline" size="sm" className="mt-4" asChild>
-          <Link href="/tickets">Voir mes billets</Link>
+          <Link href="/tickets">{t("ticket.title")}</Link>
         </Button>
       </div>
     );
@@ -50,14 +52,14 @@ export default function TicketDetailPage() {
             >
               <Link href="/tickets" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors mb-6 group">
                 <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-                Retour
+                {t("common.back")}
               </Link>
 
               <div className="text-center mb-8">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-sm)]">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7 text-emerald-600"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
                 </div>
-                <Badge variant="success" className="mb-3">Actif</Badge>
+                <Badge variant="success" className="mb-3">{t("ticket.active")}</Badge>
                 <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">
                   {ticket.event.title}
                 </h1>
@@ -98,7 +100,7 @@ export default function TicketDetailPage() {
                   </div>
                   {ticket.total > 0 && (
                     <div className="text-right">
-                      <p className="text-xs text-[var(--text-tertiary)]">Payé</p>
+                      <p className="text-xs text-[var(--text-tertiary)]">{t("ticket.paid")}</p>
                       <p className="text-lg font-extrabold text-[var(--brand)] font-[family-name:var(--font-display)]">{formatCurrency(ticket.total)}</p>
                     </div>
                   )}
@@ -126,17 +128,17 @@ export default function TicketDetailPage() {
                     </div>
                   </div>
                   <p className="text-xs font-mono font-semibold text-[var(--text)] tracking-wider">{ticket.qrCode}</p>
-                  <p className="text-[10px] text-[var(--text-tertiary)] mt-1">Tape pour agrandir</p>
+                  <p className="text-[10px] text-[var(--text-tertiary)] mt-1">{t("ticket.showQR")}</p>
                 </div>
 
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" className="flex-1 gap-1.5">
                     <Download className="w-3.5 h-3.5" />
-                    Télécharger
+                    {t("ticket.download")}
                   </Button>
                   <Button variant="outline" size="sm" className="flex-1 gap-1.5">
                     <Share2 className="w-3.5 h-3.5" />
-                    Partager
+                    {t("common.share")}
                   </Button>
                 </div>
               </div>
@@ -191,12 +193,12 @@ export default function TicketDetailPage() {
                 </div>
               </div>
               <p className="font-semibold text-lg text-gray-900 font-mono tracking-wider">{ticket.qrCode}</p>
-              <p className="text-sm text-gray-500 mt-1">Présente ce code à l&apos;entrée</p>
+              <p className="text-sm text-gray-500 mt-1">{t("ticket.showQR")}</p>
               <button
                 onClick={() => setShowQR(false)}
                 className="mt-6 px-6 py-2 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium hover:bg-gray-200 transition-colors"
               >
-                Fermer
+                {t("common.close")}
               </button>
             </motion.div>
           </motion.div>

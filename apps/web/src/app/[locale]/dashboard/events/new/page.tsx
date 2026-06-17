@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { ArrowLeft, Check, Upload, Plus, X, Sparkles } from "lucide-react";
@@ -13,6 +14,7 @@ import { cn } from "@/lib/utils";
 const STEPS = ["Informations", "Billetterie", "Publication"];
 
 export default function NewEventPage() {
+  const t = useTranslations();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     title: "",
@@ -44,7 +46,7 @@ export default function NewEventPage() {
           <ArrowLeft className="w-4 h-4 text-[var(--text-secondary)]" />
         </button>
         <div>
-          <h1 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Créer un événement</h1>
+          <h1 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("hero.createEvent")}</h1>
           <p className="text-xs text-[var(--text-secondary)]">Étape {step + 1} sur 3</p>
         </div>
       </div>
@@ -85,14 +87,14 @@ export default function NewEventPage() {
 
             <Input label="Titre de l'événement" placeholder="Ex: Gala de Fin d'Année" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
             <div>
-              <label className="block text-sm font-medium text-[var(--text)] mb-1.5">Description</label>
+              <label className="block text-sm font-medium text-[var(--text)] mb-1.5">{t("event.description")}</label>
               <textarea
                 placeholder="Décris ton événement en quelques lignes..."
                 className="w-full h-32 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-tertiary)] outline-none focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)] resize-none"
               />
             </div>
 
-            <Input label="Lieu" placeholder="Ex: Palais des Congrès" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
+            <Input label={t("event.location")} placeholder="Ex: Palais des Congrès" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
             <Input label="Ville" placeholder="Ex: Cotonou" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
             <div className="grid grid-cols-2 gap-4">
               <Input label="Date de début" type="datetime-local" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
@@ -100,7 +102,7 @@ export default function NewEventPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[var(--text)] mb-1.5">Catégorie</label>
+              <label className="block text-sm font-medium text-[var(--text)] mb-1.5">{t("event.category")}</label>
               <div className="flex flex-wrap gap-2">
                 {CATEGORIES.map((cat) => (
                   <button
@@ -135,7 +137,7 @@ export default function NewEventPage() {
             transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
             className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]"
           >
-            <h2 className="font-semibold text-[var(--text)]">Billets</h2>
+            <h2 className="font-semibold text-[var(--text)]">{t("event.tickets")}</h2>
             <p className="text-sm text-[var(--text-secondary)]">Définis les types de billets disponibles</p>
 
             {form.tickets.map((ticket, i) => (
@@ -178,7 +180,7 @@ export default function NewEventPage() {
 
             <div className="flex gap-3">
               <Button variant="outline" size="md" className="flex-1" onClick={() => setStep(0)}>
-                Retour
+                {t("common.back")}
               </Button>
               <Button variant="primary" size="md" className="flex-1" onClick={() => setStep(2)}>
                 Continuer
@@ -208,14 +210,14 @@ export default function NewEventPage() {
 
             <div className="rounded-xl bg-[var(--border-subtle)] p-4 space-y-2 text-sm">
               <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Titre</span><span className="text-[var(--text)] font-medium">{form.title || "—"}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Lieu</span><span className="text-[var(--text)] font-medium">{form.location || "—"}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("event.location")}</span><span className="text-[var(--text)] font-medium">{form.location || "—"}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Ville</span><span className="text-[var(--text)] font-medium">{form.city || "—"}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Types de billets</span><span className="text-[var(--text)] font-medium">{form.tickets.filter(t => t.name).length}</span></div>
             </div>
 
             <div className="flex gap-3 pt-2">
               <Button variant="outline" size="md" className="flex-1" onClick={() => setStep(1)}>
-                Retour
+                {t("common.back")}
               </Button>
               <Button variant="primary" size="md" className="flex-1" onClick={handleSubmit}>
                 Publier l&apos;événement

@@ -1,19 +1,22 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { Mail, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function VerifyEmailPage() {
+  const t = useTranslations();
   return (
     <div className="min-h-dvh flex flex-col bg-[var(--bg)]">
       <header className="z-10 h-16 flex items-center px-5">
         <Link href="/" className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[var(--shadow-brand)]">
             <span className="text-white font-black text-sm">UV</span>
+          
           </div>
-          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)]">Univibes</span>
+          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)]">{t("common.appName")}</span>
         </Link>
       </header>
       <main className="flex-1 flex items-center justify-center px-5 pb-12">
@@ -23,11 +26,11 @@ export default function VerifyEmailPage() {
           </div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
             <Sparkles className="w-3 h-3" />
-            Vérifie ton email
+            {t("auth.verifyEmail")}
           </span>
-          <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">Un dernier effort !</h1>
+          <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">{t("auth.checkEmail")}</h1>
           <p className="text-sm text-[var(--text-secondary)] mb-2 leading-relaxed">
-            On t&apos;a envoyé un email de confirmation à <strong className="text-[var(--text)]">ton@email.com</strong>.
+            {t("auth.emailSent", { email: "ton@email.com" })}
           </p>
           <p className="text-xs text-[var(--text-tertiary)] mb-8">Clique sur le lien dans l&apos;email pour activer ton compte. Tu peux fermer cette page.</p>
 
@@ -35,7 +38,7 @@ export default function VerifyEmailPage() {
             <p className="text-xs text-[var(--text-secondary)]">Tu n&apos;as rien reçu ?</p>
             <Button variant="outline" size="sm" className="w-full">Renvoyer l&apos;email</Button>
             <Button variant="ghost" size="sm" className="w-full text-[var(--text-tertiary)]" asChild>
-              <Link href="/login">Retour à la connexion</Link>
+              <Link href="/login">{t("nav.login")}</Link>
             </Button>
           </div>
         </motion.div>

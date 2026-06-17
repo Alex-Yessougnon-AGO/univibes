@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useRef } from "react";
 import { Link } from "@/i18n/routing";
@@ -19,6 +20,7 @@ const NEARBY = EVENTS.filter((e) => e.city === "Abomey-Calavi").slice(0, 4);
 const TRENDING_CATEGORIES = CATEGORIES.slice(0, 4);
 
 export default function StudentHomePage() {
+  const t = useTranslations();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -40,13 +42,13 @@ export default function StudentHomePage() {
                 <div>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-3">
                     <Sparkles className="w-3 h-3" />
-                    Ton fil d&apos;actualité
+                    {t("home.feed")}
                   </span>
                   <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
-                    Salut, Alex 👋
+                    {t("home.greeting", { name: "Alex" })} 👋
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)] mt-1">
-                    Découvre les événements recommandés pour toi
+                    {t("home.discoverEvents")}
                   </p>
                 </div>
                 <Link
@@ -71,7 +73,7 @@ export default function StudentHomePage() {
                   </div>
                 </div>
                 <span className="text-xs text-[var(--text-secondary)]">
-                  <strong className="text-[var(--text)] font-semibold">4 amis</strong> y participent cette semaine
+                  {t("home.friendsAttending", { count: 4 })}
                 </span>
               </div>
             </motion.div>
@@ -87,7 +89,7 @@ export default function StudentHomePage() {
           >
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-4 h-4 text-[var(--accent)]" />
-              <h2 className="font-semibold text-sm text-[var(--text)]">Tendances</h2>
+              <h2 className="font-semibold text-sm text-[var(--text)]">{t("home.trending")}</h2>
             </div>
             <div className="flex gap-3 overflow-x-auto scrollbar-hide scroll-container-touch pb-1">
               {TRENDING_CATEGORIES.map((cat) => (
@@ -106,7 +108,7 @@ export default function StudentHomePage() {
                 href="/explore"
                 className="flex items-center gap-1 px-4 py-2.5 rounded-xl border border-dashed border-[var(--border)] text-sm text-[var(--text-tertiary)] hover:text-[var(--text-secondary)] hover:border-[var(--border)] transition-all shrink-0"
               >
-                Tout voir <ChevronRight className="w-3.5 h-3.5" />
+                {t("common.seeAll")} <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
           </motion.section>
@@ -119,13 +121,13 @@ export default function StudentHomePage() {
           >
             <div className="flex items-end justify-between mb-5">
               <div>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--brand)]">Recommandés</span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--brand)]">{t("home.recommended")}</span>
                 <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mt-1">
-                  Pour toi
+                  {t("home.forYou")}
                 </h2>
               </div>
               <Button variant="ghost" size="sm" className="rounded-full" asChild>
-                <Link href="/explore">Voir tout <ChevronRight className="w-3.5 h-3.5" /></Link>
+                <Link href="/explore">{t("common.seeAll")} <ChevronRight className="w-3.5 h-3.5" /></Link>
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -150,9 +152,9 @@ export default function StudentHomePage() {
           >
             <div className="flex items-end justify-between mb-5">
               <div>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--brand)]">Proximité</span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--brand)]">{t("home.nearYou")}</span>
                 <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mt-1">
-                  Près de chez toi
+                  {t("home.nearYou")}
                 </h2>
                 <p className="text-xs text-[var(--text-secondary)] mt-1">Abomey-Calavi et environs</p>
               </div>
@@ -179,9 +181,9 @@ export default function StudentHomePage() {
           >
             <div className="flex items-end justify-between mb-5">
               <div>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--accent)]">Cette semaine</span>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--accent)]">{t("home.thisWeek")}</span>
                 <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mt-1">
-                  Les immanquables
+                  {t("home.mustSee")}
                 </h2>
               </div>
               <div className="flex items-center gap-2">

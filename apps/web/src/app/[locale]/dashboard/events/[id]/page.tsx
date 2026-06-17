@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useParams } from "next/navigation";
 import Image from "next/image";
@@ -13,6 +14,7 @@ import { EVENTS } from "@/lib/mock-data";
 import { formatShortDate, formatCurrency } from "@/lib/utils";
 
 export default function EditEventPage() {
+  const t = useTranslations();
   const params = useParams();
   const event = EVENTS.find((e) => e.id === params.id);
   const [saved, setSaved] = useState(false);
@@ -26,7 +28,7 @@ export default function EditEventPage() {
       >
         <h2 className="font-semibold text-[var(--text)]">Événement introuvable</h2>
         <Button variant="outline" size="sm" className="mt-4" asChild>
-          <Link href="/dashboard/events">Retour à la liste</Link>
+          <Link href="/dashboard/events">{t("common.back")} à la liste</Link>
         </Button>
       </motion.div>
     );
@@ -62,10 +64,10 @@ export default function EditEventPage() {
           </Button>
           <Button variant="danger" size="sm" className="gap-1.5">
             <Trash2 className="w-4 h-4" />
-            Supprimer
+            {t("common.delete")}
           </Button>
           <Button variant="primary" size="sm" className="gap-1.5" onClick={handleSave}>
-            {saved ? "✓ Enregistré" : <><Save className="w-4 h-4" /> Enregistrer</>}
+            {saved ? `✓ ${t("common.save")}` : <><Save className="w-4 h-4" /> {t("common.save")}</>}
           </Button>
         </div>
       </div>
@@ -75,13 +77,13 @@ export default function EditEventPage() {
           <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]">
             <h2 className="font-semibold text-[var(--text)]">Informations</h2>
             <Input label="Titre" defaultValue={event.title} />
-            <Input label="Lieu" defaultValue={event.location} />
+            <Input label={t("event.location")} defaultValue={event.location} />
             <div className="grid grid-cols-2 gap-4">
-              <Input label="Date" defaultValue={formatShortDate(event.startDate)} />
+              <Input label={t("event.date")} defaultValue={formatShortDate(event.startDate)} />
               <Input label="Ville" defaultValue={event.city} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-[var(--text)] mb-1.5">Description</label>
+              <label className="block text-sm font-medium text-[var(--text)] mb-1.5">{t("event.description")}</label>
               <textarea
                 defaultValue={event.description}
                 className="w-full h-32 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[var(--text)] outline-none focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)] resize-none"
@@ -90,14 +92,14 @@ export default function EditEventPage() {
           </div>
 
           <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]">
-            <h2 className="font-semibold text-[var(--text)]">Billets</h2>
+            <h2 className="font-semibold text-[var(--text)]">{t("event.tickets")}</h2>
             {event.tickets?.map((ticket) => (
               <div key={ticket.id} className="flex items-center justify-between p-4 rounded-xl border border-[var(--border)]">
                 <div>
                   <p className="font-semibold text-sm text-[var(--text)]">{ticket.name}</p>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">{ticket.remaining} / {ticket.total} restants</p>
                 </div>
-                <span className="font-bold text-[var(--brand)]">{ticket.price === 0 ? "Gratuit" : formatCurrency(ticket.price)}</span>
+                <span className="font-bold text-[var(--brand)]">{ticket.price === 0 ? t("event.free") : formatCurrency(ticket.price)}</span>
               </div>
             ))}
           </div>
@@ -111,8 +113,8 @@ export default function EditEventPage() {
             </div>
             <div className="space-y-1.5 text-xs">
               <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Statut</span><Badge variant={event.isFavorited ? "success" : "warning"}>{event.isFavorited ? "Approuvé" : "En attente"}</Badge></div>
-              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Vues</span><span className="text-[var(--text)] font-medium">{event.views.toLocaleString()}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Favoris</span><span className="text-[var(--text)] font-medium">{event.favoritesCount}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("event.views")}</span><span className="text-[var(--text)] font-medium">{event.views.toLocaleString()}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("event.favorites")}</span><span className="text-[var(--text)] font-medium">{event.favoritesCount}</span></div>
             </div>
           </div>
 

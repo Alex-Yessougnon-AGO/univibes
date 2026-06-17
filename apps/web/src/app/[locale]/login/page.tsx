@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { containerStagger, fadeUp } from "@/lib/motion";
 import { Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
@@ -13,6 +14,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const t = useTranslations();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +34,7 @@ export default function LoginPage() {
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[var(--shadow-brand)] transition-transform duration-300 group-hover:scale-105">
             <span className="text-white font-black text-sm tracking-tight">UV</span>
           </div>
-          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)] tracking-tight">Univibes</span>
+          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)] tracking-tight">{t("common.appName")}</span>
         </Link>
       </header>
 
@@ -47,7 +49,7 @@ export default function LoginPage() {
           <motion.div variants={fadeUp} className="flex justify-center mb-6">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-semibold text-[var(--brand-text)] tracking-wide">
               <Sparkles className="w-3 h-3" />
-              Plateforme événementielle étudiante
+              {t("common.appTagline")}
             </span>
           </motion.div>
 
@@ -61,10 +63,10 @@ export default function LoginPage() {
           {/* Title */}
           <motion.div variants={fadeUp} className="text-center mb-10">
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
-              Content de te revoir
+              {t("auth.welcome")}
             </h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1.5 max-w-64 mx-auto leading-relaxed">
-              Connecte-toi pour découvrir les événements près de chez toi
+              {t("auth.welcomeBack")}
             </p>
           </motion.div>
 
@@ -75,7 +77,7 @@ export default function LoginPage() {
           >
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
-                label="Email"
+                label={t("auth.email")}
                 type="email"
                 placeholder="ton@email.com"
                 value={email}
@@ -85,7 +87,7 @@ export default function LoginPage() {
 
               <div>
                 <Input
-                  label="Mot de passe"
+                  label={t("auth.password")}
                   type={showPassword ? "text" : "password"}
                   placeholder="Ton mot de passe"
                   value={password}
@@ -102,7 +104,7 @@ export default function LoginPage() {
                     href="/forgot-password"
                     className="text-xs text-[var(--brand)] hover:text-[var(--brand-hover)] font-medium transition-colors"
                   >
-                    Mot de passe oublié ?
+                    {t("auth.forgotPassword")}
                   </Link>
                 </div>
               </div>
@@ -121,7 +123,7 @@ export default function LoginPage() {
                   </span>
                 ) : (
                   <>
-                    Se connecter
+                    {t("auth.signIn")}
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -162,12 +164,12 @@ export default function LoginPage() {
           {/* Signup link */}
           <motion.div variants={fadeUp} className="mt-8 text-center">
             <p className="text-sm text-[var(--text-secondary)]">
-              Pas encore de compte ?{" "}
+              {t("auth.noAccount")}{" "}
               <Link
                 href="/register"
                 className="text-[var(--brand)] font-semibold hover:text-[var(--brand-hover)] transition-colors"
               >
-                S&apos;inscrire
+                {t("auth.signUp")}
               </Link>
             </p>
           </motion.div>
@@ -178,10 +180,10 @@ export default function LoginPage() {
             className="mt-6 p-4 rounded-xl bg-[var(--brand-subtle)]/50 border border-[var(--brand)]/10"
           >
             <p className="text-[11px] font-semibold text-[var(--brand-text)] uppercase tracking-wider mb-1.5">
-              Compte de démonstration
+              {t("auth.demoAccount")}
             </p>
             <p className="text-xs text-[var(--text-secondary)] font-mono">
-              admin@univibes.com / Admin@Univibes2026!
+              admin@univvibes.com / Admin@UnivVibes2026!
             </p>
           </motion.div>
         </motion.div>

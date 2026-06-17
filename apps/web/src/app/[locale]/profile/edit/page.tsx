@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -11,6 +12,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { getInitials } from "@/lib/utils";
 
 export default function EditProfilePage() {
+  const t = useTranslations();
   const [profile, setProfile] = useState({
     fullname: "Alex Koffi",
     email: "alex.koffi@univibes.com",

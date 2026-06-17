@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/routing";
@@ -13,6 +14,7 @@ import { EVENTS, CATEGORIES, CITIES } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
 export default function SearchPage() {
+  const t = useTranslations();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -34,12 +36,12 @@ export default function SearchPage() {
         <section className="relative pt-8 pb-6 overflow-hidden">
           <div className="max-w-3xl mx-auto px-4 sm:px-6">
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
-              <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-5">Recherche</h1>
+              <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-5">{t("common.search")}</h1>
               <div className="relative">
                 <SearchIcon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
                 <input
                   type="text"
-                  placeholder="Rechercher un événement, un organisateur..."
+                  placeholder={t("explore.searchPlaceholder")}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   autoFocus
@@ -81,20 +83,20 @@ export default function SearchPage() {
                 <div className="w-16 h-16 rounded-2xl bg-[var(--border-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto mb-4">
                   <SearchIcon className="w-7 h-7 text-[var(--text-tertiary)]" />
                 </div>
-                <h3 className="font-semibold text-[var(--text)] mb-1">Que cherches-tu ?</h3>
-                <p className="text-sm text-[var(--text-secondary)]">Tape un mot-clé pour trouver des événements, organisateurs ou catégories.</p>
+                <h3 className="font-semibold text-[var(--text)] mb-1">{t("explore.searchPlaceholder")}</h3>
+                <p className="text-sm text-[var(--text-secondary)]">{t("explore.noResults")}</p>
               </motion.div>
             ) : results.length === 0 ? (
               <motion.div key="noresults" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-center py-16">
-                <h3 className="font-semibold text-[var(--text)] mb-1">Aucun résultat</h3>
-                <p className="text-sm text-[var(--text-secondary)] mb-4">Essayez d&apos;autres mots-clés.</p>
-                <Button variant="outline" size="sm" onClick={() => setQuery("")}>Réinitialiser</Button>
+                <h3 className="font-semibold text-[var(--text)] mb-1">{t("common.noResults")}</h3>
+                <p className="text-sm text-[var(--text-secondary)] mb-4">{t("explore.noResultsDesc")}</p>
+                <Button variant="outline" size="sm" onClick={() => setQuery("")}>{t("explore.resetFilters")}</Button>
               </motion.div>
             ) : (
               <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 <div className="flex items-center gap-2 mb-4">
                   <Sparkles className="w-3.5 h-3.5 text-[var(--brand)]" />
-                  <span className="text-xs text-[var(--text-secondary)]">{results.length} résultat{results.length > 1 ? "s" : ""}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{t("explore.results", { count: results.length })}</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {results.map((event) => (

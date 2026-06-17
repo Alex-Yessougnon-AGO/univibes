@@ -75,13 +75,13 @@ components:
     fontWeight: 600
 ---
 
-# Design System: Univibes — NOVA
+# Design System: UnivVibes — NOVA
 
 ## 1. Overview
 
 **Creative North Star: "The Campus Pulse"**
 
-Univibes speaks the visual language of a premium student lifestyle brand — energetic, confident, and unmistakably modern. The system pairs a bold violet primary with a rose accent against warm-toned neutrals, creating an atmosphere that feels both sophisticated and approachable. This is not a corporate event platform; it is the digital hub of student life in Benin.
+UnivVibes speaks the visual language of a premium student lifestyle brand — energetic, confident, and unmistakably modern. The system pairs a bold violet primary with a rose accent against warm-toned neutrals, creating an atmosphere that feels both sophisticated and approachable. This is not a corporate event platform; it is the digital hub of student life in Benin.
 
 The design is mobile-first by constitution. Every component is built for thumb reach and glanceability. Affordances are generous (large touch targets, clear hierarchy), and information is surfaced in digestible cards and horizontal scrolls that reward exploration.
 
@@ -208,7 +208,7 @@ The system uses a hybrid approach: flat at rest, elevated on interaction. Surfac
 - **States:** Enabled, focus-within (elevated), disabled (not applicable — search is always active).
 
 ### Navigation
-- **Navbar (desktop/tablet):** Fixed top, transparent at scroll origin → glass (backdrop blur + border) on scroll. Logo left (UV mark + "Univibes"), nav links center, theme toggle + notifications + CTA right.
+- **Navbar (desktop/tablet):** Fixed top, transparent at scroll origin → glass (backdrop blur + border) on scroll. Logo left (UV mark + "UnivVibes"), nav links center, theme toggle + notifications + CTA right.
 - **BottomNav (mobile only):** Fixed bottom, glass background, 5 tabs (Home, Explore, Tickets, Favorites, Profile). Active state: spring-scaled icon + brand color. Inactive: tertiary color at reduced opacity.
 - **Motion:** Navbar transitions between transparent and glass states (300ms). BottomNav active tab uses spring animation (stiffness 400, damping 20).
 

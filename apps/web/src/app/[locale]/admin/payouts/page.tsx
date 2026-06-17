@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 import { Search, Check, X } from "lucide-react";
@@ -14,6 +15,7 @@ const PAYOUTS = [
 ];
 
 export default function AdminPayoutsPage() {
+  const t = useTranslations();
   const [search, setSearch] = useState("");
 
   return (
@@ -21,13 +23,13 @@ export default function AdminPayoutsPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <motion.div variants={staggerContainer} initial="hidden" animate="visible">
           <motion.div variants={fadeUp}>
-            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Retraits organisateurs</h1>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">Gère les demandes de retrait des organisateurs.</p>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("admin.payouts")}</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.payoutsDesc")}</p>
           </motion.div>
 
           <motion.div variants={fadeUp} className="relative mb-6">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
-            <input type="text" placeholder="Rechercher..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30" />
+            <input type="text" placeholder={t("admin.searchPlaceholder")} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30" />
           </motion.div>
 
           <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
@@ -39,7 +41,7 @@ export default function AdminPayoutsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Badge variant={p.status === "paid" ? "success" : p.status === "approved" ? "soft" : "warning"}>
-                    {p.status === "paid" ? "Payé" : p.status === "approved" ? "Approuvé" : "En attente"}
+                    {p.status === "paid" ? t("admin.paid") : p.status === "approved" ? t("admin.approved") : t("admin.pendingPayout")}
                   </Badge>
                   {p.status === "pending" && (
                     <div className="flex gap-1">

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useParams } from "next/navigation";
 import { Link } from "@/i18n/routing";
@@ -20,6 +21,7 @@ export default function OrganizerPage() {
   const organizer = ORGANIZERS.find((o) => o.slug === params.slug);
 
   if (!organizer) notFound();
+  const t = useTranslations();
 
   const organizerEvents = EVENTS.filter((e) => e.organizer.id === organizer.id);
   const upcomingEvents = organizerEvents.filter((e) => new Date(e.startDate) > new Date());
@@ -42,7 +44,7 @@ export default function OrganizerPage() {
             >
               <Link href="/explore" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors mb-6 group">
                 <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-                Retour aux événements
+                {t("common.back")} {t("common.toEvents")}
               </Link>
             </motion.div>
 
@@ -71,12 +73,12 @@ export default function OrganizerPage() {
                 <div className="flex items-center gap-4 mt-4 flex-wrap">
                   <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
                     <Calendar className="w-3.5 h-3.5 text-[var(--brand)]" />
-                    <span>{organizer.eventsCount} événements</span>
+                    <span>{t("event.eventsCount", { count: organizer.eventsCount })}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
                     <Sparkles className="w-3.5 h-3.5 text-[var(--accent)]" />
                     <span className="font-semibold text-[var(--text)]">{organizer.followersCount.toLocaleString()}</span>
-                    abonnés
+                    {t("event.followers")}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-5">
@@ -104,7 +106,7 @@ export default function OrganizerPage() {
           {upcomingEvents.length > 0 && (
             <motion.section variants={fadeUp}>
               <h2 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-5">
-                Événements à venir
+                {t("ticket.upcoming")}
                 <span className="text-sm text-[var(--text-secondary)] font-normal ml-2">({upcomingEvents.length})</span>
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -125,7 +127,7 @@ export default function OrganizerPage() {
           {pastEvents.length > 0 && (
             <motion.section variants={fadeUp}>
               <h2 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-5">
-                Événements passés
+                {t("ticket.past")}
                 <span className="text-sm text-[var(--text-secondary)] font-normal ml-2">({pastEvents.length})</span>
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

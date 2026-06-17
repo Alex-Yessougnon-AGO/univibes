@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../apps/api/src/generated/prisma"
 }
 // Run: pnpm db:generate (from workspace root)
 

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -12,6 +13,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { EVENTS } from "@/lib/mock-data";
 
 export default function FavoritesPage() {
+  const t = useTranslations();
   const [favorites, setFavorites] = useState(EVENTS.filter((e) => e.isFavorited));
 
   return (
@@ -29,13 +31,13 @@ export default function FavoritesPage() {
             >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/20 border border-rose-200/50 dark:border-rose-800/30 text-[11px] font-semibold text-rose-600 dark:text-rose-400 tracking-wide mb-4">
                 <Heart className="w-3 h-3" />
-                Favoris
+                {t("nav.favorites")}
               </span>
 
               <div className="flex items-center justify-between">
                 <div>
                   <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
-                    Mes favoris
+                    {t("nav.favorites")}
                   </h1>
                   <p className="text-sm text-[var(--text-secondary)] mt-1.5">
                     {favorites.length} événement{favorites.length !== 1 ? "s" : ""} sauvegardé{favorites.length !== 1 ? "s" : ""}
@@ -49,7 +51,7 @@ export default function FavoritesPage() {
                     onClick={() => setFavorites([])}
                   >
                     <Trash2 className="w-4 h-4" />
-                    Tout effacer
+                    {t("common.delete")}
                   </Button>
                 )}
               </div>
@@ -86,13 +88,13 @@ export default function FavoritesPage() {
                   <Heart className="w-8 h-8 text-rose-400" />
                 </motion.div>
                 <h3 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
-                  Pas encore de coup de cœur
+                  {t("explore.noResults")}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] mb-7 max-w-sm mx-auto leading-relaxed">
                   Parcours les événements et tape sur le <Heart className="w-3.5 h-3.5 inline -mt-0.5 text-rose-400" /> pour sauvegarder ceux qui te font vibrer. Ils t&apos;attendent ici.
                 </p>
                 <Button variant="primary" size="md" className="rounded-full px-6" asChild>
-                  <Link href="/explore">Découvrir des événements</Link>
+                  <Link href="/explore">{t("home.discoverEvents")}</Link>
                 </Button>
               </motion.div>
           )}

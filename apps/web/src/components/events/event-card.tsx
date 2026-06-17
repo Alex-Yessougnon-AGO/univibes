@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { ViewTransition } from "react";
@@ -19,6 +20,7 @@ interface EventCardProps {
 
 export function EventCard({ event, variant = "standard", className, priority = false }: EventCardProps) {
   const [favorited, setFavorited] = useState(event.isFavorited);
+  const t = useTranslations();
 
   if (variant === "compact") {
     return (
@@ -60,7 +62,7 @@ export function EventCard({ event, variant = "standard", className, priority = f
         <button
           onClick={(e) => { e.preventDefault(); setFavorited(!favorited); }}
           className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/30 transition-colors"
-          aria-label={favorited ? "Retirer des favoris" : "Ajouter aux favoris"}
+          aria-label={favorited ? t("event.unfavorite") : t("event.favorite")}
         >
           <Heart className={cn("w-4 h-4 transition-colors", favorited ? "fill-red-500 text-red-500" : "text-white")} />
         </button>
@@ -76,7 +78,7 @@ export function EventCard({ event, variant = "standard", className, priority = f
               "px-2.5 py-1 rounded-full text-xs font-bold",
               event.isFree ? "bg-[var(--accent)] text-white" : "bg-[var(--gold)] text-white"
             )}>
-              {event.isFree ? "Gratuit" : `dès ${formatCurrency(event.lowestPrice ?? 0)}`}
+              {event.isFree ? t("event.free") : `${t("event.from")} ${formatCurrency(event.lowestPrice ?? 0)}`}
             </span>
           </div>
         </div>
@@ -111,7 +113,7 @@ export function EventCard({ event, variant = "standard", className, priority = f
                 ? "bg-red-500/90 border-red-400 text-white"
                 : "bg-white/80 dark:bg-black/40 border-white/50 text-gray-600 hover:bg-white hover:text-red-500"
             )}
-            aria-label={favorited ? "Retirer des favoris" : "Ajouter aux favoris"}
+            aria-label={favorited ? t("event.unfavorite") : t("event.favorite")}
           >
             <Heart className={cn("w-4 h-4 transition-colors", favorited && "fill-current")} />
           </button>
@@ -142,7 +144,7 @@ export function EventCard({ event, variant = "standard", className, priority = f
                 ? "bg-[var(--accent-subtle)] text-[var(--accent)]"
                 : "bg-[var(--gold-subtle)] text-[var(--gold)]"
             )}>
-              {event.isFree ? "Gratuit" : formatCurrency(event.lowestPrice ?? 0)}
+              {event.isFree ? t("event.free") : formatCurrency(event.lowestPrice ?? 0)}
             </span>
           </div>
         </div>

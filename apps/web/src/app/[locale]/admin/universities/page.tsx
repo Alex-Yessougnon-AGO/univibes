@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 import { Plus, Pencil, Trash2 } from "lucide-react";
@@ -16,6 +17,7 @@ const INITIAL = [
 ];
 
 export default function AdminUniversitiesPage() {
+  const t = useTranslations();
   const [universities, setUniversities] = useState(INITIAL);
   const [newName, setNewName] = useState("");
 
@@ -30,13 +32,13 @@ export default function AdminUniversitiesPage() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
         <motion.div variants={staggerContainer} initial="hidden" animate="visible">
           <motion.div variants={fadeUp}>
-            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Universités</h1>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">Gère la liste des universités référencées.</p>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("admin.universities")}</h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.universitiesDesc")}</p>
           </motion.div>
 
           <motion.div variants={fadeUp} className="flex items-center gap-2 mb-6">
-            <Input placeholder="Nouvelle université" value={newName} onChange={(e) => setNewName(e.target.value)} className="flex-1" />
-            <Button variant="primary" size="md" onClick={add}><Plus className="w-4 h-4" /> Ajouter</Button>
+            <Input placeholder={t("admin.newUniversity")} value={newName} onChange={(e) => setNewName(e.target.value)} className="flex-1" />
+            <Button variant="primary" size="md" onClick={add}><Plus className="w-4 h-4" /> {t("admin.add")}</Button>
           </motion.div>
 
           <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
@@ -44,7 +46,7 @@ export default function AdminUniversitiesPage() {
               <div key={u.id} className="flex items-center justify-between p-4 hover:bg-[var(--border-subtle)] transition-colors border-b border-[var(--border)] last:border-b-0">
                 <div>
                   <span className="font-medium text-sm text-[var(--text)]">{u.name}</span>
-                  <p className="text-xs text-[var(--text-secondary)]">{u.city} · {u.students.toLocaleString()} étudiants</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{u.city} · {t("admin.students", { count: u.students })}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button className="p-1.5 rounded-lg hover:bg-[var(--border-subtle)] text-[var(--text-tertiary)]"><Pencil className="w-3.5 h-3.5" /></button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -18,6 +19,7 @@ const FAQ = [
 ];
 
 export default function ContactPage() {
+  const t = useTranslations();
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
 
@@ -36,13 +38,13 @@ export default function ContactPage() {
             <motion.div initial="hidden" animate="visible" variants={containerStagger(0.07)}>
               <motion.span variants={fadeUp} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-6">
                 <MessageSquare className="w-3 h-3" />
-                Contact
+                {t("contact.title")}
               </motion.span>
               <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl font-[family-name:var(--font-display)] text-[var(--text)] leading-tight tracking-tight mb-4">
-                On veut t&apos;entendre
+                {t("contact.title")}
               </motion.h1>
               <motion.p variants={fadeUp} className="text-base text-[var(--text-secondary)] max-w-lg mx-auto">
-                Une question, un bug, une idée ? Notre équipe est là pour toi.
+                {t("contact.subtitle")}
               </motion.p>
             </motion.div>
           </div>
@@ -61,23 +63,23 @@ export default function ContactPage() {
                   <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 flex items-center justify-center mx-auto mb-4">
                     <Mail className="w-7 h-7 text-emerald-600" />
                   </div>
-                  <h2 className="text-lg font-semibold text-[var(--text)] mb-1">Message envoyé !</h2>
-                  <p className="text-sm text-[var(--text-secondary)] mb-6">On te répond sous 24h à {form.email || "ton email"}.</p>
+                  <h2 className="text-lg font-semibold text-[var(--text)] mb-1">{t("contact.sent")}</h2>
+                  <p className="text-sm text-[var(--text-secondary)] mb-6">{t("contact.sentDesc")}</p>
                   <Button variant="outline" onClick={() => { setSent(false); setForm({ name: "", email: "", subject: "", message: "" }); }}>
-                    Envoyer un autre message
+                    {t("contact.send")}
                   </Button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <h2 className="font-semibold text-[var(--text)] mb-1">Envoie-nous un message</h2>
-                  <p className="text-xs text-[var(--text-secondary)] mb-4">Remplis le formulaire et on te répondra rapidement.</p>
-                  <Input label="Nom complet" placeholder="Ton nom" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-                  <Input label="Email" type="email" placeholder="ton@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-                  <Input label="Sujet" placeholder="Ex: Question sur la billetterie" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required />
+                  <h2 className="font-semibold text-[var(--text)] mb-1">{t("contact.title")}</h2>
+                  <p className="text-xs text-[var(--text-secondary)] mb-4">{t("contact.subtitle")}</p>
+                  <Input label={t("contact.name")} placeholder="Ton nom" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+                  <Input label={t("contact.email")} type="email" placeholder="ton@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+                  <Input label={t("contact.subject")} placeholder="Ex: Question sur la billetterie" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required />
                   <div>
-                    <label className="block text-sm font-medium text-[var(--text)] mb-1.5">Message</label>
+                    <label className="block text-sm font-medium text-[var(--text)] mb-1.5">{t("contact.message")}</label>
                     <textarea
-                      placeholder="Décris-nous ton problème ou ta question..."
+                      placeholder={t("contact.message")}
                       className="w-full h-32 bg-[var(--surface)] border border-[var(--border)] rounded-xl px-4 py-3 text-sm text-[var(--text)] placeholder:text-[var(--text-tertiary)] outline-none focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)] resize-none"
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
@@ -86,7 +88,7 @@ export default function ContactPage() {
                   </div>
                   <Button variant="primary" size="lg" className="w-full" type="submit">
                     <Send className="w-4 h-4" />
-                    Envoyer le message
+                    {t("contact.send")}
                   </Button>
                 </form>
               )}
@@ -101,7 +103,7 @@ export default function ContactPage() {
               >
                 <div className="flex items-center gap-2 mb-4">
                   <HelpCircle className="w-4 h-4 text-[var(--brand)]" />
-                  <h3 className="font-semibold text-sm text-[var(--text)]">Questions fréquentes</h3>
+                  <h3 className="font-semibold text-sm text-[var(--text)]">{t("contact.faq")}</h3>
                 </div>
                 <div className="space-y-2">
                   {FAQ.map((item) => (
@@ -122,10 +124,10 @@ export default function ContactPage() {
                 transition={{ delay: 0.05 }}
                 className="rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] p-5 shadow-[var(--shadow)]"
               >
-                <h3 className="font-semibold text-sm text-white mb-2">Tu veux devenir organisateur ?</h3>
-                <p className="text-xs text-white/70 mb-4">Crée ton compte organisateur et publie ton premier événement en quelques minutes.</p>
+                <h3 className="font-semibold text-sm text-white mb-2">{t("contact.faq")}</h3>
+                <p className="text-xs text-white/70 mb-4">{t("contact.subtitle")}</p>
                 <Button variant="accent" size="sm" className="rounded-full" asChild>
-                  <Link href="/register?role=organizer">Créer mon compte <ArrowRight className="w-3 h-3" /></Link>
+                  <Link href="/register?role=organizer">{t("nav.register")} <ArrowRight className="w-3 h-3" /></Link>
                 </Button>
               </motion.div>
             </div>

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -20,6 +21,7 @@ const MOCK_TICKETS = [
 ];
 
 export default function TicketsPage() {
+  const t = useTranslations();
   const [viewQR, setViewQR] = useState<string | null>(null);
 
   const upcomingTickets = MOCK_TICKETS.filter((t) => t.status === "upcoming");
@@ -40,11 +42,11 @@ export default function TicketsPage() {
             >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 <Ticket className="w-3 h-3" />
-                Billetterie
+                {t("ticket.title")}
               </span>
 
               <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">
-                Mes billets
+                {t("ticket.title")}
               </h1>
               <p className="text-sm text-[var(--text-secondary)]">
                 {MOCK_TICKETS.length} billet{MOCK_TICKETS.length !== 1 ? "s" : ""}
@@ -64,7 +66,7 @@ export default function TicketsPage() {
               <motion.div variants={fadeUp} className="mb-10">
                 <h2 className="text-sm font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  À venir
+                  {t("ticket.upcoming")}
                 </h2>
                 <div className="space-y-4">
                   {upcomingTickets.map((ticket) => (
@@ -79,7 +81,7 @@ export default function TicketsPage() {
                         <div className="flex-1 p-5">
                           <div className="flex items-start justify-between gap-3">
                             <div className="min-w-0">
-                              <Badge variant="success" className="mb-2">Actif</Badge>
+                              <Badge variant="success" className="mb-2">{t("ticket.active")}</Badge>
                               <h3 className="font-semibold text-[var(--text)]">{ticket.event.title}</h3>
                               <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                                 {ticket.ticketName} · {ticket.quantity} billet{ticket.quantity > 1 ? "s" : ""}
@@ -108,7 +110,7 @@ export default function TicketsPage() {
             {/* Past tickets */}
             {pastTickets.length > 0 && (
               <motion.div variants={fadeUp}>
-                <h2 className="text-sm font-semibold text-[var(--text)] mb-4">Passés</h2>
+                <h2 className="text-sm font-semibold text-[var(--text)] mb-4">{t("ticket.past")}</h2>
                 <div className="space-y-3">
                   {pastTickets.map((ticket) => (
                     <div key={ticket.id} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 flex items-center gap-4 opacity-60 shadow-[var(--shadow-sm)]">
@@ -119,7 +121,7 @@ export default function TicketsPage() {
                         <h3 className="font-semibold text-sm text-[var(--text)]">{ticket.event.title}</h3>
                         <p className="text-xs text-[var(--text-secondary)] mt-0.5">{formatFullDate(ticket.event.startDate)}</p>
                       </div>
-                      <Badge variant="outline">Terminé</Badge>
+                        <Badge variant="outline">{t("ticket.past")}</Badge>
                     </div>
                   ))}
                 </div>
@@ -138,13 +140,13 @@ export default function TicketsPage() {
                   <Ticket className="w-8 h-8 text-[var(--brand)]" />
                 </motion.div>
                 <h3 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
-                  Aucun billet pour le moment
+                  {t("ticket.empty")}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] mb-7 max-w-sm mx-auto leading-relaxed">
                   Trouve un événement qui te fait envie et réserve ta place. Dès que ton achat est confirmé, ton billet apparaîtra ici, prêt à être utilisé.
                 </p>
                 <Button variant="primary" size="md" className="rounded-full px-6" asChild>
-                  <Link href="/explore">Explorer les événements</Link>
+                  <Link href="/explore">{t("home.discoverEvents")}</Link>
                 </Button>
               </motion.div>
             )}
@@ -205,7 +207,7 @@ export default function TicketsPage() {
                 </div>
 
                 <Button variant="ghost" size="sm" className="mt-4 w-full" onClick={() => setViewQR(null)}>
-                  Fermer
+                  {t("common.close")}
                 </Button>
               </motion.div>
             </motion.div>

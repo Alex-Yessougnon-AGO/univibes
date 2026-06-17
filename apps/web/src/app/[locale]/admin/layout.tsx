@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import {
@@ -15,19 +16,21 @@ import {
   Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const ADMIN_LINKS = [
-  { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/admin/users", icon: Users, label: "Utilisateurs" },
-  { href: "/admin/events", icon: Calendar, label: "Événements" },
-  { href: "/admin/payments", icon: CreditCard, label: "Paiements" },
-  { href: "/admin/boosts", icon: TrendingUp, label: "Boosts" },
-  { href: "/admin/ads", icon: Megaphone, label: "Publicités" },
-];
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  const ADMIN_LINKS = [
+    { href: "/admin", icon: LayoutDashboard, label: t("nav.dashboard") },
+    { href: "/admin/users", icon: Users, label: t("admin.users") },
+    { href: "/admin/events", icon: Calendar, label: t("admin.events") },
+    { href: "/admin/payments", icon: CreditCard, label: t("admin.payments") },
+    { href: "/admin/boosts", icon: TrendingUp, label: t("admin.boosts") },
+    { href: "/admin/ads", icon: Megaphone, label: t("admin.ads") },
+  ];
 
   return (
     <div className="min-h-dvh bg-[var(--bg)]">
@@ -41,10 +44,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <div className="w-7 h-7 rounded-lg bg-red-600 flex items-center justify-center">
                 <Shield className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-extrabold text-sm text-[var(--text)]">Admin</span>
+              <span className="font-extrabold text-sm text-[var(--text)]">{t("admin.dashboard")}</span>
             </div>
           </div>
-          <Link href="/" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text)]">Voir le site</Link>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <Link href="/" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text)]">{t("nav.viewSite")}</Link>
+          </div>
         </div>
       </header>
 

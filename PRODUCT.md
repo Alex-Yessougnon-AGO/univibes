@@ -10,7 +10,7 @@ product
 
 ## Product Purpose
 
-Univibes est le hub de la vie étudiante au Bénin. La plateforme permet aux étudiants de trouver et réserver des événements, et aux organisateurs (associations, clubs) de promouvoir et vendre leurs billets. Le succès = un étudiant trouve un événement en moins de 10 secondes.
+UnivVibes est le hub de la vie étudiante au Bénin. La plateforme permet aux étudiants de trouver et réserver des événements, et aux organisateurs (associations, clubs) de promouvoir et vendre leurs billets. Le succès = un étudiant trouve un événement en moins de 10 secondes.
 
 ## Brand Personality
 

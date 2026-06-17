@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -13,6 +14,7 @@ const STEPS = ["Profil", "Centres d'intérêt", "Terminé"];
 const INTERESTS = ["Concerts", "Conférences", "Sport", "Gala", "Hackathons", "Théâtre", "Afterworks", "Ateliers", "Expositions"];
 
 export default function OnboardingPage() {
+  const t = useTranslations();
   const [step, setStep] = useState(0);
   const [name, setName] = useState("");
   const [university, setUniversity] = useState("");
@@ -29,7 +31,7 @@ export default function OnboardingPage() {
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center shadow-[var(--shadow-brand)]">
             <span className="text-white font-black text-sm">UV</span>
           </div>
-          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)]">Univibes</span>
+          <span className="font-[family-name:var(--font-display)] text-lg text-[var(--text)]">{t("common.appName")}</span>
         </Link>
       </header>
 
@@ -47,15 +49,15 @@ export default function OnboardingPage() {
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-brand)]">
                 <GraduationCap className="w-8 h-8 text-white" />
               </div>
-              <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Bienvenue sur Univibes !</h1>
-              <p className="text-sm text-[var(--text-secondary)] mt-1.5">On a besoin de quelques infos pour personnaliser ton expérience.</p>
+              <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("auth.onboarding.welcome")}</h1>
+              <p className="text-sm text-[var(--text-secondary)] mt-1.5">{t("auth.onboarding.personalize")}</p>
             </div>
             <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-4 shadow-[var(--shadow)]">
-              <Input label="Ton prénom" placeholder="Alex" value={name} onChange={(e) => setName(e.target.value)} />
-              <Input label="Ton université" placeholder="UAC" value={university} onChange={(e) => setUniversity(e.target.value)} />
+              <Input label={t("auth.onboarding.firstName")} placeholder="Alex" value={name} onChange={(e) => setName(e.target.value)} />
+              <Input label={t("auth.onboarding.university")} placeholder="UAC" value={university} onChange={(e) => setUniversity(e.target.value)} />
             </div>
             <Button variant="primary" size="lg" className="w-full" onClick={() => setStep(1)} disabled={!name.trim()}>
-              Continuer <ArrowRight className="w-4 h-4" />
+              {t("common.confirm")} <ArrowRight className="w-4 h-4" />
             </Button>
           </motion.div>
         )}
@@ -66,8 +68,8 @@ export default function OnboardingPage() {
               <div className="w-16 h-16 rounded-2xl bg-[var(--brand-subtle)] border border-[var(--brand)]/15 flex items-center justify-center mx-auto mb-4">
                 <Bell className="w-7 h-7 text-[var(--brand)]" />
               </div>
-              <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Qu&apos;est-ce qui te branche ?</h1>
-              <p className="text-sm text-[var(--text-secondary)] mt-1.5">Sélectionne tes centres d&apos;intérêt pour des recommandations sur mesure.</p>
+              <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("auth.onboarding.interests")}</h1>
+              <p className="text-sm text-[var(--text-secondary)] mt-1.5">{t("auth.onboarding.interestsSubtitle")}</p>
             </div>
             <div className="flex flex-wrap gap-2 justify-center">
               {INTERESTS.map((i) => (
@@ -86,8 +88,8 @@ export default function OnboardingPage() {
               ))}
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" size="md" className="flex-1" onClick={() => setStep(0)}>Retour</Button>
-              <Button variant="primary" size="md" className="flex-1" onClick={() => setStep(2)}>Terminer</Button>
+              <Button variant="outline" size="md" className="flex-1" onClick={() => setStep(0)}>{t("common.back")}</Button>
+              <Button variant="primary" size="md" className="flex-1" onClick={() => setStep(2)}>{t("common.confirm")}</Button>
             </div>
           </motion.div>
         )}
@@ -97,10 +99,10 @@ export default function OnboardingPage() {
             <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 flex items-center justify-center mx-auto">
               <Check className="w-10 h-10 text-emerald-600" />
             </div>
-            <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Tout est prêt, {name} !</h1>
-            <p className="text-sm text-[var(--text-secondary)]">Ton profil est configuré. On te prépare les meilleurs événements près de chez toi.</p>
+            <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("auth.onboarding.ready", { name })}</h1>
+            <p className="text-sm text-[var(--text-secondary)]">{t("auth.onboarding.readySubtitle")}</p>
             <Button variant="primary" size="lg" className="w-full" asChild>
-              <Link href="/home">Découvrir les événements <ArrowRight className="w-4 h-4" /></Link>
+              <Link href="/home">{t("home.discoverEvents")} <ArrowRight className="w-4 h-4" /></Link>
             </Button>
           </motion.div>
         )}

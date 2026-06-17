@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -20,16 +21,18 @@ import {
   DollarSign,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const SIDEBAR_LINKS = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Vue d'ensemble" },
-  { href: "/dashboard/events", icon: Calendar, label: "Mes événements" },
-  { href: "/dashboard/events/new", icon: Plus, label: "Créer un événement" },
-];
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const t = useTranslations();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const SIDEBAR_LINKS = [
+    { href: "/dashboard", icon: LayoutDashboard, label: t("nav.dashboard") },
+    { href: "/dashboard/events", icon: Calendar, label: t("admin.events") },
+    { href: "/dashboard/events/new", icon: Plus, label: t("hero.createEvent") },
+  ];
 
   return (
     <div className="min-h-dvh bg-[var(--bg)]">
@@ -44,11 +47,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="w-7 h-7 rounded-lg bg-[var(--brand)] flex items-center justify-center">
                 <span className="text-white font-black text-xs">UV</span>
               </div>
-              <span className="font-extrabold text-sm text-[var(--text)] hidden sm:block">Univibes</span>
+              <span className="font-extrabold text-sm text-[var(--text)] hidden sm:block">{t("common.appName")}</span>
             </Link>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors">Voir le site</Link>
+            <LanguageSwitcher />
+            <Link href="/" className="text-xs text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors">{t("nav.viewSite")}</Link>
             <div className="w-8 h-8 rounded-lg bg-[var(--brand-subtle)] flex items-center justify-center">
               <span className="text-[var(--brand-text)] font-bold text-xs">AK</span>
             </div>
@@ -89,7 +93,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              Déconnexion
+              {t("nav.logout")}
             </Link>
           </div>
         </aside>

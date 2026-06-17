@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Link } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, SlidersHorizontal, Grid3X3, List, MapPin, Sparkles } from "lucide-react";
 import { CategoryIcon } from "@/lib/icon-map";
@@ -13,13 +14,6 @@ import { Navbar } from "@/components/layout/navbar";
 import { EVENTS, CATEGORIES, CITIES } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
 
-const SORT_OPTIONS = [
-  { value: "date", label: "Date" },
-  { value: "popularity", label: "Popularité" },
-  { value: "price-asc", label: "Prix croissant" },
-  { value: "price-desc", label: "Prix décroissant" },
-];
-
 export default function ExplorePage() {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -29,6 +23,20 @@ export default function ExplorePage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
+  const t = useTranslations();
+
+  const SORT_OPTIONS = [
+    { value: "date", label: t("explore.sortDate") },
+    { value: "popularity", label: t("explore.sortPopularity") },
+    { value: "price-asc", label: t("explore.sortPriceAsc") },
+    { value: "price-desc", label: t("explore.sortPriceDesc") },
+  ];
+
+  const PRICE_OPTIONS = [
+    { value: "all", label: t("explore.allPrices") },
+    { value: "free", label: t("explore.free") },
+    { value: "paid", label: t("explore.paid") },
+  ];
 
   const filteredEvents = useMemo(() => {
     let result = [...EVENTS];
@@ -75,13 +83,13 @@ export default function ExplorePage() {
       {/* Search */}
       <div>
         <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2.5">
-          Recherche
+          {t("explore.search")}
         </label>
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
           <input
             type="text"
-            placeholder="Nom, description, mot-clé…"
+            placeholder={t("explore.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             onFocus={() => setSearchFocused(true)}
@@ -94,7 +102,7 @@ export default function ExplorePage() {
       {/* Category */}
       <div>
         <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2.5">
-          Catégorie
+          {t("explore.category")}
         </label>
         <div className="flex flex-wrap gap-2">
           <button
@@ -106,7 +114,7 @@ export default function ExplorePage() {
                 : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
             )}
           >
-            Toutes
+            {t("explore.allCategories")}
           </button>
           {CATEGORIES.map((cat) => (
             <button
@@ -129,7 +137,7 @@ export default function ExplorePage() {
       {/* City */}
       <div>
         <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2.5">
-          Ville
+          {t("explore.city")}
         </label>
         <div className="relative">
           <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)] pointer-events-none" />
@@ -138,7 +146,7 @@ export default function ExplorePage() {
             onChange={(e) => setSelectedCity(e.target.value)}
             className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] outline-none appearance-none transition-all duration-200 focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)]"
           >
-            <option value="">Toutes les villes</option>
+            <option value="">{t("explore.allCities")}</option>
             {CITIES.map((city) => (
               <option key={city} value={city}>{city}</option>
             ))}
@@ -149,14 +157,10 @@ export default function ExplorePage() {
       {/* Price */}
       <div>
         <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2.5">
-          Prix
+          {t("explore.price")}
         </label>
         <div className="flex gap-2">
-          {[
-            { value: "all", label: "Tous" },
-            { value: "free", label: "Gratuit" },
-            { value: "paid", label: "Payant" },
-          ].map((opt) => (
+          {PRICE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => setPriceRange(opt.value)}
@@ -194,11 +198,11 @@ export default function ExplorePage() {
               {/* Eyebrow */}
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 <Sparkles className="w-3 h-3" />
-                {filteredEvents.length} événement{filteredEvents.length !== 1 ? "s" : ""} trouvé{filteredEvents.length !== 1 ? "s" : ""}
+                {t("explore.results", { count: filteredEvents.length })}
               </span>
 
               <h1 className="text-[28px] md:text-4xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-5">
-                Explorer les événements
+                {t("explore.title")}
               </h1>
             </motion.div>
 
@@ -219,7 +223,7 @@ export default function ExplorePage() {
                   )}
                 >
                   <SlidersHorizontal className="w-3.5 h-3.5" />
-                  Filtres
+                  {t("explore.filters")}
                   {hasActiveFilters && (
                     <span className="w-4.5 h-4.5 rounded-full bg-[var(--brand)] text-white text-[9px] flex items-center justify-center font-bold ml-0.5">
                       {activeFilterCount}
@@ -253,13 +257,13 @@ export default function ExplorePage() {
             <aside className="hidden lg:block w-64 shrink-0">
               <div className="sticky top-24">
                 <div className="flex items-center justify-between mb-5">
-                  <h3 className="font-semibold text-sm text-[var(--text)]">Filtres</h3>
+                  <h3 className="font-semibold text-sm text-[var(--text)]">{t("explore.filters")}</h3>
                   {hasActiveFilters && (
                     <button
                       onClick={() => { setSelectedCategory(""); setSelectedCity(""); setPriceRange("all"); }}
                       className="text-xs text-[var(--brand)] font-medium hover:text-[var(--brand-hover)] transition-colors"
                     >
-                      Tout effacer
+                      {t("explore.clearAll")}
                     </button>
                   )}
                 </div>
@@ -333,7 +337,7 @@ export default function ExplorePage() {
                     )}
                     {priceRange !== "all" && (
                       <Badge variant="soft" className="flex items-center gap-1.5 px-2.5 py-1">
-                        {priceRange === "free" ? "Gratuit" : "Payant"}
+                        {priceRange === "free" ? t("explore.free") : t("explore.paid")}
                         <button onClick={() => setPriceRange("all")} className="hover:text-[var(--text)] transition-colors">
                           <X className="w-3 h-3" />
                         </button>
@@ -387,10 +391,10 @@ export default function ExplorePage() {
                     <Search className="w-8 h-8 text-[var(--text-tertiary)]" />
                   </motion.div>
                   <h3 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
-                    Rien par ici…
+                    {t("explore.noResults")}
                   </h3>
                   <p className="text-sm text-[var(--text-secondary)] mb-6 max-w-sm mx-auto leading-relaxed">
-                    On a fouillé partout, mais aucun événement ne correspond à ta recherche. Essaye d&apos;autres filtres, change de ville ou explore toutes les catégories.
+                    {t("explore.noResultsDesc")}
                   </p>
                   <div className="flex items-center gap-3 justify-center flex-wrap">
                     <Button
@@ -399,10 +403,10 @@ export default function ExplorePage() {
                       className="rounded-full px-5"
                       onClick={() => { setSearch(""); setSelectedCategory(""); setSelectedCity(""); setPriceRange("all"); }}
                     >
-                      Réinitialiser les filtres
+                      {t("explore.resetFilters")}
                     </Button>
                     <Button variant="ghost" size="sm" asChild>
-                      <Link href="/">Page d&apos;accueil</Link>
+                      <Link href="/">{t("common.home")}</Link>
                     </Button>
                   </div>
                 </motion.div>
@@ -434,7 +438,7 @@ export default function ExplorePage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="font-semibold text-[var(--text)]">Filtres</h3>
+                <h3 className="font-semibold text-[var(--text)]">{t("explore.filters")}</h3>
                 <button
                   onClick={() => setShowMobileFilters(false)}
                   className="w-8 h-8 rounded-lg bg-[var(--border-subtle)] flex items-center justify-center hover:bg-[var(--border)] transition-colors"
@@ -450,7 +454,7 @@ export default function ExplorePage() {
                   className="w-full"
                   onClick={() => setShowMobileFilters(false)}
                 >
-                  Voir {filteredEvents.length} résultat{filteredEvents.length !== 1 ? "s" : ""}
+                  {t("explore.viewResults", { count: filteredEvents.length })}
                 </Button>
               </div>
             </motion.div>

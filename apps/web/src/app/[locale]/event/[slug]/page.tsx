@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
@@ -38,6 +39,7 @@ export default function EventDetailPage() {
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
   const [ticketQuantity, setTicketQuantity] = useState(1);
   const [showBuyModal, setShowBuyModal] = useState(false);
+  const t = useTranslations();
 
   if (!event) notFound();
 
@@ -61,7 +63,7 @@ export default function EventDetailPage() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <Link href="/explore" className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors group">
             <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-            Retour
+            {t("common.back")}
           </Link>
           <div className="flex items-center gap-2">
             <button
@@ -72,7 +74,7 @@ export default function EventDetailPage() {
                   ? "border-red-200 bg-red-50 dark:bg-red-950/20 text-red-500"
                   : "border-[var(--border)] text-[var(--text-secondary)] hover:text-red-500 hover:border-red-200"
               )}
-              aria-label={favorited ? "Retirer des favoris" : "Ajouter aux favoris"}
+              aria-label={favorited ? t("event.unfavorite") : t("event.favorite")}
             >
               <Heart className={cn("w-4 h-4 transition-all", favorited && "fill-red-500 scale-110")} />
             </button>
@@ -131,7 +133,7 @@ export default function EventDetailPage() {
                   </div>
                   <div className="flex items-center gap-2 text-[var(--text-secondary)]">
                     <Eye className="w-4 h-4 text-[var(--brand)] shrink-0" />
-                    <span>{event.views.toLocaleString()} vues</span>
+                    <span>{t("event.views", { count: event.views })}</span>
                   </div>
                 </div>
 
@@ -149,7 +151,7 @@ export default function EventDetailPage() {
               <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 md:p-8 shadow-[var(--shadow)]">
                 <h2 className="font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[var(--accent)]" />
-                  À propos de l&apos;événement
+                  {t("event.about")}
                 </h2>
                 <div className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
                   {event.description}
@@ -167,7 +169,7 @@ export default function EventDetailPage() {
               {/* Tickets */}
               {event.tickets && event.tickets.length > 0 && (
                 <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 md:p-8 shadow-[var(--shadow)]" id="tickets">
-                  <h2 className="font-semibold text-[var(--text)] mb-4">Billets disponibles</h2>
+                  <h2 className="font-semibold text-[var(--text)] mb-4">{t("event.availableTickets")}</h2>
                   <div className="space-y-3">
                     {event.tickets.map((ticket) => (
                       <button
@@ -187,7 +189,7 @@ export default function EventDetailPage() {
                               "font-bold text-base",
                               ticket.price === 0 ? "text-[var(--success)]" : "text-[var(--brand)]"
                             )}>
-                              {ticket.price === 0 ? "Gratuit" : formatCurrency(ticket.price)}
+                              {ticket.price === 0 ? t("event.free") : formatCurrency(ticket.price)}
                             </span>
                             <span className="text-xs text-[var(--text-tertiary)]">
                               <span className={cn(
@@ -195,7 +197,7 @@ export default function EventDetailPage() {
                                 ticket.remaining < 10 ? "text-[var(--error)]" : ticket.remaining < 30 ? "text-[var(--warning)]" : ""
                               )}>
                                 {ticket.remaining}
-                              </span> / {ticket.total} restants
+                              </span> / {ticket.total} {t("event.remaining")}
                             </span>
                           </div>
                         </div>
@@ -212,7 +214,7 @@ export default function EventDetailPage() {
 
               {/* Organizer */}
               <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 md:p-8 shadow-[var(--shadow)]">
-                <h2 className="font-semibold text-[var(--text)] mb-4">Organisateur</h2>
+                <h2 className="font-semibold text-[var(--text)] mb-4">{t("event.organizer")}</h2>
                 <Link href={`/organizer/${event.organizer.slug}`} className="flex items-center gap-4 group">
                   <div className="relative w-16 h-16 rounded-xl overflow-hidden ring-2 ring-[var(--brand)]/20 group-hover:ring-[var(--brand)]/40 transition-all">
                     <Image src={event.organizer.logoUrl} alt={event.organizer.name} fill className="object-cover" />
@@ -229,7 +231,7 @@ export default function EventDetailPage() {
                       )}
                     </div>
                     <p className="text-xs text-[var(--text-secondary)] mt-0.5">
-                      {event.organizer.followersCount.toLocaleString()} abonnés · {event.organizer.eventsCount} événements
+                      {t("event.followersCount", { count: event.organizer.followersCount })} · {t("event.eventsCount", { count: event.organizer.eventsCount })}
                     </p>
                     <p className="text-xs text-[var(--text-tertiary)] mt-1 line-clamp-1">
                       {event.organizer.description}
@@ -247,16 +249,16 @@ export default function EventDetailPage() {
                 <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
                   <div className="text-center">
                     <p className="text-[11px] text-[var(--text-secondary)] uppercase tracking-wider font-semibold mb-1.5">
-                      À partir de
+                      {t("event.from")}
                     </p>
                     <p className={cn(
                       "text-3xl font-extrabold font-[family-name:var(--font-display)]",
                       event.isFree ? "text-[var(--success)]" : "text-[var(--brand)]"
                     )}>
-                      {event.isFree ? "Gratuit" : formatCurrency(event.lowestPrice ?? 0)}
+                      {event.isFree ? t("event.free") : formatCurrency(event.lowestPrice ?? 0)}
                     </p>
                     <p className="text-xs text-[var(--text-tertiary)] mt-2">
-                      {totalTicketsRemaining} billet{totalTicketsRemaining !== 1 ? "s" : ""} restant{totalTicketsRemaining !== 1 ? "s" : ""}
+                      {t("event.ticketsRemaining", { count: totalTicketsRemaining })}
                     </p>
                   </div>
                   <div className="mt-5 space-y-2.5">
@@ -271,7 +273,7 @@ export default function EventDetailPage() {
                         }
                       }}
                     >
-                      Réserver maintenant
+                      {t("event.bookNow")}
                     </Button>
                     <Button
                       variant="outline"
@@ -280,7 +282,7 @@ export default function EventDetailPage() {
                       onClick={() => setFavorited(!favorited)}
                     >
                       <Heart className={cn("w-4 h-4", favorited && "fill-red-500 text-red-500")} />
-                      {favorited ? "Favori" : "Ajouter aux favoris"}
+                      {favorited ? t("event.favorite") : t("event.addFavorite")}
                     </Button>
                   </div>
                 </motion.div>
@@ -327,7 +329,7 @@ export default function EventDetailPage() {
               <div className="flex items-center gap-2 mb-6">
                 <Sparkles className="w-4 h-4 text-[var(--accent)]" />
                 <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">
-                  Événements similaires
+                  {t("event.relatedEvents")}
                 </h2>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -371,9 +373,9 @@ export default function EventDetailPage() {
       <div className="fixed bottom-0 left-0 right-0 z-40 md:hidden glass border-t border-[var(--border)] p-3 safe-area-pb">
         <div className="flex items-center gap-3">
           <div className="flex-1 min-w-0">
-            <p className="text-[11px] text-[var(--text-secondary)] uppercase tracking-wider">À partir de</p>
+            <p className="text-[11px] text-[var(--text-secondary)] uppercase tracking-wider">{t("event.from")}</p>
             <p className={cn("font-bold text-lg font-[family-name:var(--font-display)]", event.isFree ? "text-[var(--success)]" : "text-[var(--brand)]")}>
-              {event.isFree ? "Gratuit" : formatCurrency(event.lowestPrice ?? 0)}
+              {event.isFree ? t("event.free") : formatCurrency(event.lowestPrice ?? 0)}
             </p>
           </div>
           <Button
@@ -387,7 +389,7 @@ export default function EventDetailPage() {
               }
             }}
           >
-            Réserver
+            {t("event.book")}
           </Button>
         </div>
       </div>
@@ -416,7 +418,7 @@ export default function EventDetailPage() {
               >
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="font-semibold text-lg text-[var(--text)]">Réserver un billet</h3>
+                    <h3 className="font-semibold text-lg text-[var(--text)]">{t("event.bookTicket")}</h3>
                     <p className="text-xs text-[var(--text-secondary)] mt-0.5">{event.title}</p>
                   </div>
                   <button
@@ -449,11 +451,11 @@ export default function EventDetailPage() {
                           "text-xs mt-1",
                           t.remaining < 10 ? "text-[var(--error)]" : "text-[var(--text-tertiary)]"
                         )}>
-                          {t.remaining} / {t.total} restants
+                          {t.remaining} / {t.total} {t("event.remaining")}
                         </p>
                       </div>
                       <span className={cn("font-bold text-base", t.price === 0 ? "text-[var(--success)]" : "text-[var(--brand)]")}>
-                        {t.price === 0 ? "Gratuit" : formatCurrency(t.price)}
+                        {t.price === 0 ? t("event.free") : formatCurrency(t.price)}
                       </span>
                     </button>
                   ))}
@@ -463,7 +465,7 @@ export default function EventDetailPage() {
                 {ticket && (
                   <div className="mt-5 space-y-4">
                     <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--border-subtle)]">
-                      <span className="text-sm font-medium text-[var(--text)]">Quantité</span>
+                      <span className="text-sm font-medium text-[var(--text)]">{t("checkout.quantity")}</span>
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => setTicketQuantity(Math.max(1, ticketQuantity - 1))}
@@ -486,14 +488,14 @@ export default function EventDetailPage() {
                     </div>
 
                     <div className="flex items-center justify-between py-2">
-                      <span className="text-sm text-[var(--text)] font-medium">Total</span>
+                      <span className="text-sm text-[var(--text)] font-medium">{t("checkout.total")}</span>
                       <span className="text-xl font-extrabold text-[var(--brand)] font-[family-name:var(--font-display)]">
                         {formatCurrency(ticket.price * ticketQuantity)}
                       </span>
                     </div>
 
                     <Button variant="primary" size="lg" className="w-full" onClick={handleBuyTicket}>
-                      Confirmer la réservation
+                      {t("checkout.confirm")}
                       <ArrowRight className="w-4 h-4" />
                     </Button>
                   </div>

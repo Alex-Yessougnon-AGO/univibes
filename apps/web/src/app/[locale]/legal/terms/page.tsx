@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { ScrollText } from "lucide-react";
@@ -8,6 +9,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { fadeUp, containerStagger } from "@/lib/motion";
 
 export default function TermsPage() {
+  const t = useTranslations();
   return (
     <>
       <Navbar />
@@ -25,11 +27,11 @@ export default function TermsPage() {
 
             <div className="prose prose-sm max-w-none space-y-6 text-sm text-[var(--text-secondary)] leading-relaxed">
               {[
-                { title: "1. Acceptation des conditions", text: "En accédant à la plateforme Univibes, vous acceptez d'être lié par les présentes conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser nos services." },
-                { title: "2. Description du service", text: "Univibes est une plateforme de découverte et de gestion d'événements étudiants. Elle permet aux utilisateurs de découvrir des événements, aux organisateurs de créer et promouvoir leurs événements, et facilite la billetterie en ligne." },
-                { title: "3. Comptes utilisateurs", text: "Vous êtes responsable de la confidentialité de votre compte et mot de passe. Vous devez fournir des informations exactes et à jour lors de l'inscription. Univibes se réserve le droit de suspendre tout compte en cas de violation des présentes conditions." },
-                { title: "4. Organisateurs et événements", text: "Les organisateurs sont seuls responsables du contenu et de la légalité de leurs événements. Univibes agit comme intermédiaire technique et ne peut être tenu responsable des événements publiés sur la plateforme." },
-                { title: "5. Billetterie et paiements", text: "Les transactions sont sécurisées via nos partenaires de paiement. Univibes prélève une commission sur les ventes de billets, conformément aux tarifs en vigueur. Les remboursements sont gérés directement par les organisateurs." },
+                { title: "1. Acceptation des conditions", text: "En accédant à la plateforme UnivVibes, vous acceptez d'être lié par les présentes conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser nos services." },
+                { title: "2. Description du service", text: "UnivVibes est une plateforme de découverte et de gestion d'événements étudiants. Elle permet aux utilisateurs de découvrir des événements, aux organisateurs de créer et promouvoir leurs événements, et facilite la billetterie en ligne." },
+                { title: "3. Comptes utilisateurs", text: "Vous êtes responsable de la confidentialité de votre compte et mot de passe. Vous devez fournir des informations exactes et à jour lors de l'inscription. UnivVibes se réserve le droit de suspendre tout compte en cas de violation des présentes conditions." },
+                { title: "4. Organisateurs et événements", text: "Les organisateurs sont seuls responsables du contenu et de la légalité de leurs événements. UnivVibes agit comme intermédiaire technique et ne peut être tenu responsable des événements publiés sur la plateforme." },
+                { title: "5. Billetterie et paiements", text: "Les transactions sont sécurisées via nos partenaires de paiement. UnivVibes prélève une commission sur les ventes de billets, conformément aux tarifs en vigueur. Les remboursements sont gérés directement par les organisateurs." },
               ].map((section, i) => (
                 <motion.section
                   key={section.title}

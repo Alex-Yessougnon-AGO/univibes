@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
 import { fadeUp, containerStagger } from "@/lib/motion";
@@ -10,7 +11,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { cn } from "@/lib/utils";
 
 const VALUES = [
-  { icon: Users, title: "Communauté", desc: "Univibes rassemble les étudiants autour des événements qui font vivre le campus." },
+  { icon: Users, title: "Communauté", desc: "UnivVibes rassemble les étudiants autour des événements qui font vivre le campus." },
   { icon: Lightbulb, title: "Innovation", desc: "Nous digitalisons la découverte et la gestion des événements universitaires." },
   { icon: Target, title: "Accessibilité", desc: "Gratuit pour les étudiants, simple pour les organisateurs." },
   { icon: Heart, title: "Passion", desc: "Chaque événement est une occasion de créer des moments mémorables." },
@@ -19,6 +20,7 @@ const VALUES = [
 ];
 
 export default function AboutPage() {
+  const t = useTranslations();
   return (
     <>
       <Navbar />
@@ -30,16 +32,14 @@ export default function AboutPage() {
             <motion.div initial="hidden" animate="visible" variants={containerStagger(0.07)}>
               <motion.span variants={fadeUp} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-6">
                 <Sparkles className="w-3 h-3" />
-                À propos
+                {t("about.title")}
               </motion.span>
               <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-6xl font-[family-name:var(--font-display)] text-[var(--text)] leading-tight tracking-tight mb-6 text-balance">
                 Le hub qui connecte<br />
                 <span className="text-gradient-brand">la vie étudiante</span>
               </motion.h1>
               <motion.p variants={fadeUp} className="text-base sm:text-lg text-[var(--text-secondary)] max-w-2xl mx-auto leading-relaxed mb-8">
-                Univibes est une plateforme 100% béninoise qui centralise tous les événements étudiants
-                — conférences, galas, soirées, hackathons, tournois sportifs — pour que chaque étudiant
-                trouve ce qui l&apos;anime.
+                {t("about.missionText")}
               </motion.p>
             </motion.div>
           </div>
@@ -55,11 +55,9 @@ export default function AboutPage() {
               className="rounded-3xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] p-10 md:p-14 text-center text-white"
             >
               <Target className="w-10 h-10 text-[var(--accent)] mx-auto mb-5" />
-              <h2 className="text-2xl sm:text-3xl font-[family-name:var(--font-display)] mb-4">Notre mission</h2>
+              <h2 className="text-2xl sm:text-3xl font-[family-name:var(--font-display)] mb-4">{t("about.mission")}</h2>
               <p className="text-white/80 max-w-2xl mx-auto leading-relaxed text-sm sm:text-base">
-                Construire le plus grand écosystème événementiel étudiant au Bénin. Donner à chaque étudiant
-                le pouvoir de découvrir, réserver et vivre des expériences uniques sur son campus. Et offrir
-                aux associations et clubs des outils modernes pour promouvoir leurs événements.
+                {t("about.missionText")}
               </p>
             </motion.div>
           </div>
@@ -74,7 +72,7 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
               >
-                <span className="inline-block px-3 py-1 rounded-full bg-[var(--brand-subtle)] text-[var(--brand-text)] text-[10px] font-semibold uppercase tracking-[0.15em] mb-4">Notre histoire</span>
+                <span className="inline-block px-3 py-1 rounded-full bg-[var(--brand-subtle)] text-[var(--brand-text)] text-[10px] font-semibold uppercase tracking-[0.15em] mb-4">{t("about.mission")}</span>
                 <h2 className="text-2xl sm:text-3xl font-[family-name:var(--font-display)] text-[var(--text)] leading-tight mb-4">
                   Né d&apos;un constat simple
                 </h2>
@@ -85,7 +83,7 @@ export default function AboutPage() {
                   </p>
                   <p>
                     Pas de site centralisé, pas de billetterie en ligne, pas de moyen simple pour les
-                    associations de toucher leur public. Univibes est né pour résoudre ce problème.
+                    associations de toucher leur public. UnivVibes est né pour résoudre ce problème.
                   </p>
                   <p>
                     Aujourd&apos;hui, nous travaillons avec les universités et associations pour faire de
@@ -121,8 +119,8 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="text-center mb-12"
             >
-              <span className="inline-block px-3 py-1 rounded-full bg-[var(--brand-subtle)] text-[var(--brand-text)] text-[10px] font-semibold uppercase tracking-[0.15em] mb-4">Nos valeurs</span>
-              <h2 className="text-2xl sm:text-3xl font-[family-name:var(--font-display)] text-[var(--text)]">Ce qui nous anime</h2>
+              <span className="inline-block px-3 py-1 rounded-full bg-[var(--brand-subtle)] text-[var(--brand-text)] text-[10px] font-semibold uppercase tracking-[0.15em] mb-4">{t("about.values")}</span>
+              <h2 className="text-2xl sm:text-3xl font-[family-name:var(--font-display)] text-[var(--text)]">{t("about.values")}</h2>
             </motion.div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {VALUES.map((v, i) => (
@@ -153,18 +151,18 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
-              <h2 className="text-2xl sm:text-3xl font-[family-name:var(--font-display)] text-[var(--text)] mb-4">
-                Prêt à rejoindre l&apos;aventure ?
+                <h2 className="text-2xl sm:text-3xl font-[family-name:var(--font-display)] text-[var(--text)] mb-4">
+                {t("home.discoverEvents")}
               </h2>
               <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-md mx-auto">
-                Que tu sois étudiant ou organisateur, il y a une place pour toi sur Univibes.
+                {t("about.missionText")}
               </p>
               <div className="flex items-center justify-center gap-3 flex-wrap">
                 <Button variant="primary" size="lg" className="rounded-full px-8" asChild>
-                  <Link href="/register">Créer un compte <ArrowRight className="w-4 h-4" /></Link>
+                  <Link href="/register">{t("nav.register")} <ArrowRight className="w-4 h-4" /></Link>
                 </Button>
                 <Button variant="outline" size="lg" className="rounded-full px-8" asChild>
-                  <Link href="/contact">Nous contacter</Link>
+                  <Link href="/contact">{t("pricing.ctaContact")}</Link>
                 </Button>
               </div>
             </motion.div>

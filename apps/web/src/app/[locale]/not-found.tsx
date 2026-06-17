@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import type { Metadata } from "next";
 
@@ -6,6 +7,7 @@ export const metadata: Metadata = {
 };
 
 export default function NotFoundPage() {
+  const t = useTranslations();
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center bg-[var(--bg)] px-4">
       <div className="text-center max-w-sm">

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -8,6 +9,7 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
 
 export default function CheckoutSuccessPage() {
+  const t = useTranslations();
   return (
     <>
       <Navbar />
@@ -24,20 +26,20 @@ export default function CheckoutSuccessPage() {
             </div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200/50 text-[11px] font-semibold text-emerald-600 tracking-wide mb-4">
               <Sparkles className="w-3 h-3" />
-              Paiement confirmé
+              {t("checkout.confirmed")}
             </span>
             <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-2">
-              Réservation confirmée !
+              {t("checkout.confirmed")}
             </h1>
             <p className="text-sm text-[var(--text-secondary)] mb-8 leading-relaxed">
-              Ton billet a été réservé avec succès. Tu vas recevoir un email de confirmation avec ton QR code. Présente-le à l&apos;entrée le jour J.
+              {t("checkout.confirmedDesc")}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button variant="primary" size="md" asChild>
-                <Link href="/tickets">Voir mes billets <ArrowRight className="w-4 h-4" /></Link>
+                <Link href="/tickets">{t("checkout.seeTickets")} <ArrowRight className="w-4 h-4" /></Link>
               </Button>
               <Button variant="outline" size="md" asChild>
-                <Link href="/explore">Explorer d&apos;autres événements</Link>
+                <Link href="/explore">{t("home.discoverEvents")}</Link>
               </Button>
             </div>
           </motion.div>

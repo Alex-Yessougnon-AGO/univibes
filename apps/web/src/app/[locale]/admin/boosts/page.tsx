@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
 import { TrendingUp, Sparkles } from "lucide-react";
@@ -12,13 +13,8 @@ const BOOSTS = [
   { event: "Speed Networking", organizer: "BDE FASEG", type: "24h", start: "15 Juin 2025", status: "Expiré", cost: "2 000 FCFA" },
 ];
 
-const statusVariant = (s: string) => {
-  if (s === "Actif") return "success" as const;
-  if (s === "Planifié") return "warning" as const;
-  return "soft" as const;
-};
-
 export default function AdminBoostsPage() {
+  const t = useTranslations();
   return (
     <motion.div
       initial="hidden"
@@ -26,15 +22,15 @@ export default function AdminBoostsPage() {
       variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
     >
       <motion.div variants={fadeUp}>
-        <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">Boosts</h1>
-        <p className="text-sm text-[var(--text-secondary)] mb-6">Gestion des événements sponsorisés</p>
+        <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("admin.boosts")}</h1>
+        <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.boostManagementDesc")}</p>
       </motion.div>
 
       <motion.div variants={fadeUp} className="grid grid-cols-3 gap-4 mb-6">
         {[
-          { label: "Boosts actifs", value: "12" },
-          { label: "Revenus boosts", value: "45 000 FCFA" },
-          { label: "Expirés (30j)", value: "8" },
+          { label: t("admin.activeBoosts"), value: "12" },
+          { label: t("admin.boostRevenue"), value: "45 000 FCFA" },
+          { label: t("admin.expiredBoosts"), value: "8" },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 shadow-[var(--shadow-sm)]">
             <p className="text-xl font-extrabold text-[var(--brand)] font-[family-name:var(--font-display)]">{s.value}</p>
@@ -48,12 +44,12 @@ export default function AdminBoostsPage() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-[var(--border)] bg-[var(--border-subtle)]/50">
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Événement</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden md:table-cell">Organisateur</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Type</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden sm:table-cell">Début</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Statut</th>
-                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden lg:table-cell">Coût</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.tableEvent")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden md:table-cell">{t("admin.tableOrganizer")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.tableType")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden sm:table-cell">{t("admin.tableStart")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.tableStatus")}</th>
+                <th className="text-left px-4 py-3.5 text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider hidden lg:table-cell">{t("admin.tableCost")}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--border-subtle)]">
@@ -63,7 +59,7 @@ export default function AdminBoostsPage() {
                   <td className="px-4 py-3.5 hidden md:table-cell text-sm text-[var(--text-secondary)]">{boost.organizer}</td>
                   <td className="px-4 py-3.5 text-sm text-[var(--text-secondary)]">{boost.type}</td>
                   <td className="px-4 py-3.5 hidden sm:table-cell text-sm text-[var(--text-secondary)]">{boost.start}</td>
-                  <td className="px-4 py-3.5"><Badge variant={statusVariant(boost.status)}>{boost.status}</Badge></td>
+                  <td className="px-4 py-3.5"><Badge variant={boost.status === "Actif" ? "success" : boost.status === "Planifié" ? "warning" : "soft"}>{boost.status}</Badge></td>
                   <td className="px-4 py-3.5 hidden lg:table-cell text-sm font-medium text-[var(--brand)]">{boost.cost}</td>
                 </tr>
               ))}

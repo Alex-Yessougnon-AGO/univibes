@@ -1,16 +1,10 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/motion";
 import { Users, Calendar, CreditCard, TrendingUp, ArrowUp, ArrowDown, Megaphone, Sparkles, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-const STATS = [
-  { label: "Utilisateurs", value: "2 847", icon: Users, change: "+12%", up: true, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
-  { label: "Événements", value: "156", icon: Calendar, change: "+8%", up: true, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
-  { label: "Paiements", value: "12.4M FCFA", icon: CreditCard, change: "+23%", up: true, color: "text-[var(--brand)]", bg: "bg-[var(--brand-subtle)]" },
-  { label: "Boosts actifs", value: "18", icon: TrendingUp, change: "-5%", up: false, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/10" },
-];
 
 const PENDING_EVENTS = [
   { title: "Gala de Fin d'Année FASEG 2025", organizer: "BDE FASEG", date: "19 Juil 2025" },
@@ -25,6 +19,15 @@ const ACTIVITIES = [
 ];
 
 export default function AdminDashboardPage() {
+  const t = useTranslations();
+
+  const STATS = [
+    { label: t("admin.activeUsers"), value: "2 847", icon: Users, change: "+12%", up: true, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
+    { label: t("admin.totalEvents"), value: "156", icon: Calendar, change: "+8%", up: true, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
+    { label: t("admin.payments"), value: "12.4M FCFA", icon: CreditCard, change: "+23%", up: true, color: "text-[var(--brand)]", bg: "bg-[var(--brand-subtle)]" },
+    { label: t("admin.boosts"), value: "18", icon: TrendingUp, change: "-5%", up: false, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/10" },
+  ];
+
   return (
     <motion.div
       initial="hidden"
@@ -34,10 +37,10 @@ export default function AdminDashboardPage() {
       <motion.div variants={fadeUp} className="mb-8">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-3">
           <ShieldCheck className="w-3 h-3" />
-          Administration
+          {t("admin.dashboard")}
         </span>
         <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">Dashboard Admin</h1>
-        <p className="text-sm text-[var(--text-secondary)]">Vue d&apos;ensemble de la plateforme</p>
+        <p className="text-sm text-[var(--text-secondary)]">{t("analytics.overview")}</p>
       </motion.div>
 
       <motion.div variants={fadeUp} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -62,7 +65,7 @@ export default function AdminDashboardPage() {
         <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
           <h2 className="font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[var(--accent)]" />
-            Événements en attente de validation
+            {t("admin.pendingApproval")}
           </h2>
           <div className="space-y-3">
             {PENDING_EVENTS.map((evt) => (
@@ -72,8 +75,8 @@ export default function AdminDashboardPage() {
                   <p className="text-xs text-[var(--text-secondary)]">{evt.organizer} · {evt.date}</p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors border border-emerald-200/50">Approuver</button>
-                  <button className="px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400 text-xs font-semibold hover:bg-rose-100 dark:hover:bg-rose-900/30 transition-colors border border-rose-200/50">Refuser</button>
+                  <button className="px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors border border-emerald-200/50">{t("admin.approve")}</button>
+                  <button className="px-3 py-1.5 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-700 dark:text-rose-400 text-xs font-semibold hover:bg-rose-100 dark:hover:bg-rose-900/30 transition-colors border border-rose-200/50">{t("admin.reject")}</button>
                 </div>
               </div>
             ))}

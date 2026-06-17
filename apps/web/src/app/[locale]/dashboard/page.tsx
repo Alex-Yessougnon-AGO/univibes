@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -7,13 +8,6 @@ import { fadeUp } from "@/lib/motion";
 import { Plus, Calendar, ArrowRight, Sparkles, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
-const STATS = [
-  { label: "Vues totales", value: "12 400", icon: "Eye", change: "+12%", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
-  { label: "Favoris", value: "843", icon: "Heart", change: "+8%", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/10" },
-  { label: "Billets vendus", value: "156", icon: "Ticket", change: "+23%", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
-  { label: "Revenus", value: "780 000 FCFA", icon: "DollarSign", change: "+15%", color: "text-[var(--brand)]", bg: "bg-[var(--brand-subtle)]" },
-];
 
 const RECENT_EVENTS = [
   { name: "Gala de Fin d'Année FASEG", status: "Approuvé", tickets: 89, views: 12400 },
@@ -28,6 +22,15 @@ const statusVariant = (s: string) => {
 };
 
 export default function DashboardPage() {
+  const t = useTranslations();
+
+  const STATS = [
+    { label: t("event.views"), value: "12 400", icon: "Eye", change: "+12%", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
+    { label: t("event.favorites"), value: "843", icon: "Heart", change: "+8%", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/10" },
+    { label: t("analytics.ticketsSold"), value: "156", icon: "Ticket", change: "+23%", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
+    { label: t("analytics.revenue"), value: "780 000 FCFA", icon: "DollarSign", change: "+15%", color: "text-[var(--brand)]", bg: "bg-[var(--brand-subtle)]" },
+  ];
+
   return (
     <motion.div
       initial="hidden"
@@ -38,17 +41,17 @@ export default function DashboardPage() {
         <div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-3">
             <LayoutDashboard className="w-3 h-3" />
-            Tableau de bord
+            {t("nav.dashboard")}
           </span>
           <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">
-            Tableau de bord
+            {t("nav.dashboard")}
           </h1>
           <p className="text-sm text-[var(--text-secondary)]">Bienvenue sur ton espace organisateur</p>
         </div>
         <Button variant="primary" size="md" asChild>
           <Link href="/dashboard/events/new">
             <Plus className="w-4 h-4" />
-            Nouvel événement
+            {t("hero.createEvent")}
           </Link>
         </Button>
       </motion.div>
@@ -77,11 +80,11 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-[var(--text)] flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[var(--brand)]" />
-            Événements récents
+            {t("admin.events")}
           </h2>
           <Button variant="ghost" size="sm" asChild>
             <Link href="/dashboard/events">
-              Voir tout <ArrowRight className="w-3.5 h-3.5" />
+              {t("common.seeAll")} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </Button>
         </div>
@@ -94,7 +97,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-[var(--text)] truncate">{evt.name}</p>
-                  <p className="text-xs text-[var(--text-secondary)]">{evt.views.toLocaleString()} vues · {evt.tickets} billets</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{evt.views.toLocaleString()} {t("event.views")} · {evt.tickets} {t("ticket.title")}</p>
                 </div>
               </div>
               <Badge variant={statusVariant(evt.status)}>{evt.status}</Badge>
@@ -109,7 +112,7 @@ export default function DashboardPage() {
             <Plus className="w-5 h-5 text-[var(--brand)]" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm text-[var(--text)]">Créer un événement</h3>
+            <h3 className="font-semibold text-sm text-[var(--text)]">{t("hero.createEvent")}</h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">Ajoute un nouvel événement à la plateforme</p>
           </div>
         </Link>
@@ -118,7 +121,7 @@ export default function DashboardPage() {
             <Calendar className="w-5 h-5 text-[var(--accent)]" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm text-[var(--text)]">Gérer mes événements</h3>
+            <h3 className="font-semibold text-sm text-[var(--text)]">{t("admin.events")}</h3>
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">Modifie ou archive tes événements</p>
           </div>
         </Link>

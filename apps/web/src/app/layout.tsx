@@ -17,8 +17,8 @@ const calistoga = Calistoga({
 
 export const metadata: Metadata = {
   title: {
-    default: "Univibes — The Hub of Student Life",
-    template: "%s | Univibes",
+    default: "UnivVibes — The Hub of Student Life",
+    template: "%s | UnivVibes",
   },
   description:
     "Découvre, partage et rejoins tous les événements universitaires de ta ville. La plateforme de référence pour la vie étudiante au Bénin.",
@@ -29,13 +29,13 @@ export const metadata: Metadata = {
     "Bénin",
     "campus",
   ],
-  authors: [{ name: "Univibes" }],
+  authors: [{ name: "UnivVibes" }],
   openGraph: {
     type: "website",
     locale: "fr_FR",
     url: "https://univibes.com",
-    siteName: "Univibes",
-    title: "Univibes — The Hub of Student Life",
+    siteName: "UnivVibes",
+    title: "UnivVibes — The Hub of Student Life",
     description: "Découvre tous les événements universitaires de ta ville.",
   },
 };

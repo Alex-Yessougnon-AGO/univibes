@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
@@ -10,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { fadeUp, containerStagger } from "@/lib/motion";
 
 export default function AdminUserDetailPage() {
+  const t = useTranslations();
   const params = useParams();
   const [banned, setBanned] = useState(false);
 

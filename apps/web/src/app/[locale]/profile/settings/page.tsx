@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { motion } from "framer-motion";
@@ -34,6 +35,7 @@ const SETTINGS_SECTIONS = [
 ];
 
 export default function SettingsPage() {
+  const t = useTranslations();
   const { theme, setTheme } = useTheme();
   const [settings, setSettings] = useState<Record<string, boolean>>({
     reminders: true,
