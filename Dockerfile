@@ -7,8 +7,8 @@ RUN corepack enable && corepack prepare pnpm@9 --activate
 # Dependencies
 FROM base AS deps
 WORKDIR /app
-COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-COPY package.json pnpmfile.cjs ./
+COPY pnpm-lock.yaml pnpm-workspace.yaml .npmrc .pnpmfile.cjs ./
+COPY package.json ./
 COPY apps/api/package.json apps/api/package.json
 COPY packages/types/package.json packages/types/package.json
 COPY packages/utils/package.json packages/utils/package.json
