@@ -21,6 +21,7 @@ RUN pnpm install --frozen-lockfile --shamefully-hoist
 FROM deps AS build
 WORKDIR /app
 COPY . .
+ENV CI=true
 RUN pnpm db:generate
 RUN pnpm --filter api build
 
