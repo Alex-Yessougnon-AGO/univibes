@@ -1,7 +1,8 @@
 # Univibes API - Single stage build
 # Using pnpm in a monorepo
 
-FROM node:22-alpine
+FROM node:22-slim
+RUN apt-get update -qq && apt-get install -y -qq openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN corepack enable && corepack prepare pnpm@11 --activate
 
 WORKDIR /app
