@@ -1,8 +1,8 @@
 # Univibes API - Dockerfile
 # Build: pnpm monorepo with NestJS
 
-FROM node:20-alpine AS base
-RUN corepack enable && corepack prepare pnpm@9 --activate
+FROM node:22-alpine AS base
+RUN corepack enable && corepack prepare pnpm@11 --activate
 
 # Dependencies
 FROM base AS deps
@@ -25,9 +25,9 @@ RUN pnpm db:generate
 RUN pnpm --filter api build
 
 # Production
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 WORKDIR /app
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN corepack enable && corepack prepare pnpm@11 --activate
 ENV NODE_ENV=production
 
 COPY --from=build /app/node_modules ./node_modules
