@@ -29,12 +29,15 @@ RUN pnpm db:generate
 RUN pnpm --filter api build
 
 # --- Couche 3 : Copie propre (sans symlinks pnpm) ---
-# cp -rL déréférence tous les symlinks → node_modules plat, compatible Docker COPY
-RUN mkdir -p /app/dist /app/prisma-copy && \
-    cp -rL /app/node_modules /app/node_modules_flat && \
-    rm -rf /app/node_modules_flat/.pnpm && \
+# cp -rL déréférence tous les symlinks → node_modules plat pour Railway
+RUN cp -rL /app/node_modules /app/node_modules_flat
+RUN PRISMA_DIR=$(find /app/node_modules_flat/.pnpm -maxdepth 4 -type d -name '.prisma' -print -quit 2>/dev/null) && \
+    if [ -n "$PRISMA_DIR" ]; then cp -r "$PRISMA_DIR" /app/node_modules_flat/.prisma; fi
+RUN rm -rf /app/node_modules_flat/.pnpm && \
     cp -r /app/apps/api/dist /app/dist && \
-    cp -r /app/prisma /app/prisma-copy
+    cp -r /app/prisma /app/prisma-copy && \
+    test -f /app/node_modules_flat/.prisma/client/index.js && \
+    test -x /app/node_modules_flat/.bin/prisma
 
 # =========================================
 # STAGE 2 : Exécution
