@@ -12,7 +12,7 @@
   "deploy": {
     "startCommand": "node dist/main.js",
     "healthcheckPath": "/api/v1/health",
-    "preDeployCommand": "npx prisma migrate deploy",
+    "preDeployCommand": "./node_modules/.bin/prisma migrate deploy",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
