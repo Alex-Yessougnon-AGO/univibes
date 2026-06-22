@@ -4,7 +4,7 @@
 # =========================================
 
 # =========================================
-# STAGE 1 : Installation + Build
+# STAGE 1 : Installation + Build + Deploy
 # =========================================
 FROM node:22-slim AS builder
 
@@ -14,11 +14,12 @@ RUN corepack enable && corepack prepare pnpm@11 --activate
 ENV CI=true
 WORKDIR /app
 
-# --- Couche 1 : Manifests (cache Docker) ---
+# --- Couche 1 : Dépendances (cache Docker) ---
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json pnpm.yaml .pnpmfile.cjs tsconfig.json ./
 COPY .npmrc ./
 COPY packages/ ./packages/
 COPY prisma/ ./prisma/
+COPY apps/api/package.json ./apps/api/package.json
 
 RUN pnpm install --frozen-lockfile --shamefully-hoist
 
@@ -26,6 +27,14 @@ RUN pnpm install --frozen-lockfile --shamefully-hoist
 COPY apps/api/ ./apps/api/
 RUN pnpm db:generate
 RUN pnpm --filter api build
+
+# --- Couche 3 : Copie propre (sans symlinks pnpm) ---
+# cp -rL déréférence tous les symlinks → node_modules plat, compatible Docker COPY
+RUN mkdir -p /app/dist /app/prisma-copy && \
+    cp -rL /app/node_modules /app/node_modules_flat && \
+    rm -rf /app/node_modules_flat/.pnpm && \
+    cp -r /app/apps/api/dist /app/dist && \
+    cp -r /app/prisma /app/prisma-copy
 
 # =========================================
 # STAGE 2 : Exécution
@@ -37,14 +46,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copier node_modules (symlinks relatifs pnpm préservés par Docker COPY)
-COPY --from=builder /app/node_modules ./node_modules
-
-# Copier le build NestJS
-COPY --from=builder /app/apps/api/dist ./dist
-
-# Copier Prisma (schema + migrations)
-COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/node_modules_flat ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/prisma-copy ./prisma
 
 EXPOSE 3001
 
