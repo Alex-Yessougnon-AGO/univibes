@@ -1,6 +1,6 @@
 # =========================================
 # Univibes API — Dockerfile multi-stage
-# Build: pnpm monorepo → NestJS → production
+# pnpm monorepo → NestJS → production
 # =========================================
 
 # =========================================
@@ -15,8 +15,12 @@ ENV CI=true
 WORKDIR /app
 
 # --- Couche 1 : Dépendances (cache Docker) ---
-COPY pnpm-lock.yaml pnpm-workspace.yaml package.json pnpm.yaml .pnpmfile.cjs tsconfig.json ./
+# inject-workspace-packages permet à pnpm deploy de créer un node_modules
+# autonome avec les packages workspace (types, utils) en vrais fichiers
 COPY .npmrc ./
+RUN echo "inject-workspace-packages=true" >> .npmrc
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json pnpm.yaml .pnpmfile.cjs tsconfig.json ./
 COPY packages/ ./packages/
 COPY prisma/ ./prisma/
 COPY apps/api/package.json ./apps/api/package.json
@@ -28,16 +32,20 @@ COPY apps/api/ ./apps/api/
 RUN pnpm db:generate
 RUN pnpm --filter api build
 
-# --- Couche 3 : Copie propre (sans symlinks pnpm) ---
-# cp -rL déréférence tous les symlinks → node_modules plat pour Railway
-RUN cp -rL /app/node_modules /app/node_modules_flat
-RUN PRISMA_DIR=$(find /app/node_modules_flat/.pnpm -maxdepth 4 -type d -name '.prisma' -print -quit 2>/dev/null) && \
-    if [ -n "$PRISMA_DIR" ]; then cp -r "$PRISMA_DIR" /app/node_modules_flat/.prisma; fi
-RUN rm -rf /app/node_modules_flat/.pnpm && \
-    cp -r /app/apps/api/dist /app/dist && \
-    cp -r /app/prisma /app/prisma-copy && \
-    test -f /app/node_modules_flat/.prisma/client/index.js && \
-    test -x /app/node_modules_flat/.bin/prisma
+# --- Couche 3 : pnpm deploy → node_modules autonome (sans symlinks) ---
+# Crée /app/deployed avec node_modules/ plat contenant toutes les dépendances
+# (dev comprises : prisma CLI pour les migrations)
+RUN pnpm --filter api deploy /app/deployed
+
+# Générer Prisma client dans le déploiement (sinon .prisma/client/ vide)
+RUN cd /app/deployed && \
+    ./node_modules/.bin/prisma generate --schema=/app/prisma/schema.prisma
+
+# Copier le build et le schéma Prisma dans le déploiement
+RUN cp -r /app/apps/api/dist /app/deployed/dist && \
+    cp -r /app/prisma /app/deployed/prisma && \
+    test -f /app/deployed/node_modules/.prisma/client/index.js && \
+    test -x /app/deployed/node_modules/.bin/prisma
 
 # =========================================
 # STAGE 2 : Exécution
@@ -49,9 +57,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=builder /app/node_modules_flat ./node_modules
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/prisma-copy ./prisma
+# Copier le déploiement complet (node_modules plat + dist + prisma)
+COPY --from=builder /app/deployed ./
 
 EXPOSE 3001
 
