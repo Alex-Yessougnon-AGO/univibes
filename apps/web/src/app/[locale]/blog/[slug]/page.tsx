@@ -4,12 +4,12 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock, Share2, Heart, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const ARTICLES: Record<string, { title: string; content: string; author: string; date: string; category: string; image: string; readTime: string }> = {
   "comment-creer-un-evenement-etudiant-reussi": {
@@ -46,6 +46,7 @@ Remercie les participants, recueille leurs avis et commence déjà à préparer 
 export default function BlogArticlePage() {
   const t = useTranslations();
   const params = useParams();
+  useScrollReveal();
   const slug = params.slug as string;
   const article = ARTICLES[slug];
 
@@ -55,9 +56,9 @@ export default function BlogArticlePage() {
         <Navbar />
         <main className="flex-1 pb-24 md:pb-0">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 py-20 text-center">
-            <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] mb-2">Article introuvable</h1>
+            <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] mb-2">{t("blog.notFound")}</h1>
             <p className="text-sm text-[var(--text-secondary)] mb-6">Cet article n&apos;existe pas ou a été supprimé.</p>
-            <Button variant="outline" asChild><Link href="/blog"><ArrowLeft className="w-4 h-4" /> Retour au blog</Link></Button>
+            <Button variant="outline" asChild className="pressable"><Link href="/blog"><ArrowLeft className="w-4 h-4" />{t("blog.backToBlog")}</Link></Button>
           </div>
         </main>
         <BottomNav />
@@ -70,12 +71,12 @@ export default function BlogArticlePage() {
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+          <div >
             <Link href="/blog" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] mb-6 group">
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" /> Retour au blog
             </Link>
 
-            <div className="relative aspect-[2/1] rounded-2xl overflow-hidden mb-8">
+            <div className="relative aspect-[2/1] rounded-2xl overflow-hidden mb-8 card-hover">
               <Image src={article.image} alt={article.title} fill className="object-cover" priority />
             </div>
 
@@ -85,7 +86,7 @@ export default function BlogArticlePage() {
             <div className="flex items-center gap-4 text-xs text-[var(--text-secondary)] mb-8 pb-6 border-b border-[var(--border)]">
               <div className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{article.date}</div>
               <div className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{article.readTime}</div>
-              <span>Par {article.author}</span>
+              <span>{t("blog.by") + " " + article.author}</span>
             </div>
 
             <div className="prose prose-sm max-w-none text-sm text-[var(--text-secondary)] leading-relaxed space-y-4 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-[var(--text)] [&_h2]:mt-8 [&_h2]:mb-3 [&_p]:mb-4">
@@ -97,12 +98,12 @@ export default function BlogArticlePage() {
             </div>
 
             <div className="flex items-center gap-3 mt-10 pt-6 border-t border-[var(--border)]">
-              <Button variant="outline" size="sm" className="gap-1.5"><Share2 className="w-3.5 h-3.5" /> Partager</Button>
-              <Button variant="ghost" size="sm" className="gap-1.5"><Heart className="w-3.5 h-3.5" /> Enregistrer</Button>
+              <Button variant="outline" size="sm" className="gap-1.5 pressable"><Share2 className="w-3.5 h-3.5" />{t("common.share")}</Button>
+              <Button variant="ghost" size="sm" className="gap-1.5 pressable"><Heart className="w-3.5 h-3.5" />{t("blog.save")}</Button>
               <div className="flex-1" />
-              <Button variant="primary" size="sm" asChild><Link href="/blog">Article suivant <ArrowRight className="w-3.5 h-3.5" /></Link></Button>
+              <Button variant="primary" size="sm" asChild className="pressable"><Link href="/blog">{t("blog.nextArticle")}<ArrowRight className="w-3.5 h-3.5" /></Link></Button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </main>
       <BottomNav />

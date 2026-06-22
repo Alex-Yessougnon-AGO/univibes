@@ -3,8 +3,6 @@
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
-import { containerStagger, fadeUp } from "@/lib/motion";
 import { ChevronLeft, FileText, Printer, Mail, CheckCircle, Clock, XCircle, RotateCcw, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +10,7 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
 import { EVENTS } from "@/lib/mock-data";
 import { formatCurrency, formatFullDate, cn, getInitials } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 type InvoiceStatus = "paid" | "pending" | "cancelled" | "refunded";
 
@@ -75,6 +74,7 @@ const statusConfig: Record<InvoiceStatus, { variant: "success" | "warning" | "er
 export default function InvoicePage() {
   const t = useTranslations();
   const params = useParams();
+  useScrollReveal();
   const invoice = MOCK_INVOICES.find((inv) => inv.id === params.id);
 
   if (!invoice) {
@@ -84,7 +84,7 @@ export default function InvoicePage() {
         <p className="text-sm text-[var(--text-secondary)] mt-1 mb-4">
           {t("invoice.title")} introuvable
         </p>
-        <Button variant="outline" size="sm" asChild>
+        <Button variant="outline" size="sm" asChild className="pressable">
           <Link href="/tickets">{t("nav.tickets")}</Link>
         </Button>
       </div>
@@ -104,15 +104,12 @@ export default function InvoicePage() {
     <>
       <Navbar />
       <main className="flex-1 pb-28 md:pb-0">
-        <section className="relative pt-6 pb-8 overflow-hidden">
+        <section className="relative pt-6 pb-8 overflow-hidden reveal">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-[var(--accent)]/3 to-transparent pointer-events-none" />
 
           <div className="relative max-w-2xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-            >
+            <div
+              >
               <Link
                 href="/tickets"
                 className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors mb-6 group"
@@ -141,21 +138,21 @@ export default function InvoicePage() {
                   {t(`invoice.${invoice.status}`)}
                 </Badge>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
-        <section className="max-w-2xl mx-auto px-4 sm:px-6 pb-12 space-y-5">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerStagger(0.06, 0.05)}
+        <section className="max-w-2xl mx-auto px-4 sm:px-6 pb-12 space-y-5 reveal">
+          <div
+           
+           
+            
           >
             {/* Brand header */}
-            <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)]">
+            <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] card-hover">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-[var(--brand)] flex items-center justify-center text-white font-extrabold text-sm font-[family-name:var(--font-display)]">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--brand)] flex items-center justify-center text-white font-extrabold text-sm font-[family-name:var(--font-display)] card-hover">
                     U
                   </div>
                   <div>
@@ -168,16 +165,16 @@ export default function InvoicePage() {
                   <p className="text-xs font-medium text-[var(--text)]">{formatFullDate(invoice.date)}</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Event details */}
             {event && (
-              <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] mt-4">
+              <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] mt-4 card-hover">
                 <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-3">
                   {t("invoice.event")}
                 </h3>
                 <div className="flex items-start gap-3">
-                  <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 ring-1 ring-[var(--border)]">
+                  <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 ring-1 ring-[var(--border)] card-hover">
                     <div
                       className="w-full h-full bg-cover bg-center"
                       style={{ backgroundImage: `url(${event.coverImage})` }}
@@ -193,11 +190,11 @@ export default function InvoicePage() {
                     <p className="text-xs font-medium text-[var(--text)]">{event.organizer.name}</p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* Items table */}
-            <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)] mt-4">
+            <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)] mt-4 card-hover">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
@@ -240,10 +237,10 @@ export default function InvoicePage() {
                   {subtotal === 0 ? t("event.free") : formatCurrency(subtotal)}
                 </span>
               </div>
-            </motion.div>
+            </div>
 
             {/* Payment info */}
-            <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] mt-4">
+            <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] mt-4 card-hover">
               <h3 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-3">
                 {t("invoice.paymentMethod")}
               </h3>
@@ -264,27 +261,27 @@ export default function InvoicePage() {
                   </Badge>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Actions */}
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row gap-3 mt-4">
-              <Button variant="outline" size="sm" className="flex-1 gap-2" onClick={() => handleSimulatedAction("downloadPDF")}>
+            <div  className="flex flex-col sm:flex-row gap-3 mt-4">
+              <Button variant="outline" size="sm" className="flex-1 gap-2 pressable" onClick={() => handleSimulatedAction("downloadPDF")}>
                 <FileText className="w-3.5 h-3.5" />
                 {t("invoice.downloadPDF")}
               </Button>
-              <Button variant="outline" size="sm" className="flex-1 gap-2" onClick={() => handleSimulatedAction("print")}>
+              <Button variant="outline" size="sm" className="flex-1 gap-2 pressable" onClick={() => handleSimulatedAction("print")}>
                 <Printer className="w-3.5 h-3.5" />
                 {t("invoice.print")}
               </Button>
-              <Button variant="outline" size="sm" className="flex-1 gap-2" onClick={() => handleSimulatedAction("sendEmail")}>
+              <Button variant="outline" size="sm" className="flex-1 gap-2 pressable" onClick={() => handleSimulatedAction("sendEmail")}>
                 <Mail className="w-3.5 h-3.5" />
                 {t("invoice.sendEmail")}
               </Button>
-            </motion.div>
+            </div>
 
             {/* Thank you */}
-            <motion.div variants={fadeUp} className="mt-6 text-center">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-3 shadow-[var(--shadow-sm)]">
+            <div  className="mt-6 text-center">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-3 shadow-[var(--shadow-sm)] card-hover">
                 <Building className="w-6 h-6 text-emerald-600" />
               </div>
               <p className="text-sm font-semibold text-[var(--text)]">
@@ -293,8 +290,8 @@ export default function InvoicePage() {
               <p className="text-xs text-[var(--text-secondary)] mt-1">
                 {t("common.appName")} — {t("common.appTagline")}
               </p>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         </section>
       </main>
 

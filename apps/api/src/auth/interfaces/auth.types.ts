@@ -5,6 +5,7 @@ export interface JwtPayload {
   sub: string;    // userId
   email: string;
   role: UserRole;
+  jti?: string;   // JWT ID (pour garantir l'unicité du refresh token)
 }
 
 export interface AuthenticatedUser {

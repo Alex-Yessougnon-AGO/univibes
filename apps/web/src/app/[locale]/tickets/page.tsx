@@ -4,8 +4,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { fadeUp } from "@/lib/motion";
 import { Ticket, Calendar, MapPin, QrCode, X, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +11,7 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
 import { EVENTS } from "@/lib/mock-data";
 import { formatFullDate, formatCurrency, cn } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const MOCK_TICKETS = [
   { id: "t1", event: EVENTS[1], quantity: 1, ticketName: "Participant", total: 0, date: "2025-03-15", status: "upcoming" as const, qrCode: "UNV-ABC123" },
@@ -23,6 +22,7 @@ const MOCK_TICKETS = [
 export default function TicketsPage() {
   const t = useTranslations();
   const [viewQR, setViewQR] = useState<string | null>(null);
+  useScrollReveal();
 
   const upcomingTickets = MOCK_TICKETS.filter((t) => t.status === "upcoming");
   const pastTickets = MOCK_TICKETS.filter((t) => t.status === "past");
@@ -31,15 +31,12 @@ export default function TicketsPage() {
     <>
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
-        <section className="relative pt-8 pb-8 overflow-hidden">
+        <section className="relative pt-8 pb-8 overflow-hidden reveal">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-[var(--accent)]/3 to-transparent pointer-events-none" />
 
           <div className="relative max-w-3xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-            >
+            <div
+              >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 <Ticket className="w-3 h-3" />
                 {t("ticket.title")}
@@ -51,19 +48,19 @@ export default function TicketsPage() {
               <p className="text-sm text-[var(--text-secondary)]">
                 {MOCK_TICKETS.length} billet{MOCK_TICKETS.length !== 1 ? "s" : ""}
               </p>
-            </motion.div>
+            </div>
           </div>
         </section>
 
-        <section className="max-w-3xl mx-auto px-4 sm:px-6 pb-12">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+        <section className="max-w-3xl mx-auto px-4 sm:px-6 pb-12 reveal">
+          <div
+           
+           
+            
           >
             {/* Upcoming tickets */}
             {upcomingTickets.length > 0 && (
-              <motion.div variants={fadeUp} className="mb-10">
+              <div  className="mb-10">
                 <h2 className="text-sm font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   {t("ticket.upcoming")}
@@ -72,7 +69,7 @@ export default function TicketsPage() {
                   {upcomingTickets.map((ticket) => (
                     <div
                       key={ticket.id}
-                      className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)]"
+                      className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)] card-hover"
                     >
                       <div className="flex flex-col sm:flex-row">
                         <div className="relative w-full sm:w-44 h-32 sm:h-auto shrink-0">
@@ -104,17 +101,17 @@ export default function TicketsPage() {
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* Past tickets */}
             {pastTickets.length > 0 && (
-              <motion.div variants={fadeUp}>
+              <div >
                 <h2 className="text-sm font-semibold text-[var(--text)] mb-4">{t("ticket.past")}</h2>
                 <div className="space-y-3">
                   {pastTickets.map((ticket) => (
-                    <div key={ticket.id} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 flex items-center gap-4 opacity-60 shadow-[var(--shadow-sm)]">
-                      <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 ring-1 ring-[var(--border)]">
+                    <div key={ticket.id} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-4 flex items-center gap-4 opacity-60 shadow-[var(--shadow-sm)] card-hover">
+                      <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 ring-1 ring-[var(--border)] card-hover">
                         <Image src={ticket.event.coverImage} alt={ticket.event.title} fill className="object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -125,53 +122,42 @@ export default function TicketsPage() {
                     </div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* Empty state */}
             {MOCK_TICKETS.length === 0 && (
-              <motion.div variants={fadeUp} className="text-center py-20">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.4, ease: [0.25, 0.1, 0, 1], delay: 0.1 }}
-                  className="w-20 h-20 rounded-2xl bg-[var(--brand-subtle)] border border-[var(--brand)]/10 flex items-center justify-center mx-auto mb-5"
+              <div  className="text-center py-20">
+                <div
+                  className="w-20 h-20 rounded-2xl bg-[var(--brand-subtle)] border border-[var(--brand)]/10 flex items-center justify-center mx-auto mb-5 card-hover"
                 >
                   <Ticket className="w-8 h-8 text-[var(--brand)]" />
-                </motion.div>
+                </div>
                 <h3 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
                   {t("ticket.empty")}
                 </h3>
                 <p className="text-sm text-[var(--text-secondary)] mb-7 max-w-sm mx-auto leading-relaxed">
                   Trouve un événement qui te fait envie et réserve ta place. Dès que ton achat est confirmé, ton billet apparaîtra ici, prêt à être utilisé.
                 </p>
-                <Button variant="primary" size="md" className="rounded-full px-6" asChild>
+                <Button variant="primary" size="md" className="rounded-full px-6 pressable" asChild>
                   <Link href="/explore">{t("home.discoverEvents")}</Link>
                 </Button>
-              </motion.div>
+              </div>
             )}
-          </motion.div>
+          </div>
         </section>
       </main>
 
       {/* QR Code modal */}
-      <AnimatePresence>
         {viewQR && (() => {
           const ticket = MOCK_TICKETS.find((t) => t.id === viewQR);
           return (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+            <div
               className="fixed inset-0 z-50 flex items-center justify-center"
               onClick={() => setViewQR(null)}
             >
               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-              <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
+              <div
                 className="relative w-80 p-8 rounded-3xl bg-[var(--surface)] border border-[var(--border)] text-center shadow-[var(--shadow-lg)]"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -182,7 +168,7 @@ export default function TicketsPage() {
                   <X className="w-4 h-4" />
                 </button>
 
-                <div className="w-48 h-48 mx-auto mb-5 rounded-2xl bg-white p-4 flex items-center justify-center shadow-[var(--shadow-sm)]">
+                <div className="w-48 h-48 mx-auto mb-5 rounded-2xl bg-white p-4 flex items-center justify-center shadow-[var(--shadow-sm)] card-hover">
                   <div className="w-full h-full bg-[var(--text)] relative overflow-hidden rounded-lg">
                     <div className="absolute inset-0 grid grid-cols-8 gap-0.5 p-0.5">
                       {Array.from({ length: 64 }).map((_, i) => (
@@ -206,14 +192,14 @@ export default function TicketsPage() {
                   </p>
                 </div>
 
-                <Button variant="ghost" size="sm" className="mt-4 w-full" onClick={() => setViewQR(null)}>
+                <Button variant="ghost" size="sm" className="mt-4 w-full pressable" onClick={() => setViewQR(null)}>
                   {t("common.close")}
                 </Button>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           );
         })()}
-      </AnimatePresence>
+      
 
       <BottomNav />
     </>

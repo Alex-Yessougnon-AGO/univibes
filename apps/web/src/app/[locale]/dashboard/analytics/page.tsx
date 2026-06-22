@@ -2,8 +2,6 @@
 
 import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { containerStagger, fadeUp } from "@/lib/motion";
 import {
   TrendingUp,
   Ticket,
@@ -18,12 +16,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatCurrency } from "@/lib/utils";
 import { EVENTS } from "@/lib/mock-data";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const PERIODS = ["today", "week", "month", "year", "allTime"] as const;
 
 export default function AnalyticsPage() {
   const t = useTranslations();
   const [period, setPeriod] = useState<string>("month");
+  useScrollReveal();
 
   const { eventData, totals, topEvents } = useMemo(() => {
     const data = EVENTS.map((event) => {
@@ -168,27 +168,27 @@ export default function AnalyticsPage() {
 
   if (eventData.length === 0) {
     return (
-      <motion.div
-        variants={containerStagger()}
-        initial="hidden"
-        animate="visible"
+      <div
+        
+       
+       
         className="flex flex-col items-center justify-center py-20"
       >
         <BarChart3 className="w-12 h-12 text-[var(--text-secondary)] mb-4" />
         <p className="text-[var(--text-secondary)]">{t("analytics.noData")}</p>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      variants={containerStagger()}
-      initial="hidden"
-      animate="visible"
+    <div
+      
+     
+     
     >
       {/* Header */}
-      <motion.div
-        variants={fadeUp}
+      <div
+        
         className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6"
       >
         <div>
@@ -203,15 +203,15 @@ export default function AnalyticsPage() {
             {t("analytics.subtitle")}
           </p>
         </div>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="pressable">
           <Download className="w-4 h-4" />
           {t("analytics.exportData")}
         </Button>
-      </motion.div>
+      </div>
 
       {/* Period selector */}
-      <motion.div
-        variants={fadeUp}
+      <div
+        
         className="flex items-center gap-2 mb-6 flex-wrap"
       >
         <span className="text-xs font-medium text-[var(--text-secondary)] mr-1">
@@ -231,17 +231,17 @@ export default function AnalyticsPage() {
             {t(`analytics.${p}`)}
           </button>
         ))}
-      </motion.div>
+      </div>
 
       {/* KPI cards */}
-      <motion.div
-        variants={fadeUp}
+      <div
+        
         className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8"
       >
         {kpis.map((kpi) => (
           <div
             key={kpi.key}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)]"
+            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] card-hover"
           >
             <div className="flex items-center justify-between mb-3">
               <div
@@ -268,12 +268,12 @@ export default function AnalyticsPage() {
             </p>
           </div>
         ))}
-      </motion.div>
+      </div>
 
       {/* Sales over time chart */}
-      <motion.div
-        variants={fadeUp}
-        className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] mb-6"
+      <div
+        
+        className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] mb-6 card-hover"
       >
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-semibold text-[var(--text)] flex items-center gap-2">
@@ -323,13 +323,13 @@ export default function AnalyticsPage() {
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Tickets by event */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <motion.div
-          variants={fadeUp}
-          className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]"
+        <div
+          
+          className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] card-hover"
         >
           <h2 className="font-semibold text-[var(--text)] flex items-center gap-2 mb-5">
             <Ticket className="w-4 h-4 text-[var(--brand)]" />
@@ -365,12 +365,12 @@ export default function AnalyticsPage() {
               );
             })}
           </div>
-        </motion.div>
+        </div>
 
         {/* Top events */}
-        <motion.div
-          variants={fadeUp}
-          className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]"
+        <div
+          
+          className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] card-hover"
         >
           <h2 className="font-semibold text-[var(--text)] flex items-center gap-2 mb-5">
             <Trophy className="w-4 h-4 text-[var(--gold)]" />
@@ -416,8 +416,8 @@ export default function AnalyticsPage() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
-import { fadeUp, containerStagger } from "@/lib/motion";
 import { ArrowLeft, Bell, Mail, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const NOTIF_TYPES = [
   "ticketPurchased",
@@ -22,6 +21,7 @@ export default function NotificationsPage() {
   const t = useTranslations();
 
   const [pushEnabled, setPushEnabled] = useState(true);
+  useScrollReveal();
   const [emailEnabled, setEmailEnabled] = useState(true);
   const [pushPrefs, setPushPrefs] = useState<Record<string, boolean>>({
     ticketPurchased: true,
@@ -68,11 +68,8 @@ export default function NotificationsPage() {
         <div className="relative pt-6 pb-4">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 to-transparent pointer-events-none" />
           <div className="relative max-w-2xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-            >
+            <div
+              >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 <Sparkles className="w-3 h-3" />
                 {t("profile.notifications")}
@@ -83,20 +80,20 @@ export default function NotificationsPage() {
               <p className="text-sm text-[var(--text-secondary)] mt-1">
                 {t("notifPrefs.subtitle")}
               </p>
-            </motion.div>
+            </div>
           </div>
         </div>
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerStagger()}
+        <div
+         
+         
+          
           className="max-w-2xl mx-auto px-4 sm:px-6 pb-12 space-y-6"
         >
           {/* Push notifications */}
-          <motion.div
-            variants={fadeUp}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)]"
+          <div
+            
+            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)] card-hover"
           >
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
               <div className="flex items-center gap-2">
@@ -156,12 +153,12 @@ export default function NotificationsPage() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Email notifications */}
-          <motion.div
-            variants={fadeUp}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)]"
+          <div
+            
+            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)] card-hover"
           >
             <div className="flex items-center justify-between px-5 pt-5 pb-3">
               <div className="flex items-center gap-2">
@@ -221,14 +218,14 @@ export default function NotificationsPage() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Save button */}
-          <motion.div variants={fadeUp}>
+          <div >
             <Button
               variant="primary"
               size="lg"
-              className="w-full"
+              className="w-full pressable"
               onClick={handleSave}
               disabled={saved}
             >
@@ -240,8 +237,8 @@ export default function NotificationsPage() {
                 t("notifPrefs.savePreferences")
               )}
             </Button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );

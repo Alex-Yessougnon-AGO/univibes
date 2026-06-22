@@ -16,7 +16,15 @@
     "share": "Share",
     "close": "Close",
     "confirm": "Confirm",
-    "learnMore": "Learn more"
+    "learnMore": "Learn more",
+    "info": "Info",
+    "role": "Role",
+    "continue": "Continue",
+    "almostDone": "Almost done",
+    "creating": "Creating...",
+    "offline": "You are offline — some features may not work",
+    "toEvents": "to events",
+    "home": "Home"
   },
   "nav": {
     "home": "Home",
@@ -38,12 +46,15 @@
     "pricing": "Pricing",
     "legal": "Legal",
     "language": "Language",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
     "french": "French",
     "english": "English",
     "viewSite": "View site"
   },
   "hero": {
-    "title": "Discover everything happening on your campus",
+    "titleBefore": "Discover everything happening on ",
+    "titleHighlight": "your campus",
     "subtitle": "Explore, attend, and create university events near you",
     "cta": "Explore",
     "createEvent": "Create an event"
@@ -60,7 +71,21 @@
     "friendsAttending": "{count} friend(s) attending this week",
     "discoverEvents": "Discover events"
   },
+  "homepage": {
+    "communityLabel": "already on campus",
+    "eventsMonthly": "this month and counting",
+    "activeStudents": "active students",
+    "exploreCategory": "Explore events",
+    "testimonialQuote": "The one place where I actually find out what's happening on campus. No more scrolling through WhatsApp groups.",
+    "testimonialName": "Mariam",
+    "testimonialRole": "Student, ENSTP",
+    "growingEvents": "growing events",
+    "ctaQuarter": "this quarter",
+    "ctaDescription": "More students creating events every month",
+    "ctaOrganizers": "organizers"
+  },
   "auth": {
+    "createAccount": "Create your account",
     "welcome": "Welcome back",
     "welcomeBack": "Sign in to stay in the loop",
     "email": "Email",
@@ -75,18 +100,37 @@
     "resetPassword": "Reset password",
     "sendResetLink": "Send reset link",
     "checkEmail": "Check your inbox",
+    "checkEmailDesc": "If this account exists, you'll receive a reset link in a few minutes.",
+    "resendEmail": "Resend email",
     "verifyEmail": "Verify your email",
     "emailSent": "We sent a confirmation email to {email}",
     "onboarding": {
-        "welcome": "Welcome to UnivVibes!",
+      "welcome": "Welcome to UnivVibes!",
       "personalize": "We need a few details to personalize your experience.",
       "firstName": "Your first name",
       "university": "Your university",
       "interests": "What are you into?",
       "interestsSubtitle": "Pick your interests for tailored recommendations.",
       "ready": "You're all set, {name}!",
-      "readySubtitle": "Your profile is ready. We're finding the best events near you."
-    }
+      "readySubtitle": "Your profile is ready. We're finding the best events near you.",
+      "stepProfile": "Profile",
+      "stepInterests": "Interests",
+      "stepDone": "Done",
+      "interestConcerts": "Concerts",
+      "interestConferences": "Conferences",
+      "interestSport": "Sports",
+      "interestGala": "Gala",
+      "interestHackathons": "Hackathons",
+      "interestTheater": "Theater",
+      "interestAfterworks": "Afterworks",
+      "interestWorkshops": "Workshops",
+      "interestExhibitions": "Exhibitions"
+    },
+    "simulationAlert": "Registration simulated! (Backend not connected)",
+    "connecting": "Connecting...",
+    "or": "or",
+    "emailPlaceholder": "your@email.com",
+    "passwordPlaceholder": "Your password"
   },
   "event": {
     "free": "Free",
@@ -110,7 +154,20 @@
     "soldOut": "Sold out",
     "participants": "Participants",
     "views": "Views",
-    "favorites": "Favorites"
+    "favorites": "Favorites",
+    "eventsCount": "{count} events",
+    "followers": "followers",
+    "about": "About",
+    "availableTickets": "Available tickets",
+    "bookTicket": "Book a ticket",
+    "remaining": "remaining",
+    "followersCount": "{count} followers",
+    "addFavorite": "Add to favorites",
+    "bookNow": "Book now",
+    "ticketsRemaining": "{count} tickets remaining",
+    "ticketName": "Name",
+    "ticketPrice": "Price (FCFA)",
+    "ticketQuantity": "Available quantity"
   },
   "explore": {
     "title": "Explore events",
@@ -131,7 +188,14 @@
     "noResults": "Nothing here…",
     "noResultsDesc": "We searched everywhere but couldn't find any events matching your criteria. Try different filters.",
     "resetFilters": "Reset filters",
-    "viewMode": "View mode"
+    "viewMode": "View mode",
+    "search": "Search",
+    "category": "Category",
+    "city": "City",
+    "price": "Price",
+    "clearAll": "Clear all",
+    "viewResults": "View {count} results",
+    "all": "All"
   },
   "checkout": {
     "title": "Complete your booking",
@@ -178,7 +242,10 @@
     "notifications": "Notifications",
     "theme": "Theme",
     "language": "Language",
-    "deleteAccount": "Delete account"
+    "deleteAccount": "Delete account",
+    "student": "Student",
+    "organizer": "Organizer",
+    "events": "Events"
   },
   "admin": {
     "dashboard": "Admin",
@@ -286,13 +353,47 @@
     "expired": "Expired",
     "suspended": "Suspended",
     "exhibitor": "Poster",
-    "searchPlaceholder": "Search..."
+    "searchPlaceholder": "Search...",
+    "role": "Role",
+    "admin": "Admin",
+    "moderator": "Moderator",
+    "status": "Status"
   },
   "legal": {
     "terms": "Terms of Service",
     "privacy": "Privacy Policy",
     "cookies": "Cookie Policy",
-    "lastUpdate": "Last updated: {date}"
+    "lastUpdate": "Last updated: {date}",
+    "eyebrow": {
+      "legal": "Legal",
+      "privacy": "Privacy",
+      "cookies": "Cookies"
+    },
+    "updated": "Last updated: June 2025",
+    "terms1Title": "1. Acceptance of Terms",
+    "terms1Text": "By accessing the UnivVibes platform, you agree to be bound by these terms of service. If you do not agree with these terms, please do not use our services.",
+    "terms2Title": "2. Description of Service",
+    "terms2Text": "UnivVibes is a student event discovery and management platform. It allows users to discover events, organizers to create and promote their events, and facilitates online ticketing.",
+    "terms3Title": "3. User Accounts",
+    "terms3Text": "You are responsible for maintaining the confidentiality of your account and password. You must provide accurate and up-to-date information when registering. UnivVibes reserves the right to suspend any account in case of violation of these terms.",
+    "terms4Title": "4. Organizers and Events",
+    "terms4Text": "Organizers are solely responsible for the content and legality of their events. UnivVibes acts as a technical intermediary and cannot be held responsible for events published on the platform.",
+    "terms5Title": "5. Ticketing and Payments",
+    "terms5Text": "Transactions are secured via our payment partners. UnivVibes deducts a commission on ticket sales, according to the applicable rates. Refunds are handled directly by the organizers.",
+    "privacy1Title": "1. Data Collected",
+    "privacy1Text": "We collect information you provide during registration: name, email, university, phone number. We also collect usage data (pages visited, events viewed) to improve our services.",
+    "privacy2Title": "2. Use of Data",
+    "privacy2Text": "Your data is used to: provide our services, personalize your experience, send relevant notifications, and improve our platform. We never sell your personal data.",
+    "privacy3Title": "3. Data Protection",
+    "privacy3Text": "We implement technical and organizational security measures to protect your data from unauthorized access, modification, or destruction.",
+    "privacy4Title": "4. Your Rights",
+    "privacy4Text": "In accordance with regulations, you have the right to access, rectify, and delete your data. To exercise these rights, contact us at privacy@univibes.com.",
+    "cookies1Title": "1. What is a Cookie?",
+    "cookies1Text": "A cookie is a small text file stored on your device when you visit a website. It enables the site to remember your preferences and improve your browsing experience.",
+    "cookies2Title": "2. Cookies Used",
+    "cookies2Text": "We use essential cookies for platform functionality (authentication, session) and analytics cookies (to understand how you use the site). We do not use third-party advertising cookies.",
+    "cookies3Title": "3. Managing Cookies",
+    "cookies3Text": "You can configure your browser to refuse cookies. However, some platform features may not function properly without them."
   },
   "blog": {
     "title": "Blog",
@@ -307,11 +408,30 @@
     "backToBlog": "Back to blog",
     "share": "Share",
     "save": "Save",
-    "nextArticle": "Next article"
+    "nextArticle": "Next article",
+    "tips": "Tips",
+    "organizers": "Organizers",
+    "ticketing": "Ticketing",
+    "testimonials": "Testimonials",
+    "selections": "Selections",
+    "billetterieExcerpt": "No more WhatsApp lists or cash at the door. Discover why digital ticketing is a game changer.",
+    "by": "By",
+    "category_all": "All",
+    "category_tips": "Tips",
+    "category_organizers": "Organizers",
+    "category_ticketing": "Ticketing",
+    "category_testimonials": "Testimonials",
+    "category_selections": "Selections",
+    "cat_all": "All",
+    "cat_tips": "Tips",
+    "cat_orga": "Organizers",
+    "cat_ticket": "Ticketing",
+    "cat_testi": "Testimonials",
+    "cat_select": "Selections"
   },
   "footer": {
     "rights": "All rights reserved",
-    "madeWith": "Made with ❤️ for students in Benin"
+    "madeWith": "The reference platform for university event life in Africa."
   },
   "errors": {
     "notFound": "Page not found",
@@ -338,7 +458,33 @@
     "rejectReason": "Rejection reason",
     "rejectPlaceholder": "Explain why the event is being rejected…",
     "approved": "Event approved!",
-    "approvedDesc": "It will be visible on the platform in a few minutes."
+    "approvedDesc": "It will be visible on the platform in a few minutes.",
+    "organizer": "Organizer",
+    "actionApprove": "Approve event",
+    "actionReject": "Reject event",
+    "actionIgnore": "Report ignored",
+    "actionWarn": "Warning sent",
+    "actionDelete": "Comment deleted",
+    "rejected": "Rejected",
+    "warned": "Warned",
+    "deleted": "Deleted",
+    "ignored": "Ignored",
+    "submittedDate": "Submitted Jul 12, 2025",
+    "target": "Target",
+    "sampleTarget1": "AI & Data Hackathon",
+    "sampleTarget2": "Electro Party",
+    "sampleTarget3": "Event #452",
+    "sampleTarget4": "Organizer #89",
+    "sampleTarget5": "FIFA 2025 Tournament",
+    "sampleTarget6": "Event #328",
+    "sampleMod1": "Moderator #1",
+    "sampleMod2": "Moderator #2",
+    "sampleMod3": "Moderator #3",
+    "sampleDate": "Jul 15, 2025",
+    "sampleEventTitle": "AI & Data Hackathon",
+    "sampleCategory": "Hackathon",
+    "sampleCity": "Abomey-Calavi",
+    "sampleOrganizer": "Club IA UAC"
   },
   "pricing": {
     "title": "Our pricing",
@@ -359,7 +505,38 @@
     "faq2": "Are there hidden fees?",
     "faq2a": "No, everything is transparent. You only pay what's shown.",
     "faq3": "How does the commission work?",
-    "faq3a": "A 5% commission is applied to each ticket sold."
+    "faq3a": "A 5% commission is applied to each ticket sold.",
+    "always": "always",
+    "mostPopular": "Most popular",
+    "customPrice": "Custom",
+    "ctaPro": "Go Premium",
+    "feature": {
+      "unlimitedEvents": "Unlimited events",
+      "max100": "Up to 100 participants per event",
+      "basicStats": "Basic statistics (views, favorites)",
+      "verifiedBadge": "Verified organizer badge",
+      "emailSupport": "Email support",
+      "allFree": "Everything in Free",
+      "unlimitedParticipants": "Unlimited participants",
+      "advancedStats": "Advanced statistics + charts",
+      "boosts": "Event boosts included (1/week)",
+      "paidTicketing": "Paid ticketing (3% commission)",
+      "csvExport": "CSV participant export",
+      "prioritySupport": "Priority support",
+      "premiumBadge": "Premium badge",
+      "homeVisibility": "Homepage visibility",
+      "banners": "Dedicated ad banners",
+      "targeting": "City and university targeting",
+      "monthlyReport": "Monthly impact report",
+      "apiAccess": "API access (Phase 2)",
+      "dedicatedSupport": "Dedicated support",
+      "customInvoice": "Custom invoice"
+    },
+    "faq1q": "Is ticketing free?",
+    "faq2q": "Can I upgrade from Free to Premium anytime?",
+    "faq3q": "How are payments processed?",
+    "faq4q": "Is there a minimum commitment?",
+    "faq4a": "No. The Premium plan is monthly and can be cancelled anytime."
   },
   "contact": {
     "title": "Contact us",
@@ -372,7 +549,16 @@
     "sent": "Message sent!",
     "sentDesc": "We'll get back to you as soon as possible.",
     "orWriteTo": "Or write to us directly",
-    "faq": "Check our FAQ"
+    "faq": "Check our FAQ",
+    "faq1q": "How do I create an event?",
+    "faq1a": "Sign up as an organizer, then click 'Create an event' from your dashboard.",
+    "faq2q": "Is ticketing paid?",
+    "faq2a": "Free events have no commission. Paid events have a 5% commission.",
+    "faq3q": "Can I edit an event after publishing?",
+    "faq3a": "Yes, you can edit all info from your dashboard even after publishing.",
+    "faq4q": "How are payments made?",
+    "faq4a": "Funds are transferred to your Mobile Money or bank account within 48h.",
+    "subjectPlaceholder": "Ex: Question about ticketing"
   },
   "checkin": {
     "title": "QR Code Scan",
@@ -502,6 +688,54 @@
       "users": "10,000+ students",
       "organizers": "50+ organizers",
       "cities": "10+ cities"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "pageTitle": "Account settings",
+    "back": "Back",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "notifications": "Notifications",
+    "privacy": "Privacy",
+    "deleteAccount": "Delete my account",
+    "reminders": "Event reminders",
+    "newFavorites": "New favorites",
+    "recommendations": "Recommendations",
+    "promotions": "Offers & promotions",
+    "publicProfile": "Profile visible by everyone",
+    "publicFavorites": "Show my favorites list",
+    "receiveMessages": "Receive messages"
+  },
+  "notifications": {
+    "unread": "unread",
+    "unread_plural": "unreads",
+    "markAllRead": "Mark all as read",
+    "unreadFilter": "Unread",
+    "see": "See",
+    "youAreUpToDate": "You're up to date!",
+    "emptyDesc": "We'll notify you here when something happens — ticket confirmation, event reminder, or news from your favorite organizers."
+  },
+  "dashboard": {
+    "ticketing": "Ticketing",
+    "event": {
+      "stepInfo": "Information",
+      "stepTicketing": "Ticketing",
+      "stepPublish": "Publish",
+      "generalInfo": "General information",
+      "eventTitle": "Event title",
+      "of3": "of 3",
+      "step": "Step",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "continueTicketing": "Continue to ticketing",
+      "ticketTypesHint": "Define available ticket types",
+      "addTicket": "Add a ticket type",
+      "reviewHint": "Double-check before publishing your event.",
+      "publish": "Publish event",
+      "descPlaceholder": "Describe your event in a few lines..."
     }
   }
 }

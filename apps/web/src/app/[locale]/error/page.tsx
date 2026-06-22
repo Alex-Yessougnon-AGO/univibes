@@ -12,7 +12,7 @@ export default function ErrorPage({
   return (
     <div className="min-h-dvh flex flex-col items-center justify-center bg-[var(--bg)] px-4">
       <div className="text-center max-w-sm">
-        <div className="w-20 h-20 rounded-2xl bg-rose-50 dark:bg-rose-950/10 border border-rose-200/50 flex items-center justify-center mx-auto mb-6">
+        <div className="w-20 h-20 rounded-2xl bg-rose-50 dark:bg-rose-950/10 border border-rose-200/50 flex items-center justify-center mx-auto mb-6 card-hover">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-8 h-8 text-rose-500"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">

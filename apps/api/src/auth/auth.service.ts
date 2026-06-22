@@ -3,11 +3,13 @@ import {
   ConflictException,
   UnauthorizedException,
   BadRequestException,
+  InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
+import { Resend } from 'resend';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../common/audit/audit.service';
 import { RegisterDto, LoginDto } from './dto/register.dto';
@@ -22,7 +24,13 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly audit: AuditService,
-  ) {}
+  ) {
+    if (process.env.RESEND_API_KEY) {
+      this.resend = new Resend(process.env.RESEND_API_KEY);
+    }
+  }
+
+  private resend?: Resend;
 
   async register(dto: RegisterDto, ipAddress?: string): Promise<AuthResponse> {
     const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
@@ -209,8 +217,69 @@ export class AuthService {
     this.logger.log(`Email vérifié: userId=${verification.userId}`);
   }
 
+  async resendVerificationEmail(userId: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { profile: true },
+    });
+
+    if (!user) {
+      throw new BadRequestException({
+        code: 'USER_NOT_FOUND',
+        message: 'Utilisateur introuvable.',
+      });
+    }
+
+    if (user.emailVerified) {
+      throw new BadRequestException({
+        code: 'EMAIL_ALREADY_VERIFIED',
+        message: 'Votre email est d\u00e9j\u00e0 v\u00e9rifi\u00e9.',
+      });
+    }
+
+    // Supprimer les anciens tokens
+    await this.prisma.emailVerification.deleteMany({ where: { userId } });
+
+    // Cr\u00e9er un nouveau token
+    const token = uuidv4();
+    await this.prisma.emailVerification.create({
+      data: {
+        userId,
+        token,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      },
+    });
+
+    // Envoyer l\'email via Resend
+    if (this.resend) {
+      const verificationUrl = `${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/auth/verify-email/${token}`;
+      const fullname = user.profile?.fullname ?? 'Utilisateur';
+
+      await this.resend.emails.send({
+        from: process.env.RESEND_FROM ?? 'noreply@univibes.com',
+        to: user.email,
+        subject: "V\u00e9rifiez votre adresse email - UnivVibes",
+        html: `<div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+          <h2>Bienvenue sur UnivVibes, ${fullname} !</h2>
+          <p>Cliquez sur le lien ci-dessous pour v\u00e9rifier votre adresse email :</p>
+          <a href="${verificationUrl}" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">
+            V\u00e9rifier mon email
+          </a>
+          <p style="color:#6b7280;font-size:14px">Ce lien expire dans 24h.</p>
+        </div>`,
+      });
+    } else {
+      this.logger.warn("Resend non configur\u00e9 (RESEND_API_KEY manquant). Token de v\u00e9rification cr\u00e9\u00e9 sans envoi email.");
+    }
+
+    this.logger.log(`Email de v\u00e9rification renvoy\u00e9: ${user.email}`);
+  }
+
   async forgotPassword(email: string): Promise<void> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+      include: { profile: true },
+    });
     if (!user) {
       // Ne pas révéler si l'email existe ou pas
       return;
@@ -225,8 +294,29 @@ export class AuthService {
       },
     });
 
-    this.logger.log(`Demande de réinitialisation: ${email}`);
-    // TODO: Envoyer l'email avec Resend
+    // Envoyer l'email via Resend
+    if (this.resend) {
+      const resetUrl = `${process.env.FRONTEND_URL ?? 'http://localhost:3000'}/auth/reset-password/${token}`;
+      const fullname = user.profile?.fullname ?? 'Utilisateur';
+
+      await this.resend.emails.send({
+        from: process.env.RESEND_FROM ?? 'noreply@univibes.com',
+        to: user.email,
+        subject: 'R\u00e9initialisation de mot de passe - UnivVibes',
+        html: `<div style="font-family:sans-serif;max-width:480px;margin:0 auto">
+          <h2>Bonjour ${fullname},</h2>
+          <p>Vous avez demand\u00e9 la r\u00e9initialisation de votre mot de passe UnivVibes.</p>
+          <a href="${resetUrl}" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;text-decoration:none;border-radius:8px;margin:16px 0">
+            R\u00e9initialiser mon mot de passe
+          </a>
+          <p style="color:#6b7280;font-size:14px">Ce lien expire dans 1 heure. Si vous n'avez pas demand\u00e9 cette r\u00e9initialisation, ignorez cet email.</p>
+        </div>`,
+      });
+    } else {
+      this.logger.warn('Resend non configur\u00e9 (RESEND_API_KEY manquant). Token cr\u00e9\u00e9 sans envoi email.');
+    }
+
+    this.logger.log(`Demande de r\u00e9initialisation: ${email}`);
   }
 
   async resetPassword(token: string, newPassword: string): Promise<void> {
@@ -261,17 +351,26 @@ export class AuthService {
     userId: string,
     email: string,
     role: string,
+    retryCount = 0,
   ): Promise<AuthTokens> {
-    const payload: JwtPayload = { sub: userId, email, role: role as any };
+    if (retryCount > 3) {
+      throw new InternalServerErrorException({
+        code: 'TOKEN_GENERATION_FAILED',
+        message: 'Échec de génération des tokens après 3 tentatives.',
+      });
+    }
+
+    const jti = uuidv4();
+    const payload: JwtPayload = { sub: userId, email, role: role as any, jti };
 
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(payload, {
         secret: process.env.JWT_ACCESS_SECRET,
-        expiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '15m',
+        expiresIn: (process.env.JWT_ACCESS_EXPIRES_IN ?? '15m') as any,
       }),
       this.jwtService.signAsync(payload, {
         secret: process.env.JWT_REFRESH_SECRET,
-        expiresIn: process.env.JWT_REFRESH_EXPIRES_IN ?? '30d',
+        expiresIn: (process.env.JWT_REFRESH_EXPIRES_IN ?? '30d') as any,
       }),
     ]);
 
@@ -279,13 +378,20 @@ export class AuthService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 30);
 
-    await this.prisma.refreshToken.create({
-      data: {
-        userId,
-        token: refreshToken,
-        expiresAt,
-      },
-    });
+    // En cas de collision (extrêmement rare), on retente avec un nouveau jti
+    try {
+      await this.prisma.refreshToken.create({
+        data: {
+          userId,
+          token: refreshToken,
+          expiresAt,
+        },
+      });
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Collision refreshToken: ${errMsg} — retry ${retryCount + 1}/3`);
+      return this.generateTokens(userId, email, role, retryCount + 1);
+    }
 
     return { accessToken, refreshToken };
   }

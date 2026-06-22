@@ -1,11 +1,13 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { MotionConfig } from "framer-motion";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { OfflineIndicator } from "@/components/shared/offline-indicator";
 import { PageTransition } from "@/components/layout/page-transition";
+import { FooterWrapper } from "@/components/layout/footer-wrapper";
 import { Toaster } from "sonner";
 import { routing } from "@/i18n/routing";
+import { DebugBar } from "@/components/debug/debug-bar";
+import { AuthProvider } from "@/lib/auth-context";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -23,13 +25,17 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      <AuthProvider>
       <ThemeProvider defaultTheme="light" enableSystem>
-        <MotionConfig reducedMotion="user">
           <OfflineIndicator />
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </MotionConfig>
+          <div className="flex min-h-dvh flex-col">
+            <div className="flex-1">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </div>
+            <FooterWrapper />
+          </div>
         <Toaster
           position="top-right"
           toastOptions={{
@@ -40,7 +46,9 @@ export default async function LocaleLayout({
             },
           }}
         />
+        {process.env.NODE_ENV !== 'production' && <DebugBar />}
       </ThemeProvider>
+      </AuthProvider>
     </NextIntlClientProvider>
   );
 }

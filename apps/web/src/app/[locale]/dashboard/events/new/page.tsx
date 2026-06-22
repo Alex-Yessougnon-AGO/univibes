@@ -3,19 +3,19 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
 import { ArrowLeft, Check, Upload, Plus, X, Sparkles } from "lucide-react";
 import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CATEGORIES } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-
-const STEPS = ["Informations", "Billetterie", "Publication"];
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 export default function NewEventPage() {
   const t = useTranslations();
+  const STEPS = [t("dashboard.event.stepInfo"), t("dashboard.event.stepTicketing"), t("dashboard.event.stepPublish")];
   const [step, setStep] = useState(0);
+  useScrollReveal();
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -29,15 +29,12 @@ export default function NewEventPage() {
   });
 
   const handleSubmit = () => {
-    alert("Événement créé ! (Backend non connecté)");
+    alert(t("auth.simulationAlert"));
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-    >
+    <div
+      >
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => step > 0 ? setStep(step - 1) : null}
@@ -47,7 +44,7 @@ export default function NewEventPage() {
         </button>
         <div>
           <h1 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("hero.createEvent")}</h1>
-          <p className="text-xs text-[var(--text-secondary)]">Étape {step + 1} sur 3</p>
+          <p className="text-xs text-[var(--text-secondary)]">{t("dashboard.event.step")} {step + 1} {t("dashboard.event.of3")}</p>
         </div>
       </div>
 
@@ -70,22 +67,18 @@ export default function NewEventPage() {
       <div className="max-w-2xl space-y-6">
         {/* Step 1: Informations */}
         {step === 0 && (
-          <motion.div
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]"
+          <div
+            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)] card-hover"
           >
-            <h2 className="font-semibold text-[var(--text)]">Informations générales</h2>
+            <h2 className="font-semibold text-[var(--text)]">{t("dashboard.event.generalInfo")}</h2>
 
             <div className="relative aspect-[2/1] rounded-xl border-2 border-dashed border-[var(--border)] hover:border-[var(--brand)]/30 transition-colors flex flex-col items-center justify-center cursor-pointer bg-[var(--border-subtle)]/50">
               <Upload className="w-8 h-8 text-[var(--text-tertiary)] mb-2" />
-              <p className="text-sm font-medium text-[var(--text-secondary)]">Image de couverture</p>
-              <p className="text-xs text-[var(--text-tertiary)]">16:9 recommandé</p>
+              <p className="text-sm font-medium text-[var(--text-secondary)]">{t("dashboard.event.coverImage")}</p>
+              <p className="text-xs text-[var(--text-tertiary)]">{t("dashboard.event.ratioHint")}</p>
             </div>
 
-            <Input label="Titre de l'événement" placeholder="Ex: Gala de Fin d'Année" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+            <Input label={t("dashboard.event.eventTitle")} placeholder="Ex: Gala de Fin d'Année" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
             <div>
               <label className="block text-sm font-medium text-[var(--text)] mb-1.5">{t("event.description")}</label>
               <textarea
@@ -95,10 +88,10 @@ export default function NewEventPage() {
             </div>
 
             <Input label={t("event.location")} placeholder="Ex: Palais des Congrès" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
-            <Input label="Ville" placeholder="Ex: Cotonou" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
+            <Input label={t("profile.city")} placeholder="Ex: Cotonou" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} />
             <div className="grid grid-cols-2 gap-4">
-              <Input label="Date de début" type="datetime-local" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
-              <Input label="Date de fin" type="datetime-local" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
+              <Input label={t("dashboard.event.startDate")} type="datetime-local" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
+              <Input label={t("dashboard.event.endDate")} type="datetime-local" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
             </div>
 
             <div>
@@ -122,26 +115,22 @@ export default function NewEventPage() {
               </div>
             </div>
 
-            <Button variant="primary" size="md" className="w-full" onClick={() => setStep(1)}>
+            <Button variant="primary" size="md" className="w-full pressable" onClick={() => setStep(1)}>
               Continuer vers la billetterie
             </Button>
-          </motion.div>
+          </div>
         )}
 
         {/* Step 2: Billetterie */}
         {step === 1 && (
-          <motion.div
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]"
+          <div
+            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)] card-hover"
           >
             <h2 className="font-semibold text-[var(--text)]">{t("event.tickets")}</h2>
-            <p className="text-sm text-[var(--text-secondary)]">Définis les types de billets disponibles</p>
+            <p className="text-sm text-[var(--text-secondary)]">{t("dashboard.event.ticketTypesHint")}</p>
 
             {form.tickets.map((ticket, i) => (
-              <div key={i} className="p-4 rounded-xl border border-[var(--border)] space-y-3 relative">
+              <div key={i} className="p-4 rounded-xl border border-[var(--border)] space-y-3 relative card-hover">
                 {form.tickets.length > 1 && (
                   <button
                     onClick={() => setForm({ ...form, tickets: form.tickets.filter((_, j) => j !== i) })}
@@ -151,18 +140,18 @@ export default function NewEventPage() {
                   </button>
                 )}
                 <div className="grid grid-cols-2 gap-3">
-                  <Input label="Nom" placeholder="Standard VIP" value={ticket.name} onChange={(e) => {
+                  <Input label={t("event.ticketName")} placeholder="Standard VIP" value={ticket.name} onChange={(e) => {
                     const tickets = [...form.tickets];
                     tickets[i].name = e.target.value;
                     setForm({ ...form, tickets });
                   }} />
-                  <Input label="Prix (FCFA)" type="number" placeholder="5000" value={ticket.price} onChange={(e) => {
+                  <Input label={t("event.ticketPrice")} type="number" placeholder="5000" value={ticket.price} onChange={(e) => {
                     const tickets = [...form.tickets];
                     tickets[i].price = e.target.value;
                     setForm({ ...form, tickets });
                   }} />
                 </div>
-                <Input label="Quantité disponible" type="number" placeholder="200" value={ticket.quantity} onChange={(e) => {
+                <Input label={t("event.ticketQuantity")} type="number" placeholder="200" value={ticket.quantity} onChange={(e) => {
                   const tickets = [...form.tickets];
                   tickets[i].quantity = e.target.value;
                   setForm({ ...form, tickets });
@@ -179,53 +168,49 @@ export default function NewEventPage() {
             </button>
 
             <div className="flex gap-3">
-              <Button variant="outline" size="md" className="flex-1" onClick={() => setStep(0)}>
+              <Button variant="outline" size="md" className="flex-1 pressable" onClick={() => setStep(0)}>
                 {t("common.back")}
               </Button>
-              <Button variant="primary" size="md" className="flex-1" onClick={() => setStep(2)}>
+              <Button variant="primary" size="md" className="flex-1 pressable" onClick={() => setStep(2)}>
                 Continuer
               </Button>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Step 3: Publication */}
         {step === 2 && (
-          <motion.div
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
-            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]"
+          <div
+            className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)] card-hover"
           >
             <div className="text-center py-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-brand)]">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-brand)] card-hover">
                 <Sparkles className="w-7 h-7 text-white" />
               </div>
-              <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">Presque fini !</h2>
+              <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("common.almostDone")}</h2>
               <p className="text-sm text-[var(--text-secondary)] mt-1.5 max-w-sm mx-auto">
                 Vérifie une dernière fois les informations avant de publier ton événement.
               </p>
             </div>
 
-            <div className="rounded-xl bg-[var(--border-subtle)] p-4 space-y-2 text-sm">
-              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Titre</span><span className="text-[var(--text)] font-medium">{form.title || "—"}</span></div>
+            <div className="rounded-xl bg-[var(--border-subtle)] p-4 space-y-2 text-sm card-hover">
+              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("dashboard.event.eventTitle")}</span><span className="text-[var(--text)] font-medium">{form.title || "—"}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("event.location")}</span><span className="text-[var(--text)] font-medium">{form.location || "—"}</span></div>
               <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Ville</span><span className="text-[var(--text)] font-medium">{form.city || "—"}</span></div>
-              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Types de billets</span><span className="text-[var(--text)] font-medium">{form.tickets.filter(t => t.name).length}</span></div>
+              <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">{t("event.tickets")}</span><span className="text-[var(--text)] font-medium">{form.tickets.filter(t => t.name).length}</span></div>
             </div>
 
             <div className="flex gap-3 pt-2">
-              <Button variant="outline" size="md" className="flex-1" onClick={() => setStep(1)}>
+              <Button variant="outline" size="md" className="flex-1 pressable" onClick={() => setStep(1)}>
                 {t("common.back")}
               </Button>
-              <Button variant="primary" size="md" className="flex-1" onClick={handleSubmit}>
+              <Button variant="primary" size="md" className="flex-1 pressable" onClick={handleSubmit}>
                 Publier l&apos;événement
               </Button>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

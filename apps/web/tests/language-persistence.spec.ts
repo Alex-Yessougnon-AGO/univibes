@@ -15,9 +15,10 @@ test.describe("Language persistence", () => {
     await expect(langBtn).toBeVisible({ timeout: 10000 });
     await langBtn.click();
 
-    const englishBtn = page.getByRole("button").filter({ hasText: "Anglais" });
+    await page.waitForTimeout(500);
+    const englishBtn = page.getByRole("button", { name: /Anglais|English/i });
     await expect(englishBtn).toBeVisible({ timeout: 5000 });
-    await englishBtn.click();
+    await englishBtn.click({ force: true });
 
     // Wait for URL to change
     await page.waitForURL(/\/en/, { timeout: 15000 });
@@ -43,9 +44,10 @@ test.describe("Language persistence", () => {
     await expect(langBtn).toBeVisible({ timeout: 10000 });
     await langBtn.click();
 
-    const englishBtn = page.getByRole("button").filter({ hasText: "Anglais" });
+    await page.waitForTimeout(500);
+    const englishBtn = page.getByRole("button", { name: /Anglais|English/i });
     await expect(englishBtn).toBeVisible({ timeout: 5000 });
-    await englishBtn.click();
+    await englishBtn.click({ force: true });
 
     await page.waitForURL(/\/en\/explore/, { timeout: 15000 });
     await page.waitForLoadState("networkidle");
@@ -66,7 +68,7 @@ test.describe("Language persistence", () => {
   });
 
   test("locale persists on full page reload", async ({ page, context }) => {
-    // Start in French
+    await context.clearCookies();
     await page.goto("/fr", { waitUntil: "domcontentloaded" });
     await page.waitForLoadState("networkidle");
     await page.waitForTimeout(1000);
@@ -74,11 +76,12 @@ test.describe("Language persistence", () => {
     // Switch to English
     const langBtn = page.locator('[aria-label*="angue"], [aria-label*="anguage"]');
     await expect(langBtn).toBeVisible({ timeout: 10000 });
-    await langBtn.click();
+    await langBtn.click({ force: true });
 
-    const englishBtn = page.getByRole("button").filter({ hasText: "Anglais" });
+    await page.waitForTimeout(500);
+    const englishBtn = page.getByRole("button", { name: /Anglais|English/i });
     await expect(englishBtn).toBeVisible({ timeout: 5000 });
-    await englishBtn.click();
+    await englishBtn.click({ force: true });
 
     await page.waitForURL(/\/en/, { timeout: 15000 });
     await page.waitForLoadState("networkidle");

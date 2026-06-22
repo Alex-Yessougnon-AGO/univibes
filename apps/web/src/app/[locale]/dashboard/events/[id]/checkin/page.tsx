@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "@/i18n/routing";
 import { useParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { ArrowLeft, Scan, Search, CheckCircle2, XCircle, AlertTriangle, Clock, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { EVENTS } from "@/lib/mock-data";
 import { formatFullDate, cn } from "@/lib/utils";
-import { containerStagger, fadeUp, scalePop } from "@/lib/motion";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 type ScanStatus = "valid" | "alreadyUsed" | "invalid";
 
@@ -57,6 +56,7 @@ const statusDescMessages: Record<ScanStatus, string> = {
 export default function CheckinPage() {
   const t = useTranslations();
   const params = useParams();
+  useScrollReveal();
   const event = EVENTS.find((e) => e.id === params.id);
   const [scans, setScans] = useState<ScanResult[]>(MOCK_SCANS);
   const [manualCode, setManualCode] = useState("");
@@ -113,27 +113,25 @@ export default function CheckinPage() {
 
   if (!event) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+      <div
         className="text-center py-20"
       >
         <h2 className="font-semibold text-[var(--text)]">{t("checkin.eventNotFound")}</h2>
-        <Button variant="outline" size="sm" className="mt-4" asChild>
+        <Button variant="outline" size="sm" className="mt-4 pressable" asChild>
           <Link href="/dashboard/events">{t("common.back")}</Link>
         </Button>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={containerStagger(0.07)}
+    <div
+     
+     
+      
       className="max-w-2xl mx-auto"
     >
-      <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
+      <div  className="flex items-center gap-3 mb-6">
         <Link
           href={`/dashboard/events/${event.id}`}
           className="w-9 h-9 rounded-xl border border-[var(--border)] flex items-center justify-center hover:bg-[var(--border-subtle)] transition-colors shrink-0"
@@ -152,12 +150,12 @@ export default function CheckinPage() {
             {scannedCount} {t("checkin.checkedIn")}
           </Badge>
         </div>
-      </motion.div>
+      </div>
 
       {/* Event info bar */}
-      <motion.div
-        variants={fadeUp}
-        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--border-subtle)] mb-6"
+      <div
+        
+        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[var(--border-subtle)] mb-6 card-hover"
       >
         <Clock className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
         <div className="text-xs text-[var(--text-secondary)]">
@@ -165,20 +163,20 @@ export default function CheckinPage() {
           <span className="mx-1.5">·</span>
           {formatFullDate(event.startDate)}
         </div>
-      </motion.div>
+      </div>
 
       <div className="space-y-5">
         {/* QR Scanner */}
-        <motion.div
-          variants={fadeUp}
-          className="relative rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] overflow-hidden"
+        <div
+          
+          className="relative rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] overflow-hidden card-hover"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--brand)]/5 via-transparent to-[var(--accent)]/5 pointer-events-none" />
 
           <div className="relative flex flex-col items-center">
-            <div className="relative w-56 h-56 rounded-2xl overflow-hidden mb-4">
+            <div className="relative w-56 h-56 rounded-2xl overflow-hidden mb-4 card-hover">
               <div className="absolute inset-0 bg-[var(--text)]/5" />
-              <div className="absolute inset-0 m-4 rounded-xl border-2 border-dashed border-[var(--brand)]/30" />
+              <div className="absolute inset-0 m-4 rounded-xl border-2 border-dashed border-[var(--brand)]/30 card-hover" />
 
               {/* Corner brackets */}
               <div className="absolute top-2.5 left-2.5 w-6 h-6 border-t-2 border-l-2 border-[var(--brand)] rounded-tl-xl" />
@@ -187,11 +185,9 @@ export default function CheckinPage() {
               <div className="absolute bottom-2.5 right-2.5 w-6 h-6 border-b-2 border-r-2 border-[var(--brand)] rounded-br-xl" />
 
               {/* Scan line animation */}
-              <motion.div
+              <div
                 className="absolute left-4 right-4 h-0.5 bg-gradient-to-r from-transparent via-[var(--brand)] to-transparent"
-                animate={{ top: scanning ? "20%" : "80%" }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-              />
+                />
 
               {/* Center icon */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -202,22 +198,18 @@ export default function CheckinPage() {
             <h3 className="font-semibold text-sm text-[var(--text)]">{t("checkin.scanning")}</h3>
             <p className="text-xs text-[var(--text-secondary)] mt-1 text-center max-w-xs">{t("checkin.scanningDesc")}</p>
           </div>
-        </motion.div>
+        </div>
 
         {/* Validation result */}
-        <AnimatePresence>
           {showResult && lastResult && (
-            <motion.div
-              variants={scalePop}
-              initial="hidden"
-              animate="visible"
-              exit={{ opacity: 0, scale: 0.9 }}
+            <div
+             
+             
               className={cn(
                 "rounded-2xl border-2 p-5 shadow-[var(--shadow)]",
                 scanColors[lastResult.status].bg,
                 scanColors[lastResult.status].border
-              )}
-            >
+              )}>
               <div className="flex items-start gap-4">
                 <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", scanColors[lastResult.status].bg)}>
                   <span className={scanColors[lastResult.status].icon}>
@@ -251,12 +243,12 @@ export default function CheckinPage() {
                   <ArrowLeft className="w-4 h-4 rotate-45" />
                 </button>
               </div>
-            </motion.div>
+            </div>
           )}
-        </AnimatePresence>
+        
 
         {/* Manual entry */}
-        <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow)]">
+        <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow)] card-hover">
           <p className="text-sm font-medium text-[var(--text)] mb-3">{t("checkin.manualEntry")}</p>
           <div className="flex gap-2">
             <div className="flex-1">
@@ -276,15 +268,15 @@ export default function CheckinPage() {
               size="md"
               onClick={handleManualSubmit}
               disabled={!manualCode.trim()}
-              className="shrink-0"
+              className="shrink-0 pressable"
             >
               {t("checkin.verify")}
             </Button>
           </div>
-        </motion.div>
+        </div>
 
         {/* Recent scans */}
-        <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-[var(--shadow)] overflow-hidden">
+        <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] shadow-[var(--shadow)] overflow-hidden card-hover">
           <div className="flex items-center justify-between px-5 pt-5 pb-3">
             <h3 className="font-semibold text-sm text-[var(--text)] flex items-center gap-2">
               <Clock className="w-4 h-4 text-[var(--text-tertiary)]" />
@@ -317,11 +309,8 @@ export default function CheckinPage() {
               </div>
             ) : (
               filteredRecent.map((scan, i) => (
-                <motion.div
+                <div
                   key={`${scan.code}-${i}`}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: i * 0.03 }}
                   className="flex items-center gap-3 px-5 py-3 hover:bg-[var(--border-subtle)]/50 transition-colors"
                 >
                   <div className={cn(
@@ -352,12 +341,12 @@ export default function CheckinPage() {
                     <span className="text-xs text-[var(--text-tertiary)] font-medium">x{scan.quantity}</span>
                   )}
                   <ChevronRight className="w-3.5 h-3.5 text-[var(--text-tertiary)]" />
-                </motion.div>
+                </div>
               ))
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

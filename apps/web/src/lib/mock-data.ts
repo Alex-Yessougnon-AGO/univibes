@@ -76,13 +76,13 @@ export const CATEGORIES: MockCategory[] = [
     icon: "mic",
     color: "#0F5132",
   },
-  { id: "cat-3", name: "Galas", slug: "galas", icon: "sparkles", color: "#D4AF37" },
+  { id: "cat-3", name: "Galas", slug: "galas", icon: "sparkles", color: "#9A7D1F" },
   {
     id: "cat-4",
     name: "Hackathons",
     slug: "hackathons",
     icon: "code",
-    color: "#0EA5E9",
+    color: "#0672A3",
   },
   { id: "cat-5", name: "Sports", slug: "sports", icon: "trophy", color: "#DC2626" },
   {
@@ -90,14 +90,14 @@ export const CATEGORIES: MockCategory[] = [
     name: "Culture",
     slug: "culture",
     icon: "palette",
-    color: "#EA580C",
+    color: "#C2410C",
   },
   {
     id: "cat-7",
     name: "Networking",
     slug: "networking",
     icon: "handshake",
-    color: "#0891B2",
+    color: "#046582",
   },
   {
     id: "cat-8",

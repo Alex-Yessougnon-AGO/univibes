@@ -1,20 +1,42 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Link } from "@/i18n/routing";
+import { Suspense, useState, useMemo, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import { Search, X, SlidersHorizontal, Grid3X3, List, MapPin, Sparkles } from "lucide-react";
 import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
 import { EventCard } from "@/components/events/event-card";
-import { Badge } from "@/components/ui/badge";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
-import { EVENTS, CATEGORIES, CITIES } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { ApiEvent, eventsService, categoriesService } from "@/lib/services/events-service";
+
+const CITIES_LIST = ["Cotonou", "Abomey-Calavi", "Porto-Novo", "Parakou", "Lokossa"];
 
 export default function ExplorePage() {
+  return (
+    <Suspense fallback={<ExploreFallback />}>
+      <ExploreContent />
+    </Suspense>
+  );
+}
+
+function ExploreFallback() {
+  const t = useTranslations();
+  return (
+    <div className="min-h-dvh flex items-center justify-center bg-[var(--bg)]">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-6 h-6 rounded-full border-2 border-[var(--brand)] border-t-transparent animate-spin" />
+        <p className="text-sm text-[var(--text-secondary)]">{t("common.loading")}</p>
+      </div>
+    </div>
+  );
+}
+
+function ExploreContent() {
+  useScrollReveal();
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("");
@@ -22,8 +44,37 @@ export default function ExplorePage() {
   const [sortBy, setSortBy] = useState("date");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
+  const [allEvents, setAllEvents] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const t = useTranslations();
+
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const categoryParam = searchParams.get('category');
+    const searchParam = searchParams.get('q');
+    if (categoryParam) setSelectedCategory(categoryParam);
+    if (searchParam) setSearch(searchParam);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [eventsData, catsData] = await Promise.all([
+          eventsService.findAll({ limit: 100 }),
+          categoriesService.findAll(),
+        ]);
+        setAllEvents(Array.isArray(eventsData) ? eventsData : (eventsData as any)?.data ?? []);
+        setCategories(catsData);
+      } catch {
+        // API error - use empty state
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
 
   const SORT_OPTIONS = [
     { value: "date", label: t("explore.sortDate") },
@@ -39,41 +90,41 @@ export default function ExplorePage() {
   ];
 
   const filteredEvents = useMemo(() => {
-    let result = [...EVENTS];
+    let result = [...allEvents];
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(
-        (e) =>
-          e.title.toLowerCase().includes(q) ||
-          e.description.toLowerCase().includes(q) ||
-          e.organizer.name.toLowerCase().includes(q) ||
-          e.tags?.some((t) => t.toLowerCase().includes(q))
+        (e: any) =>
+          (e.title || '').toLowerCase().includes(q) ||
+          (e.description || '').toLowerCase().includes(q) ||
+          (e.organizer?.name || '').toLowerCase().includes(q) ||
+          (e.tags?.some((t: string) => t.toLowerCase().includes(q)))
       );
     }
     if (selectedCategory) {
-      result = result.filter((e) => e.category.slug === selectedCategory);
+      result = result.filter((e: any) => e.category?.slug === selectedCategory);
     }
     if (selectedCity) {
-      result = result.filter((e) => e.city === selectedCity);
+      result = result.filter((e: any) => e.city === selectedCity);
     }
-    if (priceRange === "free") result = result.filter((e) => e.isFree);
-    else if (priceRange === "paid") result = result.filter((e) => !e.isFree);
+    if (priceRange === "free") result = result.filter((e: any) => e.isFree);
+    else if (priceRange === "paid") result = result.filter((e: any) => !e.isFree);
     switch (sortBy) {
       case "date":
-        result.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+        result.sort((a: any, b: any) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
         break;
       case "popularity":
-        result.sort((a, b) => b.views - a.views);
+        result.sort((a: any, b: any) => (b.views || 0) - (a.views || 0));
         break;
       case "price-asc":
-        result.sort((a, b) => (a.lowestPrice ?? 0) - (b.lowestPrice ?? 0));
+        result.sort((a: any, b: any) => (a.lowestPrice ?? 0) - (b.lowestPrice ?? 0));
         break;
       case "price-desc":
-        result.sort((a, b) => (b.lowestPrice ?? 0) - (a.lowestPrice ?? 0));
+        result.sort((a: any, b: any) => (b.lowestPrice ?? 0) - (a.lowestPrice ?? 0));
         break;
     }
     return result;
-  }, [search, selectedCategory, selectedCity, priceRange, sortBy]);
+  }, [search, selectedCategory, selectedCity, priceRange, sortBy, allEvents]);
 
   const hasActiveFilters = selectedCategory || selectedCity || priceRange !== "all";
   const activeFilterCount = [selectedCategory, selectedCity, priceRange !== "all" ? "p" : ""].filter(Boolean).length;
@@ -92,8 +143,6 @@ export default function ExplorePage() {
             placeholder={t("explore.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            onFocus={() => setSearchFocused(true)}
-            onBlur={() => setSearchFocused(false)}
             className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] placeholder:text-[var(--text-tertiary)] outline-none transition-all duration-200 focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)]"
           />
         </div>
@@ -104,11 +153,11 @@ export default function ExplorePage() {
         <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2.5">
           {t("explore.category")}
         </label>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           <button
             onClick={() => setSelectedCategory("")}
             className={cn(
-              "px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200",
+              "px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 pressable",
               !selectedCategory
                 ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
                 : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
@@ -116,12 +165,12 @@ export default function ExplorePage() {
           >
             {t("explore.allCategories")}
           </button>
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat: any) => (
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.slug)}
               className={cn(
-                "px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5",
+                "px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 flex items-center gap-1.5 pressable",
                 selectedCategory === cat.slug
                   ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
                   : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
@@ -147,7 +196,7 @@ export default function ExplorePage() {
             className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm text-[var(--text)] outline-none appearance-none transition-all duration-200 focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)]"
           >
             <option value="">{t("explore.allCities")}</option>
-            {CITIES.map((city) => (
+            {CITIES_LIST.map((city) => (
               <option key={city} value={city}>{city}</option>
             ))}
           </select>
@@ -159,13 +208,13 @@ export default function ExplorePage() {
         <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2.5">
           {t("explore.price")}
         </label>
-        <div className="flex gap-2">
+        <div className="flex gap-1.5">
           {PRICE_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               onClick={() => setPriceRange(opt.value)}
               className={cn(
-                "flex-1 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-200",
+                "flex-1 px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-200 pressable",
                 priceRange === opt.value
                   ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
                   : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
@@ -183,85 +232,107 @@ export default function ExplorePage() {
     <>
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
-        {/* Hero header */}
-        <section className="relative pt-6 pb-10 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-[var(--accent)]/3 to-transparent pointer-events-none" />
-          <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-[var(--brand)]/4 blur-[120px] pointer-events-none" />
-          <div className="absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full bg-[var(--accent)]/4 blur-[100px] pointer-events-none" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-            >
-              {/* Eyebrow */}
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
-                <Sparkles className="w-3 h-3" />
-                {t("explore.results", { count: filteredEvents.length })}
-              </span>
-
-              <h1 className="text-[28px] md:text-4xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-5">
-                {t("explore.title")}
-              </h1>
-            </motion.div>
+        {/* ── Clean header ── */}
+        <section className="pt-8 pb-4 md:pt-10 md:pb-6 reveal">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-5">
+              <div>
+                <h1 className="text-[28px] md:text-4xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
+                  {t("explore.title")}
+                </h1>
+                <p className="text-sm text-[var(--text-secondary)] mt-1">
+                  <Sparkles className="w-3.5 h-3.5 inline-block -mt-0.5 mr-1 text-[var(--brand)]" aria-hidden="true" />
+                  {filteredEvents.length === 1
+                    ? t("explore.results", { count: 1 })
+                    : t("explore.results_plural", { count: filteredEvents.length })}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 self-start md:self-end">
+                <div className="flex items-center gap-1 bg-[var(--border-subtle)] rounded-lg p-0.5">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={cn(
+                      "w-8 h-8 rounded-md flex items-center justify-center transition-all duration-200 pressable",
+                      viewMode === "grid" ? "bg-[var(--surface)] shadow-[var(--shadow-sm)] text-[var(--text)]" : "text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
+                    )}
+                    aria-label={t("explore.viewMode")}
+                  >
+                    <Grid3X3 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={cn(
+                      "w-8 h-8 rounded-md flex items-center justify-center transition-all duration-200 pressable",
+                      viewMode === "list" ? "bg-[var(--surface)] shadow-[var(--shadow-sm)] text-[var(--text)]" : "text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
+                    )}
+                    aria-label={t("explore.viewMode")}
+                  >
+                    <List className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
 
             {/* Quick filters row */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.1, 0, 1] }}
-            >
-              <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-container-touch pb-1">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-container-touch pb-1">
+              <button
+                onClick={() => setShowMobileFilters(true)}
+                className={cn(
+                  "flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-xs font-medium transition-all duration-200 shrink-0 pressable",
+                  hasActiveFilters
+                    ? "border-[var(--brand)]/30 bg-[var(--brand-subtle)] text-[var(--brand-text)]"
+                    : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--border-subtle)]"
+                )}
+              >
+                <SlidersHorizontal className="w-3.5 h-3.5" />
+                {t("explore.filters")}
+                {hasActiveFilters && (
+                  <span className="w-4.5 h-4.5 rounded-full bg-[var(--brand)] text-white text-[9px] flex items-center justify-center font-bold ml-0.5">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </button>
+              {categories.slice(0, 6).map((cat: any) => (
                 <button
-                  onClick={() => setShowMobileFilters(true)}
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(selectedCategory === cat.slug ? "" : cat.slug)}
                   className={cn(
-                    "flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-xs font-medium transition-all duration-200 shrink-0",
-                    hasActiveFilters
-                      ? "border-[var(--brand)]/30 bg-[var(--brand-subtle)] text-[var(--brand-text)]"
-                      : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--border-subtle)]"
+                    "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 shrink-0 whitespace-nowrap pressable",
+                    selectedCategory === cat.slug
+                      ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
+                      : "border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--border-subtle)]"
                   )}
                 >
-                  <SlidersHorizontal className="w-3.5 h-3.5" />
-                  {t("explore.filters")}
-                  {hasActiveFilters && (
-                    <span className="w-4.5 h-4.5 rounded-full bg-[var(--brand)] text-white text-[9px] flex items-center justify-center font-bold ml-0.5">
-                      {activeFilterCount}
-                    </span>
-                  )}
+                  <CategoryIcon name={cat.icon} className="w-3.5 h-3.5" />
+                  {cat.name}
                 </button>
-                {CATEGORIES.slice(0, 6).map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setSelectedCategory(selectedCategory === cat.slug ? "" : cat.slug)}
-                    className={cn(
-                      "flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-medium transition-all duration-200 shrink-0 whitespace-nowrap",
-                      selectedCategory === cat.slug
-                        ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
-                        : "border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:bg-[var(--border-subtle)]"
-                    )}
-                  >
-                    <CategoryIcon name={cat.icon} className="w-3.5 h-3.5" />
-                    {cat.name}
-                  </button>
+              ))}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="h-9 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-xs font-medium text-[var(--text)] outline-none shrink-0 transition-all duration-200 focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)]"
+                aria-label={t("explore.sortBy")}
+              >
+                {SORT_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
-              </div>
-            </motion.div>
+              </select>
+            </div>
           </div>
         </section>
 
         {/* Main content */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8 reveal">
           <div className="flex gap-8">
             {/* Sidebar filters — desktop */}
             <aside className="hidden lg:block w-64 shrink-0">
               <div className="sticky top-24">
-                <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center justify-between mb-5">
                   <h3 className="font-semibold text-sm text-[var(--text)]">{t("explore.filters")}</h3>
                   {hasActiveFilters && (
                     <button
                       onClick={() => { setSelectedCategory(""); setSelectedCity(""); setPriceRange("all"); }}
-                      className="text-xs text-[var(--brand)] font-medium hover:text-[var(--brand-hover)] transition-colors"
+                      className="text-xs text-[var(--brand)] font-medium hover:text-[var(--brand-hover)] transition-colors pressable"
                     >
                       {t("explore.clearAll")}
                     </button>
@@ -273,194 +344,138 @@ export default function ExplorePage() {
 
             {/* Results */}
             <div className="flex-1 min-w-0">
-              {/* Sort & view toggles */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="h-9 px-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-xs font-medium text-[var(--text)] outline-none transition-all duration-200 focus:ring-2 focus:ring-[var(--brand)]/30 focus:border-[var(--brand)]"
-                  >
-                    {SORT_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex items-center gap-1 bg-[var(--border-subtle)] rounded-lg p-0.5">
-                  <button
-                    onClick={() => setViewMode("grid")}
-                    className={cn(
-                      "w-8 h-8 rounded-md flex items-center justify-center transition-all duration-200",
-                      viewMode === "grid" ? "bg-[var(--surface)] shadow-[var(--shadow-sm)] text-[var(--text)]" : "text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
-                    )}
-                  >
-                    <Grid3X3 className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode("list")}
-                    className={cn(
-                      "w-8 h-8 rounded-md flex items-center justify-center transition-all duration-200",
-                      viewMode === "list" ? "bg-[var(--surface)] shadow-[var(--shadow-sm)] text-[var(--text)]" : "text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
-                    )}
-                  >
-                    <List className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
               {/* Active filter badges */}
-              <AnimatePresence>
-                {hasActiveFilters && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="flex items-center gap-2 mb-4 flex-wrap overflow-hidden"
-                  >
-                    {selectedCategory && (
-                      <Badge variant="soft" className="flex items-center gap-1.5 px-2.5 py-1">
-                        <CategoryIcon name={CATEGORIES.find((c) => c.slug === selectedCategory)?.icon ?? ""} className="w-3 h-3" />
-                        {CATEGORIES.find((c) => c.slug === selectedCategory)?.name}
-                        <button onClick={() => setSelectedCategory("")} className="hover:text-[var(--text)] transition-colors">
-                          <X className="w-3 h-3" />
-                        </button>
-                      </Badge>
-                    )}
-                    {selectedCity && (
-                      <Badge variant="soft" className="flex items-center gap-1.5 px-2.5 py-1">
-                        <MapPin className="w-3 h-3" />
-                        {selectedCity}
-                        <button onClick={() => setSelectedCity("")} className="hover:text-[var(--text)] transition-colors">
-                          <X className="w-3 h-3" />
-                        </button>
-                      </Badge>
-                    )}
-                    {priceRange !== "all" && (
-                      <Badge variant="soft" className="flex items-center gap-1.5 px-2.5 py-1">
-                        {priceRange === "free" ? t("explore.free") : t("explore.paid")}
-                        <button onClick={() => setPriceRange("all")} className="hover:text-[var(--text)] transition-colors">
-                          <X className="w-3 h-3" />
-                        </button>
-                      </Badge>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {hasActiveFilters && (
+                <div className="flex items-center gap-2 mb-4 flex-wrap animate-fade-in-up">
+                  {selectedCategory && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-medium text-[var(--brand-text)]">
+                      <CategoryIcon name={categories.find((c: any) => c.slug === selectedCategory)?.icon ?? ""} className="w-3 h-3" />
+                      {categories.find((c: any) => c.slug === selectedCategory)?.name}
+                      <button onClick={() => setSelectedCategory("")} className="hover:text-[var(--text)] transition-colors pressable" aria-label={t("common.close")}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {selectedCity && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-medium text-[var(--brand-text)]">
+                      <MapPin className="w-3 h-3" />
+                      {selectedCity}
+                      <button onClick={() => setSelectedCity("")} className="hover:text-[var(--text)] transition-colors pressable" aria-label={t("common.close")}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {priceRange !== "all" && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-medium text-[var(--brand-text)]">
+                      {priceRange === "free" ? t("explore.free") : t("explore.paid")}
+                      <button onClick={() => setPriceRange("all")} className="hover:text-[var(--text)] transition-colors pressable" aria-label={t("common.close")}>
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                </div>
+              )}
 
               {/* Events grid */}
-              <AnimatePresence mode="wait">
-                {filteredEvents.length > 0 ? (
-                  <motion.div
-                    key={viewMode + filteredEvents.length}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={cn(
-                      viewMode === "grid"
-                        ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
-                        : "space-y-4"
-                    )}
-                  >
-                    {filteredEvents.map((event, i) => (
-                      <motion.div
-                        key={event.id}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: i * 0.03, ease: [0.25, 0.1, 0, 1] }}
-                      >
-                        <EventCard event={event} variant={viewMode === "list" ? "compact" : "standard"} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                ) : (
-                  <motion.div
-                  key="empty"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4, ease: [0.25, 0.1, 0, 1] }}
-                  className="text-center py-20"
+              {filteredEvents.length > 0 ? (
+                <div
+                  className={cn(
+                    viewMode === "grid"
+                      ? "grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5"
+                      : "space-y-4"
+                  )}
                 >
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.4, ease: [0.25, 0.1, 0, 1], delay: 0.1 }}
-                    className="w-20 h-20 rounded-2xl bg-[var(--border-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto mb-5"
-                  >
+                  {filteredEvents.map((event, i) => (
+                    <div
+                      key={event.id}
+                      className="reveal"
+                      style={{ transitionDelay: `${i * 40}ms` }}
+                    >
+                      <EventCard event={event} variant={viewMode === "list" ? "compact" : "standard"} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                /* ── Empty state — editorial ── */
+                <div className="text-center py-24 reveal">
+                  <div className="w-20 h-20 rounded-2xl bg-[var(--border-subtle)] border border-[var(--border)] flex items-center justify-center mx-auto mb-6 card-hover">
                     <Search className="w-8 h-8 text-[var(--text-tertiary)]" />
-                  </motion.div>
-                  <h3 className="text-lg font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
+                  </div>
+                  <h3 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
                     {t("explore.noResults")}
                   </h3>
-                  <p className="text-sm text-[var(--text-secondary)] mb-6 max-w-sm mx-auto leading-relaxed">
+                  <p className="text-sm text-[var(--text-secondary)] mb-8 max-w-sm mx-auto leading-relaxed">
                     {t("explore.noResultsDesc")}
                   </p>
                   <div className="flex items-center gap-3 justify-center flex-wrap">
                     <Button
                       variant="primary"
-                      size="sm"
-                      className="rounded-full px-5"
+                      size="md"
+                      className="rounded-full px-6 pressable"
                       onClick={() => { setSearch(""); setSelectedCategory(""); setSelectedCity(""); setPriceRange("all"); }}
                     >
                       {t("explore.resetFilters")}
                     </Button>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href="/">{t("common.home")}</Link>
+                    <Button variant="outline" size="md" className="rounded-full px-6 pressable" asChild>
+                      <a href="/">
+                        {t("common.home")}
+                      </a>
                     </Button>
                   </div>
-                </motion.div>
-                )}
-              </AnimatePresence>
+                </div>
+              )}
             </div>
           </div>
         </section>
       </main>
 
-      {/* Mobile filters drawer */}
-      <AnimatePresence>
-        {showMobileFilters && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 lg:hidden"
-            onClick={() => setShowMobileFilters(false)}
-          >
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ duration: 0.35, ease: [0.25, 0.1, 0, 1] }}
-              className="absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-3xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow-lg)]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-semibold text-[var(--text)]">{t("explore.filters")}</h3>
-                <button
-                  onClick={() => setShowMobileFilters(false)}
-                  className="w-8 h-8 rounded-lg bg-[var(--border-subtle)] flex items-center justify-center hover:bg-[var(--border)] transition-colors"
-                >
-                  <X className="w-4 h-4 text-[var(--text-secondary)]" />
-                </button>
-              </div>
-              <FiltersPanel mobile />
-              <div className="mt-6 pt-4 border-t border-[var(--border)]">
-                <Button
-                  variant="primary"
-                  size="md"
-                  className="w-full"
-                  onClick={() => setShowMobileFilters(false)}
-                >
-                  {t("explore.viewResults", { count: filteredEvents.length })}
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
+      {/* ── Mobile filters drawer — CSS-only animation ── */}
+      <div
+        className={cn(
+          "fixed inset-0 z-50 lg:hidden transition-all duration-300 ease-[cubic-bezier(0.25,0.1,0,1)]",
+          showMobileFilters ? "pointer-events-auto" : "pointer-events-none"
         )}
-      </AnimatePresence>
+        aria-hidden={!showMobileFilters}
+      >
+        {/* Overlay backdrop */}
+        <div
+          className={cn(
+            "absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300",
+            showMobileFilters ? "opacity-100" : "opacity-0"
+          )}
+          onClick={() => setShowMobileFilters(false)}
+        />
+        {/* Bottom sheet */}
+        <div
+          className={cn(
+            "absolute bottom-0 left-0 right-0 max-h-[88dvh] overflow-y-auto rounded-t-3xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow-lg)] transition-transform duration-300 ease-[cubic-bezier(0.25,0.1,0,1)]",
+            showMobileFilters ? "translate-y-0" : "translate-y-full"
+          )}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-semibold text-[var(--text)]">{t("explore.filters")}</h3>
+            <button
+              onClick={() => setShowMobileFilters(false)}
+              className="w-8 h-8 rounded-lg bg-[var(--border-subtle)] flex items-center justify-center hover:bg-[var(--border)] transition-colors pressable"
+              aria-label={t("common.close")}
+            >
+              <X className="w-4 h-4 text-[var(--text-secondary)]" />
+            </button>
+          </div>
+          <FiltersPanel mobile />
+          <div className="mt-6 pt-4 border-t border-[var(--border)]">
+            <Button
+              variant="primary"
+              size="md"
+              className="w-full pressable"
+              onClick={() => setShowMobileFilters(false)}
+            >
+              {t("explore.viewResults", { count: filteredEvents.length })}
+            </Button>
+          </div>
+        </div>
+      </div>
 
       <BottomNav />
     </>

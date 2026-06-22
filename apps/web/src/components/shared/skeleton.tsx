@@ -1,5 +1,4 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface SkeletonProps {
@@ -57,26 +56,24 @@ interface ContentTransitionProps {
 
 export function ContentTransition({ isLoading, children, skeleton }: ContentTransitionProps) {
   return (
-    <AnimatePresence mode="wait">
-      {isLoading ? (
-        <motion.div
-          key="skeleton"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.15 } }}
-        >
-          {skeleton}
-        </motion.div>
-      ) : (
-        <motion.div
-          key="content"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35, ease: [0.05, 0.7, 0.1, 1] }}
-        >
-          {children}
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="relative">
+      {/* Skeleton — always absolute overlay, fades out when loading completes */}
+      <div
+        className={`absolute inset-0 transition-opacity duration-150 ${
+          isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        aria-hidden={!isLoading}
+      >
+        {skeleton}
+      </div>
+      {/* Content — always in flow, fades in when loaded */}
+      <div
+        className={`transition-all duration-[350ms] ease-[cubic-bezier(0.05,0.7,0.1,1)] ${
+          !isLoading ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        }`}
+      >
+        {children}
+      </div>
+    </div>
   );
 }

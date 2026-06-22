@@ -2,11 +2,11 @@
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 export default function CheckoutSuccessPage() {
   const t = useTranslations();
@@ -15,13 +15,10 @@ export default function CheckoutSuccessPage() {
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
         <div className="min-h-[80dvh] flex items-center justify-center px-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
+          <div
             className="text-center max-w-md"
           >
-            <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-6 shadow-[var(--shadow-sm)]">
+            <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-6 shadow-[var(--shadow-sm)] card-hover">
               <Check className="w-10 h-10 text-emerald-600" />
             </div>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200/50 text-[11px] font-semibold text-emerald-600 tracking-wide mb-4">
@@ -35,17 +32,18 @@ export default function CheckoutSuccessPage() {
               {t("checkout.confirmedDesc")}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button variant="primary" size="md" asChild>
+              <Button variant="primary" size="md" asChild className="pressable">
                 <Link href="/tickets">{t("checkout.seeTickets")} <ArrowRight className="w-4 h-4" /></Link>
               </Button>
-              <Button variant="outline" size="md" asChild>
+              <Button variant="outline" size="md" asChild className="pressable">
                 <Link href="/explore">{t("home.discoverEvents")}</Link>
               </Button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </main>
       <BottomNav />
     </>
   );
+  useScrollReveal();
 }

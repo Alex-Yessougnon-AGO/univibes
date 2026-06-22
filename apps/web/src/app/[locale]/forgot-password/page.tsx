@@ -3,24 +3,33 @@ import { useTranslations } from "next-intl";
 
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/motion";
 import { ArrowLeft, Mail, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { authService } from "@/lib/services/auth-service";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const t = useTranslations();
+  useScrollReveal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setLoading(false);
-    setSent(true);
+    setError(null);
+    try {
+      await authService.forgotPassword(email);
+      setSent(true);
+    } catch {
+      // Ne pas révéler si le compte existe ou non
+      setSent(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (sent) {
@@ -36,13 +45,10 @@ export default function ForgotPasswordPage() {
         </header>
 
         <main className="relative z-10 flex-1 flex items-center justify-center px-5 pb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
+          <div
             className="w-full max-w-sm text-center"
           >
-            <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-sm)]">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-sm)] card-hover">
               <Check className="w-8 h-8 text-emerald-600" />
             </div>
             <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("auth.checkEmail")}</h1>
@@ -52,11 +58,11 @@ export default function ForgotPasswordPage() {
               })}
             </p>
             <div className="mt-8">
-              <Button variant="outline" size="md" asChild>
+              <Button variant="outline" size="md" asChild className="pressable">
                 <Link href="/login">{t("auth.backToLogin")}</Link>
               </Button>
             </div>
-          </motion.div>
+          </div>
         </main>
       </div>
     );
@@ -74,10 +80,7 @@ export default function ForgotPasswordPage() {
         </header>
 
         <main className="relative z-10 flex-1 flex items-center justify-center px-5 pb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
+          <div
             className="w-full max-w-sm"
           >
             {/* Eyebrow */}
@@ -89,7 +92,7 @@ export default function ForgotPasswordPage() {
             </div>
 
             {/* Icon */}
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-brand)]">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-brand)] card-hover">
               <Mail className="w-7 h-7 text-white" />
             </div>
 
@@ -102,7 +105,7 @@ export default function ForgotPasswordPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
+            <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] card-hover">
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   label={t("auth.email")}
@@ -115,7 +118,7 @@ export default function ForgotPasswordPage() {
                 <Button
                   variant="primary"
                   size="lg"
-                  className="w-full"
+                  className="w-full pressable"
                   type="submit"
                   disabled={loading}
                 >
@@ -142,7 +145,7 @@ export default function ForgotPasswordPage() {
                 </Link>
               </p>
             </div>
-        </motion.div>
+        </div>
       </main>
     </div>
   );

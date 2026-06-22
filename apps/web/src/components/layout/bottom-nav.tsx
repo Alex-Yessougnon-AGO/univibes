@@ -2,7 +2,6 @@
 import { Link } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
 import { Home, Search, Ticket, Heart, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -37,18 +36,14 @@ export function BottomNav() {
                   : "text-[var(--text-tertiary)] hover:text-[var(--text-secondary)]"
               )}
             >
-              <motion.div
-                animate={{ scale: active ? 1.1 : 0.85, opacity: active ? 1 : 0.5 }}
-                transition={{ type: "spring", stiffness: 400, damping: 20, mass: 0.5 }}
-              >
+              <div className={`nav-icon-wrapper ${active ? 'active' : 'inactive'}`}>
                 <Icon className="w-5 h-5" strokeWidth={active ? 2.5 : 2} />
-              </motion.div>
-              <motion.span
-                className="text-[10px] font-medium leading-none"
-                animate={{ fontWeight: active ? 600 : 500 }}
+              </div>
+              <span
+                className={`text-[10px] leading-none transition-all duration-200 ${active ? 'font-semibold' : 'font-medium'}`}
               >
                 {label}
-              </motion.span>
+              </span>
             </Link>
           );
         })}

@@ -3,13 +3,12 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/motion";
 import { Plus, MoreHorizontal, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { EVENTS } from "@/lib/mock-data";
 import { formatShortDate, formatCurrency } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const statusBadge = (status?: string) => {
   if (status === "approved") return "success" as const;
@@ -32,25 +31,25 @@ const statusLabel = (status?: string) => {
 export default function DashboardEventsPage() {
   const t = useTranslations();
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+    <div
+     
+     
+      
     >
-      <motion.div variants={fadeUp} className="flex items-center justify-between mb-6">
+      <div  className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("admin.events")}</h1>
           <p className="text-sm text-[var(--text-secondary)] mt-0.5">{EVENTS.length} {t("admin.events")}</p>
         </div>
-        <Button variant="primary" size="md" asChild>
+        <Button variant="primary" size="md" asChild className="pressable">
           <Link href="/dashboard/events/new">
             <Plus className="w-4 h-4" />
             {t("hero.createEvent")}
           </Link>
         </Button>
-      </motion.div>
+      </div>
 
-      <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)]">
+      <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)] card-hover">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -101,7 +100,8 @@ export default function DashboardEventsPage() {
             </tbody>
           </table>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
+  useScrollReveal();
 }

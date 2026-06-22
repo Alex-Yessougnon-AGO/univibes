@@ -2,23 +2,23 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Clock, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { fadeUp, containerStagger } from "@/lib/motion";
-
-const LOGS = [
-  { action: "Approbation événement", target: "Hackathon IA & Data", moderator: "Modérateur #1", date: "12 juil. 2025 14:32", type: "approve" as const },
-  { action: "Rejet événement", target: "Soirée Electro", moderator: "Modérateur #2", date: "11 juil. 2025 09:15", type: "reject" as const },
-  { action: "Signalement ignoré", target: "Événement #452", moderator: "Modérateur #1", date: "10 juil. 2025 16:48", type: "ignore" as const },
-  { action: "Avertissement envoyé", target: "Organisateur #89", moderator: "Modérateur #3", date: "09 juil. 2025 11:02", type: "warn" as const },
-  { action: "Approbation événement", target: "Tournoi FIFA 2025", moderator: "Modérateur #1", date: "08 juil. 2025 10:30", type: "approve" as const },
-  { action: "Suppression commentaire", target: "Événement #328", moderator: "Modérateur #2", date: "07 juil. 2025 15:20", type: "delete" as const },
-];
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 export default function ModeratorLogsPage() {
   const t = useTranslations();
   const [search, setSearch] = useState("");
+  useScrollReveal();
+  
+  const LOGS = [
+    { action: t("moderator.actionApprove"), target: "Hackathon IA & Data", moderator: "Modérateur #1", date: "12 juil. 2025 14:32", type: "approve" as const },
+    { action: t("moderator.actionReject"), target: "Soirée Electro", moderator: "Modérateur #2", date: "11 juil. 2025 09:15", type: "reject" as const },
+    { action: t("moderator.actionIgnore"), target: "Événement #452", moderator: "Modérateur #1", date: "10 juil. 2025 16:48", type: "ignore" as const },
+    { action: t("moderator.actionWarn"), target: "Organisateur #89", moderator: "Modérateur #3", date: "09 juil. 2025 11:02", type: "warn" as const },
+    { action: t("moderator.actionApprove"), target: "Tournoi FIFA 2025", moderator: "Modérateur #1", date: "08 juil. 2025 10:30", type: "approve" as const },
+    { action: t("moderator.actionDelete"), target: "Événement #328", moderator: "Modérateur #2", date: "07 juil. 2025 15:20", type: "delete" as const },
+  ];
 
   const filtered = LOGS.filter((l) =>
     l.action.toLowerCase().includes(search.toLowerCase()) ||
@@ -38,42 +38,39 @@ export default function ModeratorLogsPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div variants={containerStagger(0.06)} initial="hidden" animate="visible">
-          <motion.div variants={fadeUp}>
+        <div >
+          <div >
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("moderator.logs")}</h1>
             <p className="text-sm text-[var(--text-secondary)] mb-6">Historique de toutes les décisions de modération.</p>
-          </motion.div>
+          </div>
 
-          <motion.div variants={fadeUp} className="relative mb-6">
+          <div  className="relative mb-6">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--text-tertiary)]" />
             <input type="text" placeholder={t("common.search")} value={search} onChange={(e) => setSearch(e.target.value)} className="w-full h-11 pl-10 pr-4 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-sm outline-none focus:ring-2 focus:ring-[var(--brand)]/30" />
-          </motion.div>
+          </div>
 
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+          <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden card-hover">
             <div className="hidden md:grid grid-cols-4 gap-4 p-4 border-b border-[var(--border)] text-xs font-semibold text-[var(--text-tertiary)] uppercase tracking-wider">
               <span>Action</span><span>Cible</span><span>Modérateur</span><span>Date</span>
             </div>
             {filtered.map((log, i) => (
-              <motion.div
+              <div
                 key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 + i * 0.04, duration: 0.35, ease: [0.25, 0.1, 0, 1] }}
                 className="grid grid-cols-1 md:grid-cols-4 gap-2 md:gap-4 p-4 hover:bg-[var(--border-subtle)] transition-colors border-b border-[var(--border)] last:border-b-0"
               >
                 <div className="flex items-center gap-2">
                   <Badge variant={log.type === "approve" ? "success" : log.type === "reject" ? "error" : log.type === "warn" ? "warning" : "soft"} className="text-[10px] shrink-0">
-                    {log.type === "approve" ? "Approuvé" : log.type === "reject" ? "Rejeté" : log.type === "warn" ? "Averti" : log.type === "delete" ? "Supprimé" : "Ignoré"}
+                    {log.type === "approve" ? t("moderator.approved") : log.type === "reject" ? t("moderator.rejected") : log.type === "warn" ? t("moderator.warned") : log.type === "delete" ? t("moderator.deleted") : t("moderator.ignored")}
                   </Badge>
                   <span className="text-sm text-[var(--text)]">{log.action}</span>
                 </div>
                 <span className="text-sm text-[var(--text-secondary)] md:text-center">{log.target}</span>
                 <span className="text-sm text-[var(--text-secondary)]">{log.moderator}</span>
                 <span className="text-sm text-[var(--text-tertiary)] md:text-right">{log.date}</span>
-              </motion.div>
+              </div>
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );

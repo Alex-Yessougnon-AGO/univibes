@@ -70,6 +70,14 @@
     --gold: #f472b6;
     --gold-hover: #e11d48;
     --gold-subtle: #fdf2f8;
+
+    /* Custom easing curves — Emil Kowalski inspired */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+    --ease-smooth: cubic-bezier(0.65, 0, 0.35, 1);
+
+    /* Shadows */
     --shadow-sm: 0 1px 2px rgba(15, 10, 30, 0.04), 0 1px 3px rgba(15, 10, 30, 0.06);
     --shadow: 0 1px 3px rgba(15, 10, 30, 0.06), 0 4px 12px rgba(15, 10, 30, 0.06);
     --shadow-md: 0 4px 6px rgba(15, 10, 30, 0.07), 0 12px 24px rgba(15, 10, 30, 0.08);
@@ -161,6 +169,97 @@ body {
 }
 
 /* ===================================================
+   MICRO-INTERACTIONS — Emil Kowalski inspired
+   =================================================== */
+
+/* Button press feedback: subtle scale-down */
+.pressable {
+    transition: transform 160ms var(--ease-out);
+    will-change: transform;
+}
+.pressable:active {
+    transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+    .pressable:hover {
+        transform: scale(1.02);
+    }
+}
+
+/* Hover effects gated to devices with hover + pointer */
+@media (hover: hover) and (pointer: fine) {
+    .hover-lift {
+        transition: transform 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+    }
+    .hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .hover-scale {
+        transition: transform 250ms var(--ease-out);
+    }
+    .hover-scale:hover {
+        transform: scale(1.04);
+    }
+
+    .hover-brand {
+        transition: background-color 200ms var(--ease-out), color 200ms var(--ease-out);
+    }
+}
+
+/* ===================================================
+   SCROLL ENTRY ANIMATIONS — IntersectionObserver based
+   =================================================== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    filter: blur(4px);
+    transition: opacity 600ms var(--ease-smooth), transform 700ms var(--ease-smooth), filter 700ms var(--ease-smooth);
+    will-change: transform, opacity;
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+}
+
+/* Stagger delays for children */
+.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 80ms; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 160ms; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 240ms; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 320ms; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 400ms; }
+.reveal-stagger > .reveal:nth-child(7) { transition-delay: 480ms; }
+.reveal-stagger > .reveal:nth-child(8) { transition-delay: 560ms; }
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        filter: none;
+        transition: none;
+    }
+
+    .card-interactive,
+    .nav-icon-wrapper {
+        transition: none;
+    }
+    .card-interactive:hover,
+    .card-interactive:active,
+    .card-interactive:hover:active,
+    .nav-icon-wrapper.active,
+    .nav-icon-wrapper.inactive {
+        transform: none;
+        opacity: 1;
+        box-shadow: none;
+    }
+}
+
+/* ===================================================
    CUSTOM UTILITIES
    =================================================== */
 .card-base {
@@ -171,12 +270,37 @@ body {
 
 .card-hover {
     transition:
-        transform 200ms ease,
-        box-shadow 200ms ease;
+        transform 200ms var(--ease-out),
+        box-shadow 200ms var(--ease-out);
+    will-change: transform;
 }
-.card-hover:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+@media (hover: hover) and (pointer: fine) {
+    .card-hover:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+/* Interactive card with tap feedback (replaces framer-motion whileHover/whileTap) */
+.card-interactive {
+    transition:
+        transform 200ms var(--ease-out),
+        box-shadow 200ms var(--ease-out);
+    will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+    .card-interactive:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+}
+.card-interactive:active {
+    transform: scale(0.98);
+}
+@media (hover: hover) and (pointer: fine) {
+    .card-interactive:hover:active {
+        transform: translateY(-3px) scale(0.98);
+    }
 }
 
 .glass {
@@ -186,6 +310,7 @@ body {
     border: 1px solid var(--border);
 }
 
+/* ── Gradient text — DEPRECATED: use solid brand/accent color instead. ── */
 .text-gradient-accent {
     background: linear-gradient(135deg, #ec4899, #f472b6);
     -webkit-background-clip: text;
@@ -240,7 +365,64 @@ body {
 }
 
 .animate-fade-in-up {
-    animation: fadeInUp 400ms ease forwards;
+    animation: fadeInUp 400ms var(--ease-out) forwards;
+}
+
+/* ── Toast enter animation — replaces framer-motion spring ── */
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(80px) scale(0.95); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+}
+.toast-enter {
+    animation: toastSlideIn 350ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+/* ── Favorite button heart pop — replaces framer-motion spring ── */
+@keyframes favoritePop {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.18); }
+    100% { transform: scale(1); opacity: 1; }
+}
+.animate-favorite-pop {
+    animation: favoritePop 400ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* ── Staggered fade-in for auth pages (replaces framer-motion containerStagger) ── */
+.stagger-fade-in > * {
+  opacity: 0;
+  animation: fadeInUp 420ms cubic-bezier(0.05, 0.7, 0.1, 1) forwards;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-right {
+  animation: slideInRight 300ms cubic-bezier(0.25, 0.1, 0, 1) forwards;
+}
+
+/* ── Ambient Motion — Premium float ──────────── */
+@keyframes ambient-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(12px, -18px) scale(1.02); }
+  50% { transform: translate(-8px, -28px) scale(0.98); }
+  75% { transform: translate(-16px, -8px) scale(1.01); }
+}
+@keyframes ambient-float-slow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-14px, 16px) scale(1.03); }
+  66% { transform: translate(18px, 6px) scale(0.97); }
+}
+.ambient-float {
+  animation: ambient-float 16s var(--ease-smooth) infinite;
+  will-change: transform;
+}
+.ambient-float-slow {
+  animation: ambient-float-slow 22s var(--ease-smooth) infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-float, .ambient-float-slow { animation: none; }
 }
 
 /* ── View Transitions ─────────────────────────── */
@@ -264,26 +446,26 @@ body {
 ::view-transition-new(.nav-forward) {
   --slide-offset: 60px;
   animation:
-    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
-    var(--duration-move) ease-in-out both vt-slide;
+    var(--duration-enter) var(--ease-out) var(--duration-exit) both vt-fade,
+    var(--duration-move) var(--ease-in-out) both vt-slide;
 }
 ::view-transition-old(.nav-forward) {
   --slide-offset: -60px;
   animation:
-    var(--duration-exit) ease-in both vt-fade reverse,
-    var(--duration-move) ease-in-out both vt-slide reverse;
+    var(--duration-exit) var(--ease-smooth) both vt-fade reverse,
+    var(--duration-move) var(--ease-in-out) both vt-slide reverse;
 }
 ::view-transition-new(.nav-back) {
   --slide-offset: -60px;
   animation:
-    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
-    var(--duration-move) ease-in-out both vt-slide;
+    var(--duration-enter) var(--ease-out) var(--duration-exit) both vt-fade,
+    var(--duration-move) var(--ease-in-out) both vt-slide;
 }
 ::view-transition-old(.nav-back) {
   --slide-offset: 60px;
   animation:
-    var(--duration-exit) ease-in both vt-fade reverse,
-    var(--duration-move) ease-in-out both vt-slide reverse;
+    var(--duration-exit) var(--ease-smooth) both vt-fade reverse,
+    var(--duration-move) var(--ease-in-out) both vt-slide reverse;
 }
 
 /* Shared element morph */
@@ -318,6 +500,49 @@ body {
   }
 }
 
+/* ── Hero CTA icon bounce ── */
+@keyframes ctaBounce {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
+}
+
+/* ── Subtle pulse for live indicators ── */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* ── Card image zoom on hover (pure CSS) ── */
+.img-zoom {
+  overflow: hidden;
+}
+.img-zoom img {
+  transition: transform 600ms var(--ease-smooth);
+  will-change: transform;
+}
+@media (hover: hover) and (pointer: fine) {
+  .img-zoom:hover img {
+    transform: scale(1.08);
+  }
+}
+
+/* ── Bottom Navigation icons — CSS instead of framer-motion ─── */
+.nav-icon-wrapper {
+    transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms ease;
+    will-change: transform;
+}
+.nav-icon-wrapper.active {
+    transform: scale(1.1);
+    opacity: 1;
+}
+.nav-icon-wrapper.inactive {
+    transform: scale(0.85);
+    opacity: 0.5;
+}
+
 /* ── iOS Safe Area ────────────────────────────── */
 .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -335,6 +560,16 @@ body {
 /* Touch scrolling for horizontal scroll containers */
 .scroll-container-touch {
     -webkit-overflow-scrolling: touch;
+}
+
+/* ── Müller-Brockmann grid helpers ── */
+.wrap {
+  max-width: 1296px;
+  margin: 0 auto;
+  padding: 0 var(--grid-margin, 48px);
+}
+.spread {
+  position: relative;
 }
 
 /* Small-screen text constraints */

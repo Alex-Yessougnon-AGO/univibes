@@ -1,55 +1,102 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
 import { Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { fadeUp, containerStagger } from "@/lib/motion";
+import { adminService } from "@/lib/services/organizer-service";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
-const LOGS = [
-  { action: "Approbation événement", actor: "Modérateur #1", target: "Hackathon IA & Data", date: "12 juil. 2025 14:32", type: "approve" },
-  { action: "Rejet événement", actor: "Modérateur #2", target: "Soirée Electro", date: "11 juil. 2025 09:15", type: "reject" },
-  { action: "Suspension utilisateur", actor: "Admin", target: "user_45a2", date: "10 juil. 2025 16:48", type: "suspend" },
-  { action: "Modification catégorie", actor: "Admin", target: "Sport → E-sport", date: "09 juil. 2025 11:02", type: "edit" },
-];
+const typeVariant = (action: string) => {
+  const a = action.toLowerCase();
+  if (a.includes("approv")) return "success" as const;
+  if (a.includes("rejec")) return "error" as const;
+  if (a.includes("suspen") || a.includes("delet")) return "error" as const;
+  return "soft" as const;
+};
 
 export default function AuditLogsPage() {
   const t = useTranslations();
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  useScrollReveal();
+
+  useEffect(() => {
+    adminService
+      .getAuditLogs()
+      .then((data: any) => setLogs(Array.isArray(data) ? data : data.data ?? []))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <div className="min-h-dvh bg-[var(--bg)]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div variants={containerStagger(0.06)} initial="hidden" animate="visible">
-          <motion.div variants={fadeUp}>
-            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">{t("admin.auditLogs")}</h1>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">{t("admin.auditLogsDesc")}</p>
-          </motion.div>
+        <div>
+          <div>
+            <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-1">
+              {t("admin.auditLogs")}
+            </h1>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">
+              {t("admin.auditLogsDesc")}
+            </p>
+          </div>
 
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
-            {LOGS.map((log, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + i * 0.06, duration: 0.35, ease: [0.25, 0.1, 0, 1] }}
-                className="flex items-center justify-between p-4 hover:bg-[var(--border-subtle)] transition-colors border-b border-[var(--border)] last:border-b-0"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-[var(--border-subtle)] flex items-center justify-center">
-                    <Clock className="w-4 h-4 text-[var(--text-tertiary)]" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-[var(--text)]">{log.action}</span>
-                      <Badge variant={log.type === "approve" ? "success" : log.type === "reject" ? "error" : "soft"} className="text-[10px]">{log.type}</Badge>
+          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden card-hover">
+            {loading ? (
+              <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">
+                Chargement...
+              </div>
+            ) : logs.length === 0 ? (
+              <div className="p-8 text-center text-sm text-[var(--text-tertiary)]">
+                {t("common.noResults")}
+              </div>
+            ) : (
+              logs.map((log: any) => (
+                <div
+                  key={log.id}
+                  className="flex items-center justify-between p-4 hover:bg-[var(--border-subtle)] transition-colors border-b border-[var(--border)] last:border-b-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-[var(--border-subtle)] flex items-center justify-center">
+                      <Clock className="w-4 h-4 text-[var(--text-tertiary)]" />
                     </div>
-                    <p className="text-xs text-[var(--text-secondary)]">{log.actor} · {log.target}</p>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium text-[var(--text)]">
+                          {log.action}
+                        </span>
+                        <Badge
+                          variant={typeVariant(log.action)}
+                          className="text-[10px]"
+                        >
+                          {log.action?.slice(0, 10)}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-[var(--text-secondary)]">
+                        {log.actor?.profile?.fullname ??
+                          log.actor?.email ??
+                          "—"}{" "}
+                        · {log.entityType ?? log.entityId ?? "—"}
+                      </p>
+                    </div>
                   </div>
+                  <span className="text-xs text-[var(--text-tertiary)]">
+                    {log.createdAt
+                      ? new Date(log.createdAt).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "—"}
+                  </span>
                 </div>
-                <span className="text-xs text-[var(--text-tertiary)]">{log.date}</span>
-              </motion.div>
-            ))}
-          </motion.div>
-        </motion.div>
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

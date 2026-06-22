@@ -1,7 +1,7 @@
 "use client";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Search, Moon, Sun, Menu, X } from "lucide-react";
 import { useTheme } from "@/components/providers/theme-provider";
@@ -20,12 +20,59 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
+  const router = useRouter();
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [searchActive, setSearchActive] = useState(false);
+  const [searchVal, setSearchVal] = useState("");
+
   const NAV_LINKS = [
     { href: "/", label: t("nav.home") },
     { href: "/explore", label: t("nav.explore") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/blog", label: t("nav.blog") },
+    { href: "/contact", label: t("nav.contact") },
   ];
 
   useEffect(() => { setMounted(true); }, []);
+
+  /* ── Keyboard shortcut: ⌘K / Ctrl+K ── */
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchActive(true);
+        setTimeout(() => searchInputRef.current?.focus(), 50);
+      }
+      if (e.key === "Escape" && searchActive) {
+        setSearchActive(false);
+        setSearchVal("");
+        searchInputRef.current?.blur();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [searchActive]);
+
+  const handleSearchSubmit = useCallback((e?: React.FormEvent) => {
+    e?.preventDefault();
+    const q = searchVal.trim();
+    if (q) {
+      router.push(`/explore?q=${encodeURIComponent(q)}`);
+    } else {
+      router.push("/explore");
+    }
+    setSearchActive(false);
+    setSearchVal("");
+  }, [searchVal, router]);
+
+  const handleSearchBlur = useCallback(() => {
+    // Small delay to allow click on search button
+    setTimeout(() => {
+      if (!searchVal) {
+        setSearchActive(false);
+      }
+    }, 200);
+  }, [searchVal]);
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", handler, { passive: true });
@@ -75,11 +122,37 @@ export function Navbar() {
           {/* Right actions */}
           <div className="flex items-center gap-2">
             {/* Search */}
-            <Link href="/explore" className="hidden sm:flex items-center gap-2 px-3 h-9 rounded-xl border border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] text-sm hover:border-[var(--brand)]/50 transition-colors min-w-[180px]">
-              <Search className="w-4 h-4" />
-              <span>{t("common.search")}…</span>
-              <kbd className="ml-auto text-xs bg-[var(--border-subtle)] px-1.5 py-0.5 rounded">⌘K</kbd>
-            </Link>
+            <form
+              onSubmit={handleSearchSubmit}
+              className={`hidden sm:flex items-center gap-2 px-3 h-9 rounded-xl border transition-colors min-w-[180px] ${
+                searchActive
+                  ? "border-[var(--brand)] ring-2 ring-[var(--brand)]/20 bg-[var(--surface)]"
+                  : "border-[var(--border)] bg-[var(--surface)] hover:border-[var(--brand)]/50"
+              }`}
+            >
+              <Search className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchVal}
+                onChange={(e) => setSearchVal(e.target.value)}
+                onFocus={() => setSearchActive(true)}
+                onBlur={handleSearchBlur}
+                onKeyDown={(e) => { if (e.key === "Enter") handleSearchSubmit(); }}
+                placeholder={t("common.search") + "…"}
+                className="flex-1 bg-transparent text-sm text-[var(--text)] placeholder:text-[var(--text-tertiary)] outline-none min-w-0"
+              />
+              {searchActive ? (
+                <button
+                  type="submit"
+                  className="text-xs text-[var(--brand)] font-medium whitespace-nowrap hover:text-[var(--brand-hover)] transition-colors"
+                >
+                  Go
+                </button>
+              ) : (
+                <kbd className="text-xs text-[var(--text-tertiary)] bg-[var(--border-subtle)] px-1.5 py-0.5 rounded font-mono shrink-0">⌘K</kbd>
+              )}
+            </form>
 
             {/* Language switcher */}
             <LanguageSwitcher />
@@ -106,6 +179,7 @@ export function Navbar() {
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden w-9 h-9 rounded-xl border border-[var(--border)] flex items-center justify-center text-[var(--text-secondary)]"
+              aria-label={mobileOpen ? t("nav.close_menu") : t("nav.open_menu")}
             >
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>

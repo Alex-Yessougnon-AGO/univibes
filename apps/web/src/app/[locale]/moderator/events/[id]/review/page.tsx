@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { useParams } from "next/navigation";
-import { motion } from "framer-motion";
 import { ArrowLeft, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +26,7 @@ export default function ReviewEventPage() {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+        <div  >
           <div className="flex items-center gap-3 mb-6">
             <Badge variant="warning">{t("admin.pendingApproval")}</Badge>
             <span className="text-xs text-[var(--text-secondary)]">Soumis le 12 juil. 2025</span>
@@ -48,43 +47,43 @@ export default function ReviewEventPage() {
           </div>
 
           {action === "approve" && (
-            <motion.div initial={{ opacity: 0, y: 8 }} className="rounded-2xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 p-6 text-center">
+            <div  className="rounded-2xl bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-200 p-6 text-center">
               <Check className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
               <p className="font-semibold text-emerald-700 dark:text-emerald-300">{t("moderator.approved")}</p>
               <p className="text-xs text-emerald-600/70 mt-1">{t("moderator.approvedDesc")}</p>
-              <Button variant="outline" size="sm" className="mt-4" asChild><Link href="/moderator">{t("common.back")}</Link></Button>
-            </motion.div>
+              <Button variant="outline" size="sm" className="mt-4 pressable" asChild><Link href="/moderator">{t("common.back")}</Link></Button>
+            </div>
           )}
 
           {action === "reject" && (
-            <motion.div initial={{ opacity: 0, y: 8 }} className="space-y-4">
-              <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
-                <label className="block text-sm font-medium text-[var(--text)] mb-2">{t("moderator.rejectReason")}</label>
+            <div  className="space-y-4 pressable">
+              <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] pressable">
+                <label className="block text-sm font-medium text-[var(--text)] mb-2 pressable">{t("moderator.rejectReason")}</label>
                 <textarea
-                  className="w-full h-28 rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 resize-none"
+                  className="w-full h-28 rounded-xl border border-[var(--border)] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-red-500/30 focus:border-red-500 resize-none pressable"
                   placeholder={t("moderator.rejectPlaceholder")}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                 />
-                <div className="flex gap-3 mt-4">
+                <div className="flex gap-3 mt-4 pressable">
                   <Button variant="outline" size="sm" onClick={() => setAction(null)}>{t("common.cancel")}</Button>
-                  <Button variant="danger" size="sm" onClick={() => setReason("")}><X className="w-3 h-3" /> {t("moderator.rejectEvent")}</Button>
+                  <Button variant="danger" size="sm" onClick={() => setReason("")}><X className="w-3 h-3 pressable" /> {t("moderator.rejectEvent")}</Button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {!action && (
-            <div className="flex gap-3">
-              <Button variant="primary" size="lg" className="flex-1" onClick={() => setAction("approve")}>
-                <Check className="w-4 h-4" /> {t("moderator.approveEvent")}
+            <div className="flex gap-3 pressable">
+              <Button variant="primary" size="lg" className="flex-1 pressable" onClick={() => setAction("approve")}>
+                <Check className="w-4 h-4 pressable" /> {t("moderator.approveEvent")}
               </Button>
-              <Button variant="outline" size="lg" className="flex-1 border-red-200 text-red-600 hover:bg-red-50" onClick={() => setAction("reject")}>
-                <X className="w-4 h-4" /> {t("moderator.rejectEvent")}
+              <Button variant="outline" size="lg" className="flex-1 border-red-200 text-red-600 hover:bg-red-50 pressable" onClick={() => setAction("reject")}>
+                <X className="w-4 h-4 pressable" /> {t("moderator.rejectEvent")}
               </Button>
             </div>
           )}
-        </motion.div>
+        </div>
       </main>
     </div>
   );

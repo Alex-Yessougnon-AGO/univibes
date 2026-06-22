@@ -3,8 +3,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { fadeUp, containerStagger } from "@/lib/motion";
 import { Sparkles, Calendar, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -65,10 +63,17 @@ const ARTICLES = [
   },
 ];
 
-const CATEGORIES = ["Tous", "Conseils", "Organisateurs", "Billetterie", "Témoignages", "Sélections"];
-
 export default function BlogPage() {
   const t = useTranslations();
+  const CATEGORIES = [t("blog.cat_all"), t("blog.cat_tips"), t("blog.cat_orga"), t("blog.cat_ticket"), t("blog.cat_testi"), t("blog.cat_select")];
+  const CATEGORY_MAP: Record<string, string> = {
+    "Conseils": t("blog.cat_tips"),
+    "Sélections": t("blog.cat_select"),
+    "Organisateurs": t("blog.cat_orga"),
+    "Billetterie": t("blog.cat_ticket"),
+    "Témoignages": t("blog.cat_testi"),
+  };
+
   return (
     <>
       <Navbar />
@@ -76,18 +81,18 @@ export default function BlogPage() {
         <section className="relative pt-12 pb-8 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 to-transparent pointer-events-none" />
           <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <motion.div initial="hidden" animate="visible" variants={containerStagger(0.07)}>
-              <motion.span variants={fadeUp} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
+            <div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 <Sparkles className="w-3 h-3" />
-                Blog
-              </motion.span>
-              <motion.h1 variants={fadeUp} className="text-3xl sm:text-4xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-3">
-                Actualités & Conseils
-              </motion.h1>
-              <motion.p variants={fadeUp} className="text-sm text-[var(--text-secondary)] max-w-lg">
-                Astuces, guides et témoignages pour organiser et découvrir les meilleurs événements étudiants.
-              </motion.p>
-            </motion.div>
+                {t("blog.title")}
+              </span>
+              <h1 className="text-3xl sm:text-4xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-3">
+                {t("blog.title")}
+              </h1>
+              <p className="text-sm text-[var(--text-secondary)] max-w-lg">
+                {t("blog.subtitle")}
+              </p>
+            </div>
           </div>
         </section>
 
@@ -99,7 +104,7 @@ export default function BlogPage() {
                 key={cat}
                 className={cn(
                   "shrink-0 px-4 py-2 rounded-full text-xs font-medium transition-all",
-                  cat === "Tous"
+                  cat === t("blog.cat_all")
                     ? "bg-[var(--brand)] text-white shadow-[var(--shadow-sm)]"
                     : "bg-[var(--border-subtle)] text-[var(--text-secondary)] hover:bg-[var(--border)]"
                 )}
@@ -114,11 +119,8 @@ export default function BlogPage() {
         <section className="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {ARTICLES.map((article, i) => (
-              <motion.div
+              <div
                 key={article.slug}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.04 }}
               >
                 <Link
                   href={`/blog/${article.slug}`}
@@ -127,7 +129,7 @@ export default function BlogPage() {
                   <div className="relative aspect-[16/9] overflow-hidden">
                     <Image src={article.image} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute top-3 left-3">
-                      <Badge variant="soft" className="bg-white/90 dark:bg-black/60 backdrop-blur-sm text-xs">{article.category}</Badge>
+                      <Badge variant="soft" className="bg-white/90 dark:bg-black/60 backdrop-blur-sm text-xs">{CATEGORY_MAP[article.category] || article.category}</Badge>
                     </div>
                   </div>
                   <div className="p-5">
@@ -139,11 +141,11 @@ export default function BlogPage() {
                     <h2 className="font-semibold text-[var(--text)] group-hover:text-[var(--brand)] transition-colors leading-snug mb-2">{article.title}</h2>
                     <p className="text-xs text-[var(--text-secondary)] leading-relaxed line-clamp-2">{article.excerpt}</p>
                     <div className="flex items-center gap-2 mt-3 text-xs text-[var(--text-tertiary)]">
-                      <span>Par {article.author}</span>
+                      <span>{t("blog.by") + " " + article.author}</span>
                     </div>
                   </div>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
         </section>

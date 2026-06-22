@@ -1,38 +1,15 @@
 "use client";
 
 import { useTranslations, useLocale } from "next-intl";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { useState } from "react";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/motion";
 import { ArrowLeft, Bell, Shield, Trash2, User, Sparkles, Moon, Sun, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/components/providers/theme-provider";
 
-const SETTINGS_SECTIONS = [
-  {
-    id: "notifications",
-    icon: Bell,
-    label: "Notifications",
-    items: [
-      { label: "Rappels d'événements", key: "reminders", default: true },
-      { label: "Nouveaux favoris", key: "favorites", default: true },
-      { label: "Recommandations", key: "recommendations", default: false },
-      { label: "Offres et promotions", key: "promotions", default: false },
-    ],
-  },
-  {
-    id: "privacy",
-    icon: Shield,
-    label: "Confidentialité",
-    items: [
-      { label: "Profil visible par tous", key: "public_profile", default: true },
-      { label: "Montrer ma liste de favoris", key: "public_favorites", default: false },
-      { label: "Recevoir des messages", key: "messages", default: true },
-    ],
-  },
-];
+// SETTINGS_SECTIONS defined inside component to access t()
 
 export default function SettingsPage() {
   const t = useTranslations();
@@ -40,6 +17,7 @@ export default function SettingsPage() {
   const pathname = usePathname();
   const router = useRouter();
   const { theme, setTheme } = useTheme();
+  useScrollReveal();
   const [settings, setSettings] = useState<Record<string, boolean>>({
     reminders: true,
     favorites: true,
@@ -49,6 +27,30 @@ export default function SettingsPage() {
     public_favorites: false,
     messages: true,
   });
+
+  const SETTINGS_SECTIONS = [
+    {
+      id: "notifications",
+      icon: Bell,
+      label: t("settings.notifications"),
+      items: [
+        { label: t("settings.reminders"), key: "reminders", default: true },
+        { label: t("settings.newFavorites"), key: "favorites", default: true },
+        { label: t("settings.recommendations"), key: "recommendations", default: false },
+        { label: t("settings.promotions"), key: "promotions", default: false },
+      ],
+    },
+    {
+      id: "privacy",
+      icon: Shield,
+      label: t("settings.privacy"),
+      items: [
+        { label: t("settings.publicProfile"), key: "public_profile", default: true },
+        { label: t("settings.publicFavorites"), key: "public_favorites", default: false },
+        { label: t("settings.receiveMessages"), key: "messages", default: true },
+      ],
+    },
+  ];
 
   const toggle = (key: string) => setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -61,7 +63,7 @@ export default function SettingsPage() {
       <header className="relative z-10 h-16 flex items-center px-5 border-b border-[var(--border)]">
         <Link href="/profile" className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors group">
           <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
-          Retour
+          {t("common.back")}
         </Link>
       </header>
 
@@ -69,31 +71,30 @@ export default function SettingsPage() {
         <div className="relative pt-6 pb-4">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 to-transparent pointer-events-none" />
           <div className="relative max-w-2xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
+            <div
+             
+             
+             
             >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 <Sparkles className="w-3 h-3" />
-                Paramètres
+                {t("nav.settings")}
               </span>
               <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
-                Paramètres du compte
+                {t("settings.title")}
               </h1>
-            </motion.div>
+            </div>
           </div>
         </div>
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+        <div
+         
+         
           className="max-w-2xl mx-auto px-4 sm:px-6 pb-12 space-y-6"
         >
           {/* Apparence */}
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] space-y-4">
-            <h2 className="font-semibold text-sm text-[var(--text)]">Apparence</h2>
+          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] space-y-4">
+            <h2 className="font-semibold text-sm text-[var(--text)]">{t("settings.appearance")}</h2>
 
             {/* Theme toggle */}
             <div className="flex items-center justify-between">
@@ -102,8 +103,8 @@ export default function SettingsPage() {
                   {theme === "dark" ? <Moon className="w-4 h-4 text-[var(--text-secondary)]" /> : <Sun className="w-4 h-4 text-[var(--text-secondary)]" />}
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-[var(--text)]">Thème</p>
-                  <p className="text-xs text-[var(--text-secondary)]">{theme === "dark" ? "Sombre" : "Clair"}</p>
+                  <p className="text-sm font-medium text-[var(--text)]">{t("settings.theme")}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{theme === "dark" ? t("settings.dark") : t("settings.light")}</p>
                 </div>
               </div>
               <button
@@ -153,11 +154,11 @@ export default function SettingsPage() {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Sections dynamiques */}
           {SETTINGS_SECTIONS.map((section) => (
-            <motion.div key={section.id} variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)]">
+            <div key={section.id} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)]">
               <div className="px-5 pt-5 pb-2">
                 <div className="flex items-center gap-2">
                   <section.icon className="w-4 h-4 text-[var(--brand)]" />
@@ -183,17 +184,17 @@ export default function SettingsPage() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           ))}
 
           {/* Danger zone */}
-          <motion.div variants={fadeUp}>
+          <div>
             <button className="w-full flex items-center justify-center gap-2 p-4 text-sm font-medium text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/10 rounded-2xl transition-colors border border-rose-200/50 dark:border-rose-900/30">
               <Trash2 className="w-4 h-4" />
-              Supprimer mon compte
+              {t("settings.deleteAccount")}
             </button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );

@@ -6,8 +6,23 @@ allowBuilds:
   '@parcel/watcher': true
   '@prisma/client': true
   '@prisma/engines': true
+  '@scarf/scarf': false
   '@sentry/cli': true
   '@swc/core': true
-  bcrypt: true
   prisma: true
   sharp: true
+
+# Overrides encore nécessaires après migration NestJS v11
+# Les anciens overrides (glob, lodash, tmp, ajv, qs, webpack, tar) ont été résolus par v11
+overrides:
+  # multer: @nestjs/platform-express utilise encore une version <2.2.0
+  multer: ^2.2.0
+
+  # postcss: Needed by Next.js (admin workspace)
+  postcss: ^8.5.10
+
+  # uuid: La version 10.0.0 a une vulnérabilité modérée
+  uuid: ^11.1.1
+
+  # js-yaml: @nestjs/swagger dépend d'une version vulnérable
+  js-yaml: ^4.2.0

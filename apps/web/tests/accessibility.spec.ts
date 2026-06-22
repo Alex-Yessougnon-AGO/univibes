@@ -1,4 +1,16 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+/** Wait for React hydration by checking that links have React event handlers attached */
+async function waitForHydration(page: Page) {
+  await page.waitForFunction(() => {
+    const links = document.querySelectorAll('a');
+    for (const link of links) {
+      const keys = Object.keys(link);
+      if (keys.some(k => k.startsWith('__reactProps'))) return true;
+    }
+    return false;
+  }, { timeout: 15000 });
+}
 
 /**
  * WCAG 2.1 AA Automated Accessibility Tests for Univibes
@@ -29,6 +41,7 @@ test.describe('Accessibility - WCAG 2.1 AA', () => {
   // Test 2: All buttons have accessible labels
   test('buttons-have-accessible-labels', async ({ page }) => {
     await page.goto('http://localhost:3000', { timeout: 45000 });
+    await waitForHydration(page);
     const count = await page.locator('button').count();
     const buttonsWithoutLabel = [];
 
@@ -142,7 +155,7 @@ test.describe('Accessibility - WCAG 2.1 AA', () => {
     
     const invalidAria = await page.evaluate(() => {
       const allElements = document.querySelectorAll('*');
-      const issues = [];
+      const issues: string[] = [];
       const validPrefixes = [
         'aria-atomic', 'aria-busy', 'aria-controls', 'aria-current', 'aria-describedby',
         'aria-details', 'aria-disabled', 'aria-expanded', 'aria-flowto',

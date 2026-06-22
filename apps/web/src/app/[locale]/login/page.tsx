@@ -1,27 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/i18n/routing";
+import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { containerStagger, fadeUp } from "@/lib/motion";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/lib/auth-context";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const t = useTranslations();
+  const router = useRouter();
+  const { login } = useAuth();
+  useScrollReveal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    alert("Connexion simulée ! (Backend non connecté)");
+    setError("");
+    try {
+      await login(email, password);
+      toast.success(t("auth.loginSuccess") || "Connecté !");
+      router.push("/dashboard");
+    } catch (err: any) {
+      const msg = err?.response?.data?.error?.message || t("auth.loginError") || "Email ou mot de passe incorrect.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -39,43 +52,47 @@ export default function LoginPage() {
       </header>
 
       <main className="relative z-10 flex-1 flex items-center justify-center px-5 pb-12">
-        <motion.div
-          variants={containerStagger(0.07)}
-          initial="hidden"
-          animate="visible"
+        <div
+         
+         
+         
           className="w-full max-w-sm"
         >
           {/* Eyebrow */}
-          <motion.div variants={fadeUp} className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-semibold text-[var(--brand-text)] tracking-wide">
               <Sparkles className="w-3 h-3" />
               {t("common.appTagline")}
             </span>
-          </motion.div>
+          </div>
 
           {/* Logo mark */}
-          <motion.div variants={fadeUp} className="text-center mb-2">
+          <div className="text-center mb-2">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto shadow-[var(--shadow-brand)]">
               <span className="text-white font-black text-3xl tracking-tight">UV</span>
             </div>
-          </motion.div>
+          </div>
 
           {/* Title */}
-          <motion.div variants={fadeUp} className="text-center mb-10">
+          <div className="text-center mb-10">
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
               {t("auth.welcome")}
             </h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1.5 max-w-64 mx-auto leading-relaxed">
               {t("auth.welcomeBack")}
             </p>
-          </motion.div>
+          </div>
 
           {/* Form card */}
-          <motion.div
-            variants={fadeUp}
+          <div
+           
             className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]"
-          >
-            <form onSubmit={handleSubmit} className="space-y-4">
+          >              {error && (
+                <div className="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300">
+                  {error}
+                </div>
+              )}
+              <form onSubmit={handleSubmit} className="space-y-4">
               <Input
                 label={t("auth.email")}
                 type="email"
@@ -89,7 +106,7 @@ export default function LoginPage() {
                 <Input
                   label={t("auth.password")}
                   type={showPassword ? "text" : "password"}
-                  placeholder="Ton mot de passe"
+                  placeholder={t("auth.passwordPlaceholder")}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   rightIcon={
@@ -119,7 +136,7 @@ export default function LoginPage() {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Connexion…
+                    {t("auth.connecting")}
                   </span>
                 ) : (
                   <>
@@ -159,10 +176,10 @@ export default function LoginPage() {
                 Facebook
               </button>
             </div>
-          </motion.div>
+          </div>
 
           {/* Signup link */}
-          <motion.div variants={fadeUp} className="mt-8 text-center">
+          <div className="mt-8 text-center">
             <p className="text-sm text-[var(--text-secondary)]">
               {t("auth.noAccount")}{" "}
               <Link
@@ -172,11 +189,11 @@ export default function LoginPage() {
                 {t("auth.signUp")}
               </Link>
             </p>
-          </motion.div>
+          </div>
 
           {/* Demo credentials */}
-          <motion.div
-            variants={fadeUp}
+          <div
+           
             className="mt-6 p-4 rounded-xl bg-[var(--brand-subtle)]/50 border border-[var(--brand)]/10"
           >
             <p className="text-[11px] font-semibold text-[var(--brand-text)] uppercase tracking-wider mb-1.5">
@@ -185,8 +202,8 @@ export default function LoginPage() {
             <p className="text-xs text-[var(--text-secondary)] font-mono">
               admin@univvibes.com / Admin@UnivVibes2026!
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );

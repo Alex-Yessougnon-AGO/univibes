@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -20,16 +19,13 @@ export function FavoriteButton({
   size = "md",
 }: FavoriteButtonProps) {
   const [favorited, setFavorited] = useState(initialFavorited);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     const next = !favorited;
     setFavorited(next);
-    setIsAnimating(true);
     onToggle?.(next);
-    setTimeout(() => setIsAnimating(false), 400);
   };
 
   const sizeClasses = size === "sm" ? "w-8 h-8" : "w-9 h-9";
@@ -49,12 +45,8 @@ export function FavoriteButton({
       aria-label={favorited ? "Retirer des favoris" : "Ajouter aux favoris"}
     >
       <div className="relative flex items-center justify-center">
-        <motion.div
-          key={favorited ? "filled" : "empty"}
-          initial={isAnimating ? { scale: 0.6, opacity: 0 } : false}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 500, damping: 15, mass: 0.5 }}
-        >
+        {/* Key remounts the wrapper on each toggle to replay the CSS animation */}
+        <div key={String(favorited)} className="animate-favorite-pop">
           <Heart
             className={cn(
               size === "sm" ? "w-4 h-4" : "w-[18px] h-[18px]",
@@ -63,7 +55,7 @@ export function FavoriteButton({
                 : variant === "overlay" ? "text-white" : "text-gray-600 dark:text-gray-300"
             )}
           />
-        </motion.div>
+        </div>
       </div>
     </button>
   );

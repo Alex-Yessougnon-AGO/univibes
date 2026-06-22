@@ -2,10 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
-import { fadeUp, staggerContainer } from "@/lib/motion";
 import { AlertTriangle, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const REPORTS = [
   { id: "1", event: "Soirée Electro", reason: "Contenu inapproprié", reporter: "Anonyme", status: "pending" },
@@ -25,11 +24,11 @@ export default function ReportsPage() {
         </div>
       </header>
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-          <motion.div variants={fadeUp}>
+        <div >
+          <div >
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-6">{t("moderator.reports")}</h1>
-          </motion.div>
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden">
+          </div>
+          <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden card-hover">
             {REPORTS.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-sm text-[var(--text-secondary)]">{t("moderator.noReports")}</p>
@@ -48,9 +47,10 @@ export default function ReportsPage() {
                 </div>
               ))
             )}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );
+  useScrollReveal();
 }

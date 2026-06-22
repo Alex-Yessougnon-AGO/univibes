@@ -4,8 +4,19 @@ import {
   MinLength,
   MaxLength,
   IsOptional,
+  Matches,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+/**
+ * Regex: au moins 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial.
+ * 8 à 128 caractères.
+ */
+export const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]).{8,128}$/;
+
+export const PASSWORD_REGEX_MESSAGE =
+  'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial (!@#$%^&* etc.).';
 
 export class RegisterDto {
   @ApiProperty({ example: 'jean.dupont@universite.edu' })
@@ -22,6 +33,7 @@ export class RegisterDto {
   @IsString()
   @MinLength(8)
   @MaxLength(128)
+  @Matches(PASSWORD_REGEX, { message: PASSWORD_REGEX_MESSAGE })
   password!: string;
 
   @ApiPropertyOptional({ example: '+22997000000' })
@@ -65,6 +77,7 @@ export class ResetPasswordDto {
   @IsString()
   @MinLength(8)
   @MaxLength(128)
+  @Matches(PASSWORD_REGEX, { message: PASSWORD_REGEX_MESSAGE })
   password!: string;
 }
 

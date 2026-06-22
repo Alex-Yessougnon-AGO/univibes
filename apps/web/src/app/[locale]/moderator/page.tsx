@@ -2,11 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { motion } from "framer-motion";
-import { fadeUp, staggerContainer } from "@/lib/motion";
 import { Shield, Check, X, Clock, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const PENDING = [
   { name: "Hackathon IA & Data", org: "Club IA UAC", date: "15 juil.", status: "pending" },
@@ -31,13 +30,13 @@ export default function ModeratorDashboardPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
-          <motion.div variants={fadeUp} className="mb-8">
+        <div >
+          <div  className="mb-8">
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight">{t("moderator.pendingEvents")}</h1>
             <p className="text-sm text-[var(--text-secondary)] mt-1">{PENDING.length} {t("moderator.pendingEvents").toLowerCase()}</p>
-          </motion.div>
+          </div>
 
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)]">
+          <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)] card-hover">
             <div className="p-4 border-b border-[var(--border)]">
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-[var(--accent)]" />
@@ -53,13 +52,14 @@ export default function ModeratorDashboardPage() {
                 <div className="flex items-center gap-2">
                   <button className="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-900/10 flex items-center justify-center text-emerald-600 hover:bg-emerald-100 transition-colors"><Check className="w-4 h-4" /></button>
                   <button className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/10 flex items-center justify-center text-red-500 hover:bg-red-100 transition-colors"><X className="w-4 h-4" /></button>
-                  <Button variant="ghost" size="sm" asChild><Link href={`/moderator/events/${item.name.toLowerCase().replace(/\s+/g, "-")}/review`}>{t("common.seeAll")}</Link></Button>
+                  <Button variant="ghost" size="sm" asChild className="pressable"><Link href={`/moderator/events/${item.name.toLowerCase().replace(/\s+/g, "-")}/review`}>{t("common.seeAll")}</Link></Button>
                 </div>
               </div>
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );
+  useScrollReveal();
 }

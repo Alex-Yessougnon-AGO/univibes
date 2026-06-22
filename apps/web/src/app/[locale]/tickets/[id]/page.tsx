@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Calendar, MapPin, QrCode, Download, Share2, Sparkles, X } from "lucide-react";
 import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
@@ -14,6 +13,7 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
 import { EVENTS } from "@/lib/mock-data";
 import { formatFullDate, formatCurrency, cn } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const MOCK_TICKETS = [
   { id: "t1", event: EVENTS[1], quantity: 1, ticketName: "Participant", total: 0, date: "2025-03-15", status: "upcoming" as const, qrCode: "UNV-ABC123" },
@@ -23,6 +23,7 @@ const MOCK_TICKETS = [
 export default function TicketDetailPage() {
   const t = useTranslations();
   const params = useParams();
+  useScrollReveal();
   const ticket = MOCK_TICKETS.find((t) => t.id === params.id);
   const [showQR, setShowQR] = useState(false);
 
@@ -30,7 +31,7 @@ export default function TicketDetailPage() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-[var(--bg)]">
         <h2 className="font-semibold text-[var(--text)]">{t("ticket.title")} introuvable</h2>
-        <Button variant="outline" size="sm" className="mt-4" asChild>
+        <Button variant="outline" size="sm" className="mt-4 pressable" asChild>
           <Link href="/tickets">{t("ticket.title")}</Link>
         </Button>
       </div>
@@ -45,18 +46,15 @@ export default function TicketDetailPage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-[var(--accent)]/3 to-transparent pointer-events-none" />
 
           <div className="relative max-w-lg mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-            >
+            <div
+              >
               <Link href="/tickets" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors mb-6 group">
                 <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
                 {t("common.back")}
               </Link>
 
               <div className="text-center mb-8">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-sm)]">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-4 shadow-[var(--shadow-sm)] card-hover">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-7 h-7 text-emerald-600"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
                 </div>
                 <Badge variant="success" className="mb-3">{t("ticket.active")}</Badge>
@@ -67,14 +65,11 @@ export default function TicketDetailPage() {
                   {ticket.ticketName} · {ticket.quantity} billet{ticket.quantity > 1 ? "s" : ""}
                 </p>
               </div>
-            </motion.div>
+            </div>
 
             {/* Ticket card */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.1, 0, 1] }}
-              className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)]"
+            <div
+              className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow)] card-hover"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <Image src={ticket.event.coverImage} alt={ticket.event.title} fill className="object-cover" />
@@ -132,27 +127,24 @@ export default function TicketDetailPage() {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1 gap-1.5">
+                  <Button variant="outline" size="sm" className="flex-1 gap-1.5 pressable">
                     <Download className="w-3.5 h-3.5" />
                     {t("ticket.download")}
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1 gap-1.5">
+                  <Button variant="outline" size="sm" className="flex-1 gap-1.5 pressable">
                     <Share2 className="w-3.5 h-3.5" />
                     {t("common.share")}
                   </Button>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Event info */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.15, ease: [0.25, 0.1, 0, 1] }}
-              className="mt-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)]"
+            <div
+              className="mt-4 rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] card-hover"
             >
               <div className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-xl overflow-hidden ring-2 ring-[var(--brand)]/15 shrink-0">
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden ring-2 ring-[var(--brand)]/15 shrink-0 card-hover">
                   <Image src={ticket.event.organizer.logoUrl} alt={ticket.event.organizer.name} fill className="object-cover" />
                 </div>
                 <div>
@@ -160,30 +152,22 @@ export default function TicketDetailPage() {
                   <p className="text-xs text-[var(--text-secondary)]">{ticket.event.organizer.description}</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </main>
 
       {/* QR modal */}
-      <AnimatePresence>
         {showQR && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
             onClick={() => setShowQR(false)}
           >
-            <motion.div
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
+            <div
               className="bg-white rounded-3xl p-8 mx-4 text-center shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="w-56 h-56 mx-auto mb-4 rounded-xl bg-white p-4 shadow-[var(--shadow)]">
+              <div className="w-56 h-56 mx-auto mb-4 rounded-xl bg-white p-4 shadow-[var(--shadow)] card-hover">
                 <div className="w-full h-full bg-[var(--text)] relative overflow-hidden rounded-lg">
                   <div className="absolute inset-0 grid grid-cols-8 gap-0.5 p-0.5">
                     {Array.from({ length: 64 }).map((_, i) => (
@@ -200,10 +184,10 @@ export default function TicketDetailPage() {
               >
                 {t("common.close")}
               </button>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      
 
       <BottomNav />
     </>

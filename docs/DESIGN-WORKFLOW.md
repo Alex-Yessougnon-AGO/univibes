@@ -54,8 +54,8 @@ Prépare-toi à 15-20 minutes de questions. C'est normal et nécessaire.
 ```
 
 Après `/grill-me`, ce skill explore le codebase existant (docs/, prisma/, apps/web/) et génère un `DESIGN_BRIEF.md`. Il formalise :
-- Le ton émotionnel (dynamisme, confiance, énergie)
-- Les inspirations visuelles (Airbnb, Spotify, Eventbrite)
+- Le ton émotionnel (énergique, premium, étudiant africain branché)
+- Les inspirations visuelles (Spotify, Apple, magazines Swiss Design)
 - Les contraintes spécifiques (connexions lentes, petit écran, FCFA comme monnaie)
 - Les personas (Koffi l'étudiant, AEUAC l'organisateur)
 
@@ -87,24 +87,32 @@ Ce skill génère **tout le système de design en code** :
 
 ```
 Couleurs (light + dark mode) :
-  primary: #0F5132      → Deep University Green
-  secondary: #D4AF37    → Gold Accent
-  surface: #FFFFFF
-  background: #F8F9FA
-  text-primary: #111827
-  text-secondary: #6B7280
-  success: #22C55E
-  warning: #F59E0B
-  danger: #DC2626
+  brand: #7c3aed          → Deep Violet NOVA (primary)
+  brand-hover: #6d28d9    → Violet intensifié
+  brand-subtle: #f5f0ff   → Fond violet doux
+  accent: #ec4899         → Rose Accent
+  accent-hover: #db2777   → Rose foncé
+  accent-subtle: #fdf2f8  → Fond rose doux
+  surface: #ffffff
+  bg: #faf8fc
+  border: #e8e2f0
+  text: #0f0a1e
+  text-secondary: #6b6478
+  text-tertiary: #a89fb8
+  success: #10b981
+  warning: #f59e0b
+  error: #ef4444
 
-Typography (Inter) :
-  display-xl: 64px / 56px / 48px
-  heading: 40px / 32px / 28px / 24px
-  body: 18px / 16px / 14px
-  caption: 12px
+Typography :
+  display: Calistoga (serif) → headings hero uniquement
+  body: Inter (sans-serif) → tout le reste
+  display-xl: clamp(2.8rem,7vw,5.5rem)
+  heading: 28px / 32px / 40px
+  body: 16px / 14px / 12px
+  label: 10-11px uppercase tracking-[0.15em]
 
 Spacing scale : 4 / 8 / 12 / 16 / 24 / 32 / 48 / 64 / 96 / 128px
-Motion : 200ms ease / 300ms spring / 500ms page transition
+Motion : 200ms ease-out / 300ms spring / 500ms page transition
 Breakpoints : 320 / 768 / 1024 / 1440px
 ```
 
@@ -144,14 +152,14 @@ Produit une task list ordonnée :
 
 Ce skill avec sa base de 161 palettes et 57 paires typographiques va répondre à :
 - "Pour une plateforme événementielle étudiante africaine, quelle palette secondaire ?"
-- "Quel style UI ? (Le bento grid avec accents dorés ? L'éditorial sombre ?)"
+- "Quel style UI ? (Éditorial Swiss, bento grid, magazine ?)"
 - "Quelle paire typo complémentaire à Inter pour les titres d'événements ?"
 
 **Usage concret :**
 ```
 /ui-ux-pro-max
 → "Je construis une plateforme événementielle étudiante, 
-   mobile-first, Bénin. Couleurs : vert profond + or.
+   mobile-first, Bénin. Palette : violet profond + rose.
    Recommande-moi un style UI, des variantes de palette, 
    et des guidelines UX critiques pour ce type de produit."
 ```
@@ -168,7 +176,7 @@ Ce skill est le **chef d'orchestre du goût**. Il doit être utilisé ici pour :
 - Proposer les touches qui font la différence : typographie expressive, espacement intentionnel, hiérarchie couleur non-évidente
 
 **Questions spécifiques à poser à `/impeccable` pour Univibes :**
-- "La card d'événement avec l'affiche en cover + infos dessous, comment la rendre mémorable ?"
+- "La card d'événement avec l'affiche en cover + infos dessous, comment la rendre mémorable sur la grille ?"
 - "Comment faire que la homepage ne ressemble pas à Eventbrite générique ?"
 - "Quelle micro-interaction sur le bouton 'Ajouter aux favoris' ?"
 
@@ -180,7 +188,7 @@ Ce skill est le **chef d'orchestre du goût**. Il doit être utilisé ici pour :
 
 Ce skill bloque les défauts typiques de l'IA (shadows génériques, cards identiques, spacings aléatoires) et impose :
 - Fonts avec des tailles vraiment contrastées (12px caption vs 64px hero)
-- Shadows avec des couleurs non-noires (shadow verte pour la marque)
+- Shadows avec des teintes colorées (shadow violet pour la marque)
 - Cards avec une vraie hiérarchie interne
 - Boutons avec états hover/pressed animés
 
@@ -212,10 +220,9 @@ Combiner ces 3 skills **simultanément** pour chaque page :
 ```
 
 Points critiques pour Univibes Homepage :
-- Le hero doit afficher des **affiches d'événements réels** (pas des illustrations génériques)
 - La barre de recherche est visible dès le premier écran sur mobile
 - La section "Événements à la une" utilise un scroll horizontal sur mobile
-- La section "Top Organisateurs" avec logos circulaires
+- Les stats et compteurs sont visuels et engageants
 
 ```
 /impeccable
@@ -271,17 +278,6 @@ C'est la page de conversion. La plus critique.
 → "Implémente EventCard comme un compound component avec
    EventCard.Cover, EventCard.Info, EventCard.Actions"
 ```
-
-### Règle absolue pendant le build
-
-```
-/full-output-enforcement
-```
-
-**Toujours actif pendant la construction.** Ce skill force l'IA à :
-- Ne jamais écrire `// ... existing code`
-- Ne jamais couper un composant avec `// TODO: implement`
-- Toujours fournir le fichier complet et fonctionnel
 
 ---
 
@@ -448,9 +444,9 @@ C'est la page de conversion. La plus critique.
 2. /ui-ux-pro-max → patterns pour ce type de page
 3. /impeccable → direction visuelle
 4. /design-taste-frontend (7/6/5) + /full-output-enforcement
-5. /emil-design-eng → review post-build
-6. /design-motion-principles (build) → animations
-7. /web-design-guidelines → validation
+6. /emil-design-eng → review post-build
+7. /design-motion-principles (build) → animations
+8. /web-design-guidelines → validation
 ```
 
 ### "J'ai une page qui manque de personnalité"
@@ -486,7 +482,7 @@ C'est la page de conversion. La plus critique.
 1. /redesign-existing-projects → audit + plan
 2. /impeccable → nouvelle direction
 3. /design-taste-frontend (7/6/5) + /full-output-enforcement
-4. /design-review → QA
+5. /design-review → QA
 ```
 
 ### "Les animations sont cheap"
@@ -527,6 +523,9 @@ Phase 5 (validation) :
   /accessibility-expert → a11y
   /web-design-guidelines → standards web
   /impeccable → regard final
+
+DÉPLOIEMENT :
+  /vercel-cli-with-tokens → mise en production
 ```
 
 ---
@@ -620,6 +619,10 @@ VALIDATE
 ├── /web-design-guidelines       → 100+ règles Vercel
 ├── /design-motion-principles (audit) → QA animations
 └── /ui-refactor                 → Corrections ciblées
+│
+DEPLOY
+│
+└── /vercel-cli-with-tokens      → Mise en production
 ```
 
 ---

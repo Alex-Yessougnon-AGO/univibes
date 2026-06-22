@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../common/audit/audit.service';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class AdminService {
@@ -13,6 +14,7 @@ export class AdminService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly cache: CacheService,
   ) {}
 
   async getDashboard() {
@@ -61,12 +63,13 @@ export class AdminService {
   }
 
   async getUsers(page: number = 1, limit: number = 20) {
-    const skip = (page - 1) * limit;
+    const safeLimit = Math.min(limit, 100);
+    const skip = (page - 1) * safeLimit;
 
     const [users, total] = await Promise.all([
       this.prisma.user.findMany({
         skip,
-        take: limit,
+        take: safeLimit,
         orderBy: { createdAt: 'desc' },
         include: { profile: true, _count: { select: { orders: true } } },
       }),
@@ -75,7 +78,7 @@ export class AdminService {
 
     return {
       data: users,
-      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+      meta: { total, page, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
     };
   }
 
@@ -141,6 +144,7 @@ export class AdminService {
     return this.prisma.event.findMany({
       where,
       orderBy: { createdAt: 'desc' },
+      take: 100,
       include: {
         organizer: { include: { user: { select: { profile: true } } } },
         category: true,
@@ -153,6 +157,7 @@ export class AdminService {
     return this.prisma.event.findMany({
       where: { status: 'pending' },
       orderBy: { createdAt: 'asc' },
+      take: 100,
       include: {
         organizer: { include: { user: { select: { profile: true } } } },
         category: true,
@@ -173,6 +178,9 @@ export class AdminService {
       where: { id: eventId },
       data: { status: 'approved' },
     });
+
+    // Invalider le cache des événements
+    await this.cache.delPattern('events:*');
 
     this.logger.log(`Événement approuvé: ${event.title}`);
     await this.audit.log({
@@ -199,6 +207,9 @@ export class AdminService {
       data: { status: 'rejected' },
     });
 
+    // Invalider le cache des événements
+    await this.cache.delPattern('events:*');
+
     this.logger.log(`Événement refusé: ${event.title}`);
     await this.audit.log({
       actorId: adminId,
@@ -214,6 +225,7 @@ export class AdminService {
   async getOrganizers() {
     return this.prisma.organizer.findMany({
       orderBy: { createdAt: 'desc' },
+      take: 100,
       include: {
         user: { select: { email: true, profile: true } },
         _count: { select: { events: true, boosts: true } },
@@ -264,6 +276,93 @@ export class AdminService {
             event: { select: { title: true } },
           },
         },
+      },
+    });
+  }
+
+  async getBoosts() {
+    return this.prisma.boost.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+      include: {
+        event: { select: { title: true, slug: true } },
+        organizer: { select: { organizationName: true } },
+      },
+    });
+  }
+
+  async getUniversities() {
+    const profiles = await this.prisma.profile.findMany({
+      where: { university: { not: null } },
+      select: { university: true, city: true },
+      distinct: ['university'],
+    });
+
+    const universities = profiles.map((p) => ({
+      id: p.university?.toLowerCase().replace(/\s+/g, '-') ?? '',
+      name: p.university,
+      city: p.city ?? '—',
+      students: 0,
+    }));
+
+    // Get student counts per university
+    const counts = await this.prisma.profile.groupBy({
+      by: ['university'],
+      _count: { university: true },
+      where: { university: { not: null } },
+    });
+
+    return universities.map((u) => ({
+      ...u,
+      students:
+        counts.find((c) => c.university === u.name)?._count.university ?? 0,
+    }));
+  }
+
+  private readonly defaultSettings: Record<string, string> = {
+    commission: '5',
+    maxEventsPerOrg: '50',
+    requireVerification: 'true',
+    maintenance: 'false',
+  };
+
+  async getSettings() {
+    const rows = await this.prisma.platformSetting.findMany();
+    const settings: Record<string, any> = {};
+    for (const [key, defaultValue] of Object.entries(this.defaultSettings)) {
+      const row = rows.find((r) => r.key === key);
+      const rawValue = row?.value ?? defaultValue;
+      // Convertir les booléens et nombres
+      if (rawValue === 'true' || rawValue === 'false') {
+        settings[key] = rawValue === 'true';
+      } else if (!isNaN(Number(rawValue))) {
+        settings[key] = Number(rawValue);
+      } else {
+        settings[key] = rawValue;
+      }
+    }
+    return settings;
+  }
+
+  async updateSettings(newSettings: Record<string, any>) {
+    const upserts = Object.entries(newSettings).map(([key, value]) =>
+      this.prisma.platformSetting.upsert({
+        where: { key },
+        create: { key, value: String(value) },
+        update: { value: String(value) },
+      }),
+    );
+    await Promise.all(upserts);
+    this.logger.log('Paramètres plateforme mis à jour en base');
+    return this.getSettings();
+  }
+
+  async getAuditLogs(limit: number = 50) {
+    return this.prisma.auditLog.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: Math.min(limit, 200),
+      include: {
+        actor: { select: { email: true, profile: { select: { fullname: true } } } },
       },
     });
   }

@@ -21,22 +21,6 @@
     "db:seed": "pnpm --filter api db:seed",
     "db:reset": "prisma migrate reset --schema=prisma/schema.prisma"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp",
-      "@img/sharp-linux-x64",
-      "@img/sharp-linux-arm64",
-      "@img/sharp-libvips-linux-x64",
-      "@img/sharp-libvips-linux-arm64",
-      "@swc/core",
-      "@parcel/watcher",
-      "bcrypt",
-      "prisma",
-      "@prisma/client",
-      "@prisma/engines",
-      "@nestjs/core"
-    ]
-  },
   "devDependencies": {
     "@prisma/client": "^5.22.0",
     "prisma": "^5.22.0",

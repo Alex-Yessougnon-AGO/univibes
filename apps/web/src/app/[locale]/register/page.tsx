@@ -2,18 +2,23 @@
 import { useTranslations } from "next-intl";
 
 import { useState } from "react";
-import { Link } from "@/i18n/routing";
-import { motion, AnimatePresence } from "framer-motion";
-import { staggerContainer, fadeUp } from "@/lib/motion";
+import { Link, useRouter } from "@/i18n/routing";
 import { Eye, EyeOff, ArrowRight, Check, Sparkles, GraduationCap, CalendarCheck } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { useAuth } from "@/lib/auth-context";
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [step, setStep] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const t = useTranslations();
+  const router = useRouter();
+  const { register } = useAuth();
+  useScrollReveal();
   const [form, setForm] = useState({
     fullname: "",
     email: "",
@@ -32,9 +37,23 @@ export default function RegisterPage() {
       return;
     }
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setLoading(false);
-    alert("Inscription simulée ! (Backend non connecté)");
+    setError("");
+    try {
+      await register({
+        email: form.email,
+        fullname: form.fullname,
+        password: form.password,
+        phone: form.phone,
+        university: form.university,
+      });
+      toast.success(t("auth.registerSuccess") || "Compte créé !");
+      router.push("/onboarding");
+    } catch (err: any) {
+      const msg = err?.response?.data?.error?.message || "Une erreur est survenue lors de l'inscription.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,29 +70,29 @@ export default function RegisterPage() {
       </header>
 
       <main className="relative z-10 flex-1 flex items-center justify-center px-5 pb-12">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
+        <div
+         
+         
+         
           className="w-full max-w-sm"
         >
           {/* Eyebrow */}
-          <motion.div variants={fadeUp} className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-semibold text-[var(--brand-text)] tracking-wide">
               <Sparkles className="w-3 h-3" />
               {step === 1 ? t("auth.welcome") : t("common.almostDone")}
             </span>
-          </motion.div>
+          </div>
 
           {/* Logo mark */}
-          <motion.div variants={fadeUp} className="text-center mb-2">
+          <div className="text-center mb-2">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] flex items-center justify-center mx-auto shadow-[var(--shadow-brand)]">
               <span className="text-white font-black text-3xl tracking-tight">UV</span>
             </div>
-          </motion.div>
+          </div>
 
           {/* Title */}
-          <motion.div variants={fadeUp} className="text-center mb-8">
+          <div className="text-center mb-8">
             <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight">
               {t("auth.createAccount")}
             </h1>
@@ -82,10 +101,10 @@ export default function RegisterPage() {
                 ? t("auth.welcome") + " " + t("common.appName")
                 : t("auth.chooseRole")}
             </p>
-          </motion.div>
+          </div>
 
           {/* Step indicator */}
-          <motion.div variants={fadeUp} className="mb-8">
+          <div className="mb-8">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <div
@@ -122,22 +141,22 @@ export default function RegisterPage() {
                 </span>
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Form card */}
-          <motion.div
-            variants={fadeUp}
+          <div
+           
             className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]"
           >
             <form onSubmit={handleSubmit} className="space-y-4">
-              <AnimatePresence mode="wait">
+              <div >
                 {step === 1 ? (
-                  <motion.div
+                  <div
                     key="step1"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 12 }}
-                    transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
+                    
+                    
+                    
+                    
                     className="space-y-4"
                   >
                     <Input
@@ -181,21 +200,21 @@ export default function RegisterPage() {
                       }
                       required
                     />
-                    <Button variant="primary" size="lg" className="w-full mt-2" type="submit">
+                    <Button variant="primary" size="lg" className="w-full mt-2 pressable" type="submit">
                       {t("common.continue")}
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 pressable" />
                     </Button>
-                  </motion.div>
+                  </div>
                 ) : (
-                  <motion.div
+                  <div
                     key="step2"
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: 12 }}
-                    transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
-                    className="space-y-4"
+                    
+                    
+                    
+                    
+                    className="space-y-4 pressable"
                   >
-                    <p className="text-sm text-[var(--text-secondary)] mb-1">
+                    <p className="text-sm text-[var(--text-secondary)] mb-1 pressable">
                       {t("auth.onboarding.interests")}
                     </p>
 
@@ -208,15 +227,15 @@ export default function RegisterPage() {
                           : "border-[var(--border)] hover:border-[var(--brand)]/30 bg-[var(--surface)]"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 pressable">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
                           form.role === "student" ? "bg-[var(--brand)] text-white" : "bg-[var(--border-subtle)] text-[var(--text-tertiary)]"
                         }`}>
-                          <GraduationCap className="w-5 h-5" />
+                          <GraduationCap className="w-5 h-5 pressable" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-sm text-[var(--text)]">{t("profile.student")}</h3>
-                          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                          <h3 className="font-semibold text-sm text-[var(--text)] pressable">{t("profile.student")}</h3>
+                          <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">
                             {t("auth.onboarding.studentDesc")}
                           </p>
                         </div>
@@ -232,15 +251,15 @@ export default function RegisterPage() {
                           : "border-[var(--border)] hover:border-[var(--brand)]/30 bg-[var(--surface)]"
                       }`}
                     >
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-3 pressable">
                         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
                           form.role === "organizer" ? "bg-[var(--brand)] text-white" : "bg-[var(--border-subtle)] text-[var(--text-tertiary)]"
                         }`}>
-                          <CalendarCheck className="w-5 h-5" />
+                          <CalendarCheck className="w-5 h-5 pressable" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-sm text-[var(--text)]">{t("profile.organizer")}</h3>
-                          <p className="text-xs text-[var(--text-secondary)] mt-0.5">
+                          <h3 className="font-semibold text-sm text-[var(--text)] pressable">{t("profile.organizer")}</h3>
+                          <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">
                             {t("auth.onboarding.organizerDesc")}
                           </p>
                         </div>
@@ -250,41 +269,41 @@ export default function RegisterPage() {
                     <Button
                       variant="primary"
                       size="lg"
-                      className="w-full mt-2"
+                      className="w-full mt-2 pressable"
                       type="submit"
                       disabled={loading}
                     >
                       {loading ? (
-                        <span className="flex items-center gap-2">
-                          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span className="flex items-center gap-2 pressable">
+                          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin pressable" />
                           {t("common.creating")}
                         </span>
                       ) : (
                         <>
                           {t("auth.createMyAccount")}
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4 pressable" />
                         </>
                       )}
                     </Button>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
+              </div>
             </form>
-          </motion.div>
+          </div>
 
           {/* Login link */}
-          <motion.div variants={fadeUp} className="mt-8 text-center">
-            <p className="text-sm text-[var(--text-secondary)]">
+          <div className="mt-8 text-center pressable">
+            <p className="text-sm text-[var(--text-secondary)] pressable">
               {t("auth.hasAccount")}{" "}
               <Link
                 href="/login"
-                className="text-[var(--brand)] font-semibold hover:text-[var(--brand-hover)] transition-colors"
+                className="text-[var(--brand)] font-semibold hover:text-[var(--brand-hover)] transition-colors pressable"
               >
                 {t("auth.signIn")}
               </Link>
             </p>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
     </div>
   );

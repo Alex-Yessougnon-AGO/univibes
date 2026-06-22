@@ -11,10 +11,17 @@ coverage
 .DS_Store
 .turbo
 .vercel
-apps/api/dist
+docker-compose.yml
+
+# Hors contexte Docker — inutiles pour le build de l'API
 apps/web
 apps/admin
+
+# Généré par pnpm db:generate pendant le build — pas besoin de le copier
+apps/api/dist
 apps/api/src/generated
+
+# Fichiers de test inutiles en production
 **/*.spec.ts
 **/*.test.ts
-docker-compose.yml
+**/__tests__/**

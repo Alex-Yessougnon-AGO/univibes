@@ -20,6 +20,10 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { BoostsModule } from './boosts/boosts.module';
 import { AdsModule } from './ads/ads.module';
 import { AdminModule } from './admin/admin.module';
+import { DebugModule } from './debug/debug.module';
+import { CheckinModule } from './checkin/checkin.module';
+import { UploadModule } from './upload/upload.module';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -58,6 +62,14 @@ import { AdminModule } from './admin/admin.module';
     BoostsModule,
     AdsModule,
     AdminModule,
+
+    // Cache Redis
+    CacheModule,
+
+    // Debug (dev only)
+    DebugModule,
+    CheckinModule,
+    UploadModule,
   ],
   controllers: [HealthController],
   providers: [

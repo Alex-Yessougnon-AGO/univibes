@@ -69,4 +69,35 @@ export class FavoritesService {
       });
     }
   }
+
+  async toggle(userId: string, eventId: string) {
+    // V\u00e9rifier que l'\u00e9v\u00e9nement existe
+    const event = await this.prisma.event.findUnique({ where: { id: eventId } });
+    if (!event) {
+      throw new NotFoundException({
+        code: 'EVENT_NOT_FOUND',
+        message: '\u00c9v\u00e9nement introuvable.',
+      });
+    }
+
+    const existing = await this.prisma.favorite.findUnique({
+      where: { userId_eventId: { userId, eventId } },
+    });
+
+    if (existing) {
+      // Supprimer le favori
+      await this.prisma.favorite.delete({
+        where: { userId_eventId: { userId, eventId } },
+      });
+      this.logger.log(`Favori retir\u00e9: ${userId} \u2192 ${eventId}`);
+      return { favorite: false, eventId };
+    }
+
+    // Ajouter le favori
+    await this.prisma.favorite.create({
+      data: { userId, eventId },
+    });
+    this.logger.log(`Favori ajout\u00e9: ${userId} \u2192 ${eventId}`);
+    return { favorite: true, eventId };
+  }
 }

@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { useParams } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Check, CreditCard, Smartphone, ArrowRight, Sparkles, X, Minus, Plus } from "lucide-react";
 import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
@@ -13,6 +12,7 @@ import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
 import { EVENTS } from "@/lib/mock-data";
 import { formatFullDate, formatCurrency, cn } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const PAYMENT_METHODS = [
   { id: "fedapay", name: "FedaPay", icon: CreditCard, description: "Carte bancaire ou Mobile Money" },
@@ -24,6 +24,7 @@ const PAYMENT_METHODS = [
 export default function CheckoutPage() {
   const t = useTranslations();
   const params = useParams();
+  useScrollReveal();
   const event = EVENTS.find((e) => e.slug === params.eventId);
   const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -36,7 +37,7 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-dvh flex flex-col items-center justify-center bg-[var(--bg)]">
         <h2 className="font-semibold text-[var(--text)]">{t("common.search")} introuvable</h2>
-        <Button variant="outline" size="sm" className="mt-4" asChild>
+        <Button variant="outline" size="sm" className="mt-4 pressable" asChild>
           <Link href="/explore">{t("common.back")}</Link>
         </Button>
       </div>
@@ -64,15 +65,12 @@ export default function CheckoutPage() {
     <>
       <Navbar />
       <main className="flex-1 pb-28 md:pb-0">
-        <section className="relative pt-6 pb-4 overflow-hidden">
+        <section className="relative pt-6 pb-4 overflow-hidden reveal">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 to-transparent pointer-events-none" />
 
           <div className="relative max-w-2xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-            >
+            <div
+              >
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-4">
                 {step === "confirm" ? <Check className="w-3 h-3" /> : <CreditCard className="w-3 h-3" />}
                 {step === "confirm" ? t("checkout.confirmed") : step === "payment" ? t("checkout.paymentMethod") : t("checkout.title")}
@@ -81,22 +79,17 @@ export default function CheckoutPage() {
                 {step === "confirm" ? t("checkout.confirmed") : t("checkout.title")}
               </h1>
               <p className="text-sm text-[var(--text-secondary)] mt-1">{event.title}</p>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-12">
-          <AnimatePresence mode="wait">
             {step === "confirm" ? (
-              <motion.div
+              <div
                 key="confirm"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: [0.25, 0.1, 0, 1] }}
                 className="text-center py-12"
               >
-                <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-6 shadow-[var(--shadow-sm)]">
+                <div className="w-20 h-20 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200/50 dark:border-emerald-800/30 flex items-center justify-center mx-auto mb-6 shadow-[var(--shadow-sm)] card-hover">
                   <Check className="w-10 h-10 text-emerald-600" />
                 </div>
                 <h2 className="text-xl font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight mb-2">
@@ -106,9 +99,9 @@ export default function CheckoutPage() {
                   {t("checkout.confirmedDesc")}
                 </p>
 
-                <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 text-left shadow-[var(--shadow)] mb-6">
+                <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 text-left shadow-[var(--shadow)] mb-6 card-hover">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center card-hover">
                       <CategoryIcon name={event.category.icon} className="w-5 h-5" />
                     </div>
                     <div>
@@ -124,29 +117,25 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                  <Button variant="outline" size="md" asChild>
+                  <Button variant="outline" size="md" asChild className="pressable">
                     <Link href="/tickets">{t("checkout.seeTickets")}</Link>
                   </Button>
-                  <Button variant="primary" size="md" asChild>
+                  <Button variant="primary" size="md" asChild className="pressable">
                     <Link href="/explore">
                       <span className="hidden sm:inline">{t("home.discoverEvents")}</span>
                       <span className="sm:hidden">{t("nav.explore")}</span>
                     </Link>
                   </Button>
                 </div>
-              </motion.div>
+              </div>
             ) : (
-              <motion.div
+              <div
                 key={step}
-                initial={{ opacity: 0, x: -12 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 12 }}
-                transition={{ duration: 0.3, ease: [0.25, 0.1, 0, 1] }}
                 className="space-y-6"
               >
                 {/* Step 1: Choose ticket */}
                 {step === "ticket" && (
-                  <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4">
+                  <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4 card-hover">
                     <h2 className="font-semibold text-[var(--text)]">{t("checkout.chooseTicket")}</h2>
                     {event.tickets?.map((tk) => (
                       <button
@@ -172,7 +161,7 @@ export default function CheckoutPage() {
 
                     {selectedTicket && ticket && (
                       <div className="pt-4 border-t border-[var(--border)] space-y-4">
-                        <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--border-subtle)]">
+                        <div className="flex items-center justify-between p-3 rounded-xl bg-[var(--border-subtle)] card-hover">
                           <span className="text-sm font-medium text-[var(--text)]">{t("checkout.quantity")}</span>
                           <div className="flex items-center gap-3">
                             <button
@@ -200,7 +189,7 @@ export default function CheckoutPage() {
                           </span>
                         </div>
 
-                        <Button variant="primary" size="lg" className="w-full" onClick={() => setStep("payment")}>
+                        <Button variant="primary" size="lg" className="w-full pressable" onClick={() => setStep("payment")}>
                           {t("checkout.continue")}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
@@ -211,7 +200,7 @@ export default function CheckoutPage() {
 
                 {/* Step 2: Payment method */}
                 {step === "payment" && (
-                  <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4">
+                  <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4 card-hover">
                     <h2 className="font-semibold text-[var(--text)]">{t("checkout.paymentMethod")}</h2>
                     <p className="text-sm text-[var(--text-secondary)]">{t("checkout.selectPayment")}</p>
 
@@ -226,7 +215,7 @@ export default function CheckoutPage() {
                             : "border-[var(--border)] hover:border-[var(--brand)]/30"
                         )}
                       >
-                        <div className="w-10 h-10 rounded-xl bg-[var(--border-subtle)] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-xl bg-[var(--border-subtle)] flex items-center justify-center card-hover">
                           <method.icon className="w-5 h-5 text-[var(--text-secondary)]" />
                         </div>
                         <div className="flex-1">
@@ -240,7 +229,7 @@ export default function CheckoutPage() {
                     ))}
 
                     <div className="pt-4 border-t border-[var(--border)] space-y-4">
-                      <div className="rounded-xl bg-[var(--border-subtle)] p-4 space-y-2 text-sm">
+                      <div className="rounded-xl bg-[var(--border-subtle)] p-4 space-y-2 text-sm card-hover">
                         <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Billet</span><span className="text-[var(--text)] font-medium">{ticket?.name} × {quantity}</span></div>
                         <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Sous-total</span><span className="text-[var(--text)] font-medium">{formatCurrency(total)}</span></div>
                         <div className="flex justify-between"><span className="text-[var(--text-tertiary)]">Frais</span><span className="text-[var(--text)] font-medium">{t("event.free")}</span></div>
@@ -251,10 +240,8 @@ export default function CheckoutPage() {
                       </div>
 
                       {paymentError && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="flex items-start gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40"
+                        <div
+                          className="flex items-start gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800/40 card-hover"
                         >
                           <X className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                           <div>
@@ -263,17 +250,17 @@ export default function CheckoutPage() {
                                 {t("checkout.cancelledDesc")}
                             </p>
                           </div>
-                        </motion.div>
+                        </div>
                       )}
 
                       <div className="flex gap-3">
-                          <Button variant="outline" size="md" className="flex-1" onClick={() => setStep("ticket")}>
+                          <Button variant="outline" size="md" className="flex-1 pressable" onClick={() => setStep("ticket")}>
                           {t("common.back")}
                         </Button>
                         <Button
                           variant="primary"
                           size="md"
-                          className="flex-1"
+                          className="flex-1 pressable"
                           onClick={handlePay}
                           disabled={!paymentMethod || loading}
                         >
@@ -290,9 +277,9 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
+          
         </div>
       </main>
       <BottomNav />

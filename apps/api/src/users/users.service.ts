@@ -84,6 +84,45 @@ export class UsersService {
     return updated;
   }
 
+  async getPublicProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        role: true,
+        createdAt: true,
+        profile: {
+          select: {
+            fullname: true,
+            avatarUrl: true,
+            city: true,
+            university: true,
+            faculty: true,
+          },
+        },
+        organizer: {
+          select: {
+            id: true,
+            organizationName: true,
+            description: true,
+            logoUrl: true,
+            verified: true,
+          },
+        },
+        _count: { select: { favorites: true } },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException({
+        code: 'USER_NOT_FOUND',
+        message: 'Utilisateur introuvable.',
+      });
+    }
+
+    return user;
+  }
+
   async deleteAccount(userId: string) {
     await this.prisma.user.delete({ where: { id: userId } });
     this.logger.log(`Compte supprimé: ${userId}`);

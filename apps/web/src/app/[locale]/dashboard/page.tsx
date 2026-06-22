@@ -3,11 +3,10 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/motion";
 import { Plus, Calendar, ArrowRight, Sparkles, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const RECENT_EVENTS = [
   { name: "Gala de Fin d'Année FASEG", status: "Approuvé", tickets: 89, views: 12400 },
@@ -23,6 +22,7 @@ const statusVariant = (s: string) => {
 
 export default function DashboardPage() {
   const t = useTranslations();
+  useScrollReveal();
 
   const STATS = [
     { label: t("event.views"), value: "12 400", icon: "Eye", change: "+12%", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
@@ -32,12 +32,12 @@ export default function DashboardPage() {
   ];
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+    <div
+     
+     
+      
     >
-      <motion.div variants={fadeUp} className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8">
         <div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-3">
             <LayoutDashboard className="w-3 h-3" />
@@ -50,82 +50,82 @@ export default function DashboardPage() {
         </div>
         <Button variant="primary" size="md" asChild>
           <Link href="/dashboard/events/new">
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 pressable" />
             {t("hero.createEvent")}
           </Link>
         </Button>
-      </motion.div>
+      </div>
 
-      <motion.div variants={fadeUp} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 pressable">
         {STATS.map((stat) => (
-          <div key={stat.label} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)]">
-            <div className="flex items-center justify-between mb-3">
+          <div key={stat.label} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] pressable">
+            <div className="flex items-center justify-between mb-3 pressable">
               <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
                 <span className={`w-5 h-5 ${stat.color}`}>
-                  {stat.icon === "Eye" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>}
-                  {stat.icon === "Heart" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>}
-                  {stat.icon === "Ticket" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>}
-                  {stat.icon === "DollarSign" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>}
+                  {stat.icon === "Eye" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>}
+                  {stat.icon === "Heart" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>}
+                  {stat.icon === "Ticket" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>}
+                  {stat.icon === "DollarSign" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>}
                 </span>
               </div>
-              <Badge variant="success" className="text-[10px]">{stat.change}</Badge>
+              <Badge variant="success" className="text-[10px] pressable">{stat.change}</Badge>
             </div>
-            <p className="text-2xl font-extrabold text-[var(--text)]">{stat.value}</p>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">{stat.label}</p>
+            <p className="text-2xl font-extrabold text-[var(--text)] pressable">{stat.value}</p>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">{stat.label}</p>
           </div>
         ))}
-      </motion.div>
+      </div>
 
-      <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-semibold text-[var(--text)] flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[var(--brand)]" />
+      <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] pressable">
+        <div className="flex items-center justify-between mb-4 pressable">
+          <h2 className="font-semibold text-[var(--text)] flex items-center gap-2 pressable">
+            <Calendar className="w-4 h-4 text-[var(--brand)] pressable" />
             {t("admin.events")}
           </h2>
           <Button variant="ghost" size="sm" asChild>
             <Link href="/dashboard/events">
-              {t("common.seeAll")} <ArrowRight className="w-3.5 h-3.5" />
+              {t("common.seeAll")} <ArrowRight className="w-3.5 h-3.5 pressable" />
             </Link>
           </Button>
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 pressable">
           {RECENT_EVENTS.map((evt) => (
-            <div key={evt.name} className="flex items-center justify-between p-3 rounded-xl hover:bg-[var(--border-subtle)] transition-colors">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0">
-                  <Calendar className="w-4 h-4 text-[var(--brand)]" />
+            <div key={evt.name} className="flex items-center justify-between p-3 rounded-xl hover:bg-[var(--border-subtle)] transition-colors pressable">
+              <div className="flex items-center gap-3 min-w-0 pressable">
+                <div className="w-10 h-10 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0 pressable">
+                  <Calendar className="w-4 h-4 text-[var(--brand)] pressable" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-[var(--text)] truncate">{evt.name}</p>
-                  <p className="text-xs text-[var(--text-secondary)]">{evt.views.toLocaleString()} {t("event.views")} · {evt.tickets} {t("ticket.title")}</p>
+                <div className="min-w-0 pressable">
+                  <p className="text-sm font-medium text-[var(--text)] truncate pressable">{evt.name}</p>
+                  <p className="text-xs text-[var(--text-secondary)] pressable">{evt.views.toLocaleString()} {t("event.views")} · {evt.tickets} {t("ticket.title")}</p>
                 </div>
               </div>
               <Badge variant={statusVariant(evt.status)}>{evt.status}</Badge>
             </div>
           ))}
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div variants={fadeUp} className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-        <Link href="/dashboard/events/new" className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 card-hover flex items-center gap-4 shadow-[var(--shadow-sm)]">
-          <div className="w-12 h-12 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center">
-            <Plus className="w-5 h-5 text-[var(--brand)]" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pressable">
+        <Link href="/dashboard/events/new" className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 card-hover flex items-center gap-4 shadow-[var(--shadow-sm)] pressable">
+          <div className="w-12 h-12 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center pressable">
+            <Plus className="w-5 h-5 text-[var(--brand)] pressable" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm text-[var(--text)]">{t("hero.createEvent")}</h3>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Ajoute un nouvel événement à la plateforme</p>
+            <h3 className="font-semibold text-sm text-[var(--text)] pressable">{t("hero.createEvent")}</h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">Ajoute un nouvel événement à la plateforme</p>
           </div>
         </Link>
-        <Link href="/dashboard/events" className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 card-hover flex items-center gap-4 shadow-[var(--shadow-sm)]">
-          <div className="w-12 h-12 rounded-xl bg-[var(--accent-subtle)] flex items-center justify-center">
-            <Calendar className="w-5 h-5 text-[var(--accent)]" />
+        <Link href="/dashboard/events" className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 card-hover flex items-center gap-4 shadow-[var(--shadow-sm)] pressable">
+          <div className="w-12 h-12 rounded-xl bg-[var(--accent-subtle)] flex items-center justify-center pressable">
+            <Calendar className="w-5 h-5 text-[var(--accent)] pressable" />
           </div>
           <div>
-            <h3 className="font-semibold text-sm text-[var(--text)]">{t("admin.events")}</h3>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5">Modifie ou archive tes événements</p>
+            <h3 className="font-semibold text-sm text-[var(--text)] pressable">{t("admin.events")}</h3>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">Modifie ou archive tes événements</p>
           </div>
         </Link>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }

@@ -35,6 +35,17 @@ export class AdsService {
     });
   }
 
+  async findOne(id: string) {
+    const ad = await this.prisma.ad.findUnique({ where: { id } });
+    if (!ad) {
+      throw new NotFoundException({
+        code: 'AD_NOT_FOUND',
+        message: 'Publicit\u00e9 introuvable.',
+      });
+    }
+    return ad;
+  }
+
   async create(dto: CreateAdDto) {
     const ad = await this.prisma.ad.create({
       data: {

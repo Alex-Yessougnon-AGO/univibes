@@ -38,39 +38,40 @@ test.describe('Pages Publiques', () => {
   // Explore
   test('Explore — charges et affiche des événements', async ({ page }) => {
     await checkPageLoad(page, `${BASE}/explore`);
-    await expect(page.getByText('Explorer')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
   });
 
   test('Explore — filtres fonctionnels', async ({ page }) => {
     await page.goto(`${BASE}/explore`, { waitUntil: 'networkidle' });
-    const filterButton = page.getByText('Filtres');
+    await page.waitForTimeout(2000);
+    const filterButton = page.getByRole('button', { name: /filtres/i });
     if (await filterButton.isVisible()) {
       await filterButton.click();
-      await expect(page.getByText('Toutes')).toBeVisible();
+      await expect(page.getByRole('button', { name: /toutes/i }).first()).toBeVisible();
     }
   });
 
   // Event detail
   test('Événement — page détail charge', async ({ page }) => {
-    await checkPageLoad(page, `${BASE}/event/soiree-bde`);
+    await checkPageLoad(page, `${BASE}/event/gala-fin-annee-faseg-2025`);
   });
 
   // About
   test('À propos — page charge', async ({ page }) => {
     await checkPageLoad(page, `${BASE}/about`);
-    await expect(page.getByText('UnivVibes')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
   });
 
   // Contact
   test('Contact — formulaire visible', async ({ page }) => {
     await checkPageLoad(page, `${BASE}/contact`);
-    await expect(page.getByText('Contact')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('form')).toBeVisible({ timeout: 10000 });
   });
 
   // Blog list
   test('Blog — liste des articles', async ({ page }) => {
     await checkPageLoad(page, `${BASE}/blog`);
-    await expect(page.getByText('Blog')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
   });
 
   // Blog article

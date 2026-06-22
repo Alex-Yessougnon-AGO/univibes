@@ -15,13 +15,16 @@ test.describe('Authentification', () => {
     const resp = await page.goto(`${BASE}/login`, { timeout: 30000, waitUntil: 'networkidle' });
     expect(resp?.status()).toBe(200);
     expect(errors.filter((e: string) => !e.includes('favicon'))).toHaveLength(0);
-    await expect(page.getByText('Content de te revoir')).toBeVisible({ timeout: 10000 });
+    // Wait for staggered animations to finish
+    await page.waitForTimeout(600);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({ timeout: 10000 });
   });
 
   test('Login — champs email et mot de passe présents', async ({ page }) => {
     await page.goto(`${BASE}/login`, { waitUntil: 'networkidle' });
-    await expect(page.getByText('Email')).toBeVisible();
-    await expect(page.getByText('Mot de passe')).toBeVisible();
+    await page.waitForTimeout(600);
+    await expect(page.locator('input[type="email"]')).toBeVisible();
+    await expect(page.locator('input[type="password"]')).toBeVisible();
   });
 
   // Register

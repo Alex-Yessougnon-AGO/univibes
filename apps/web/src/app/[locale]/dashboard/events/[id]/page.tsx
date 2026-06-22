@@ -5,32 +5,31 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { useParams } from "next/navigation";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { ArrowLeft, Save, Trash2, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { EVENTS } from "@/lib/mock-data";
 import { formatShortDate, formatCurrency } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 export default function EditEventPage() {
   const t = useTranslations();
   const params = useParams();
+  useScrollReveal();
   const event = EVENTS.find((e) => e.id === params.id);
   const [saved, setSaved] = useState(false);
 
   if (!event) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+      <div
         className="text-center py-20"
       >
         <h2 className="font-semibold text-[var(--text)]">Événement introuvable</h2>
-        <Button variant="outline" size="sm" className="mt-4" asChild>
+        <Button variant="outline" size="sm" className="mt-4 pressable" asChild>
           <Link href="/dashboard/events">{t("common.back")} à la liste</Link>
         </Button>
-      </motion.div>
+      </div>
     );
   }
 
@@ -40,11 +39,8 @@ export default function EditEventPage() {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-    >
+    <div
+      >
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <Link href="/dashboard/events" className="w-9 h-9 rounded-xl border border-[var(--border)] flex items-center justify-center hover:bg-[var(--border-subtle)] transition-colors">
@@ -56,17 +52,17 @@ export default function EditEventPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
+          <Button variant="outline" size="sm" asChild className="pressable">
             <Link href={`/event/${event.slug}`}>
               <ExternalLink className="w-3.5 h-3.5" />
               Voir
             </Link>
           </Button>
-          <Button variant="danger" size="sm" className="gap-1.5">
+          <Button variant="danger" size="sm" className="gap-1.5 pressable">
             <Trash2 className="w-4 h-4" />
             {t("common.delete")}
           </Button>
-          <Button variant="primary" size="sm" className="gap-1.5" onClick={handleSave}>
+          <Button variant="primary" size="sm" className="gap-1.5 pressable" onClick={handleSave}>
             {saved ? `✓ ${t("common.save")}` : <><Save className="w-4 h-4" /> {t("common.save")}</>}
           </Button>
         </div>
@@ -74,7 +70,7 @@ export default function EditEventPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]">
+          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)] card-hover">
             <h2 className="font-semibold text-[var(--text)]">Informations</h2>
             <Input label="Titre" defaultValue={event.title} />
             <Input label={t("event.location")} defaultValue={event.location} />
@@ -91,10 +87,10 @@ export default function EditEventPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)]">
+          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 space-y-5 shadow-[var(--shadow)] card-hover">
             <h2 className="font-semibold text-[var(--text)]">{t("event.tickets")}</h2>
             {event.tickets?.map((ticket) => (
-              <div key={ticket.id} className="flex items-center justify-between p-4 rounded-xl border border-[var(--border)]">
+              <div key={ticket.id} className="flex items-center justify-between p-4 rounded-xl border border-[var(--border)] card-hover">
                 <div>
                   <p className="font-semibold text-sm text-[var(--text)]">{ticket.name}</p>
                   <p className="text-xs text-[var(--text-secondary)] mt-0.5">{ticket.remaining} / {ticket.total} restants</p>
@@ -106,9 +102,9 @@ export default function EditEventPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow)]">
+          <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow)] card-hover">
             <h2 className="font-semibold text-sm text-[var(--text)] mb-3">Aperçu</h2>
-            <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3 ring-1 ring-[var(--border)]">
+            <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3 ring-1 ring-[var(--border)] card-hover">
               <Image src={event.coverImage} alt={event.title} fill className="object-cover" />
             </div>
             <div className="space-y-1.5 text-xs">
@@ -118,7 +114,7 @@ export default function EditEventPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[var(--brand-subtle)]/50 border border-[var(--brand)]/10 p-5">
+          <div className="rounded-2xl bg-[var(--brand-subtle)]/50 border border-[var(--brand)]/10 p-5 card-hover">
             <p className="text-xs font-semibold text-[var(--brand-text)] uppercase tracking-wider mb-1">Statut de modération</p>
             <p className="text-xs text-[var(--text-secondary)]">
               {event.isFavorited
@@ -128,6 +124,6 @@ export default function EditEventPage() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

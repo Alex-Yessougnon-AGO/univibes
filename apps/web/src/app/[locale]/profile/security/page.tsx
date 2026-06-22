@@ -3,8 +3,6 @@
 import { useState } from "react";
 import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { fadeUp, containerStagger } from "@/lib/motion";
 import {
   ArrowLeft,
   Sparkles,
@@ -24,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
 import { cn, timeAgo } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const MOCK_SESSIONS = [
   {
@@ -107,11 +106,11 @@ export default function SecurityPage() {
     <>
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
-        <section className="relative pt-8 pb-6 overflow-hidden">
+        <section className="relative pt-8 pb-6 overflow-hidden reveal">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-[var(--accent)]/3 to-transparent pointer-events-none" />
           <div className="absolute top-0 left-1/3 w-[400px] h-[400px] rounded-full bg-[var(--brand)]/4 blur-[100px] pointer-events-none" />
           <div className="max-w-2xl mx-auto px-4 sm:px-6">
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+            <div >
               <Link href="/profile" className="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--text)] transition-colors mb-6 group">
                 <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-0.5" />
                 {tc("back")}
@@ -126,18 +125,18 @@ export default function SecurityPage() {
                   <p className="text-sm text-[var(--text-secondary)] mt-1">{t("subtitle")}</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerStagger(0.06)}
+        <div
+         
+         
+          
           className="max-w-2xl mx-auto px-4 sm:px-6 pb-12 space-y-6"
         >
           {/* Change Password */}
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4">
+          <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] space-y-4 card-hover">
             <h2 className="font-semibold text-[var(--text)]">{t("updatePassword")}</h2>
 
             {passwordFeedback && (
@@ -194,16 +193,16 @@ export default function SecurityPage() {
             <Button
               variant="primary"
               size="md"
-              className="w-full"
+              className="w-full pressable"
               onClick={handleUpdatePassword}
               disabled={!passwords.currentPassword || !passwords.newPassword || !passwords.confirmPassword}
             >
               {t("updatePassword")}
             </Button>
-          </motion.div>
+          </div>
 
           {/* Active Sessions */}
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)]">
+          <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)] card-hover">
             <div className="px-5 pt-5 pb-3">
               <h2 className="font-semibold text-[var(--text)]">{t("sessions")}</h2>
             </div>
@@ -248,13 +247,13 @@ export default function SecurityPage() {
                 {t("revokeAll")}
               </button>
             </div>
-          </motion.div>
+          </div>
 
           {/* Two-Factor Authentication */}
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)]">
+          <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] card-hover">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0 card-hover">
                   <Shield className="w-4 h-4 text-[var(--brand-text)]" />
                 </div>
                 <div>
@@ -275,10 +274,10 @@ export default function SecurityPage() {
                 )} />
               </button>
             </div>
-          </motion.div>
+          </div>
 
           {/* Login History */}
-          <motion.div variants={fadeUp} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)]">
+          <div  className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-sm)] card-hover">
             <div className="px-5 pt-5 pb-3">
               <h2 className="font-semibold text-[var(--text)]">{t("loginHistory")}</h2>
             </div>
@@ -286,7 +285,7 @@ export default function SecurityPage() {
               {MOCK_LOGIN_HISTORY.length > 0 ? (
                 MOCK_LOGIN_HISTORY.map((entry) => (
                   <div key={entry.id} className="flex items-start gap-3 px-5 py-3.5">
-                    <div className="w-9 h-9 rounded-xl bg-[var(--border-subtle)] flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-[var(--border-subtle)] flex items-center justify-center shrink-0 card-hover">
                       <Clock className="w-4 h-4 text-[var(--text-secondary)]" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -303,8 +302,8 @@ export default function SecurityPage() {
                 </div>
               )}
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </main>
       <BottomNav />
     </>

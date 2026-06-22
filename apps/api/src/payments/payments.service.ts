@@ -4,8 +4,10 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../common/audit/audit.service';
+import { FedaPayService } from './fedapay.service';
 import { InitiatePaymentDto, PaymentWebhookDto } from './dto/initiate-payment.dto';
 
 @Injectable()
@@ -15,6 +17,8 @@ export class PaymentsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly fedapay: FedaPayService,
+    private readonly config: ConfigService,
   ) {}
 
   async initiate(userId: string, dto: InitiatePaymentDto) {
@@ -55,15 +59,51 @@ export class PaymentsService {
 
     this.logger.log(`Paiement initié: ${payment.id} via ${dto.provider}`);
 
-    // TODO: Intégration réelle avec FedaPay/Kkiapay
-    // Ici on simule un redirect URL
-    const paymentUrl = `${process.env.APP_URL}/checkout/${order.eventId}?paymentId=${payment.id}`;
+    if (dto.provider === 'fedapay') {
+      try {
+        const callbackUrl = dto.successUrl ?? `${this.config.get('APP_URL')}/checkout/success`;
+        const result = await this.fedapay.createTransaction({
+          amount: Number(order.amount),
+          description: `Commande ${order.id}`,
+          callbackUrl,
+        });
+
+        // Mettre à jour avec la référence FedaPay
+        await this.prisma.payment.update({
+          where: { id: payment.id },
+          data: { providerReference: result.id },
+        });
+
+        return {
+          paymentId: payment.id,
+          amount: order.amount,
+          provider: dto.provider,
+          paymentUrl: result.url,
+          simulated: result.simulated,
+        };
+      } catch (error) {
+        this.logger.error(`Échec FedaPay: ${(error as Error).message}`);
+        // Fallback: URL simulée
+        const fallbackUrl = `${this.config.get('APP_URL', 'http://localhost:3001')}/checkout/${order.eventId}?paymentId=${payment.id}`;
+        return {
+          paymentId: payment.id,
+          amount: order.amount,
+          provider: dto.provider,
+          paymentUrl: fallbackUrl,
+          simulated: true,
+        };
+      }
+    }
+
+    // Kkiapay ou fallback simulé
+    const paymentUrl = `${this.config.get('APP_URL', 'http://localhost:3001')}/checkout/${order.eventId}?paymentId=${payment.id}`;
 
     return {
       paymentId: payment.id,
       amount: order.amount,
       provider: dto.provider,
       paymentUrl,
+      simulated: dto.provider !== 'fedapay',
     };
   }
 

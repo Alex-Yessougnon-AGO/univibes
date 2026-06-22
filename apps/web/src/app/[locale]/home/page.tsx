@@ -1,10 +1,9 @@
 "use client";
 import { useTranslations } from "next-intl";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Sparkles, Calendar, MapPin, TrendingUp, Users, ChevronRight, Bell } from "lucide-react";
 import { CategoryIcon } from "@/lib/icon-map";
 import { Button } from "@/components/ui/button";
@@ -12,32 +11,53 @@ import { Badge } from "@/components/ui/badge";
 import { EventCard } from "@/components/events/event-card";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Navbar } from "@/components/layout/navbar";
-import { EVENTS, ORGANIZERS, CATEGORIES, CITIES } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { useAuth } from "@/lib/auth-context";
+import { eventsService, categoriesService } from "@/lib/services/events-service";
 
-const RECOMMENDED = EVENTS.filter((e) => e.views > 5000 || e.isFavorited).slice(0, 8);
-const NEARBY = EVENTS.filter((e) => e.city === "Abomey-Calavi").slice(0, 4);
-const TRENDING_CATEGORIES = CATEGORIES.slice(0, 4);
+const CITIES_LIST = ["Cotonou", "Abomey-Calavi", "Porto-Novo", "Parakou", "Lokossa"];
 
 export default function StudentHomePage() {
   const t = useTranslations();
+  const { user } = useAuth();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [events, setEvents] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  useScrollReveal();
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [eventsData, catsData] = await Promise.all([
+          eventsService.findAll({ limit: 50 }),
+          categoriesService.findAll(),
+        ]);
+        setEvents(Array.isArray(eventsData) ? eventsData : (eventsData as any)?.data ?? []);
+        setCategories(catsData);
+      } catch {}
+      setLoading(false);
+    };
+    loadData();
+  }, []);
+
+  const RECOMMENDED = events.slice(0, 8);
+  const NEARBY = events.filter((e: any) => e.city === "Abomey-Calavi" || e.city === "Cotonou").slice(0, 4);
+  const TRENDING_CATEGORIES = categories.slice(0, 4);
 
   return (
     <>
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
         {/* Hero greeting */}
-        <section className="relative pt-8 pb-8 overflow-hidden">
+        <section className="relative pt-8 pb-8 overflow-hidden reveal">
           <div className="absolute inset-0 bg-gradient-to-b from-[var(--brand)]/6 via-[var(--accent)]/3 to-transparent pointer-events-none" />
           <div className="absolute top-0 left-1/3 w-[500px] h-[500px] rounded-full bg-[var(--brand)]/4 blur-[120px] pointer-events-none" />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: [0.25, 0.1, 0, 1] }}
-            >
+            <div
+              >
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-3">
@@ -76,17 +96,13 @@ export default function StudentHomePage() {
                   {t("home.friendsAttending", { count: 4 })}
                 </span>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 space-y-12">
           {/* Trending categories */}
-          <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.1, ease: [0.25, 0.1, 0, 1] }}
-          >
+          <section className="reveal">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="w-4 h-4 text-[var(--accent)]" />
               <h2 className="font-semibold text-sm text-[var(--text)]">{t("home.trending")}</h2>
@@ -111,14 +127,10 @@ export default function StudentHomePage() {
                 {t("common.seeAll")} <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </div>
-          </motion.section>
+          </section>
 
           {/* Recommended for you */}
-          <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.15, ease: [0.25, 0.1, 0, 1] }}
-          >
+          <section className="reveal">
             <div className="flex items-end justify-between mb-5">
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--brand)]">{t("home.recommended")}</span>
@@ -126,30 +138,23 @@ export default function StudentHomePage() {
                   {t("home.forYou")}
                 </h2>
               </div>
-              <Button variant="ghost" size="sm" className="rounded-full" asChild>
+              <Button variant="ghost" size="sm" className="rounded-full pressable" asChild>
                 <Link href="/explore">{t("common.seeAll")} <ChevronRight className="w-3.5 h-3.5" /></Link>
               </Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {RECOMMENDED.slice(0, 4).map((event, i) => (
-                <motion.div
+                <div
                   key={event.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 + i * 0.04, ease: [0.25, 0.1, 0, 1] }}
-                >
+                  >
                   <EventCard event={event} variant="standard" />
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.section>
+          </section>
 
           {/* Near you */}
-          <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.2, ease: [0.25, 0.1, 0, 1] }}
-          >
+          <section className="reveal">
             <div className="flex items-end justify-between mb-5">
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--brand)]">{t("home.nearYou")}</span>
@@ -161,24 +166,17 @@ export default function StudentHomePage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {NEARBY.map((event, i) => (
-                <motion.div
+                <div
                   key={event.id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 + i * 0.04, ease: [0.25, 0.1, 0, 1] }}
-                >
+                  >
                   <EventCard event={event} variant="standard" />
-                </motion.div>
+                </div>
               ))}
             </div>
-          </motion.section>
+          </section>
 
           {/* This week's picks — horizontal scroll */}
-          <motion.section
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.25, ease: [0.25, 0.1, 0, 1] }}
-          >
+          <section className="reveal">
             <div className="flex items-end justify-between mb-5">
               <div>
                 <span className="text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--accent)]">{t("home.thisWeek")}</span>
@@ -211,7 +209,7 @@ export default function StudentHomePage() {
                 </div>
               ))}
             </div>
-          </motion.section>
+          </section>
         </div>
       </main>
       <BottomNav />

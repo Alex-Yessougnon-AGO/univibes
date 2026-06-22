@@ -23,20 +23,57 @@ export const metadata: Metadata = {
   description:
     "Découvre, partage et rejoins tous les événements universitaires de ta ville. La plateforme de référence pour la vie étudiante au Bénin.",
   keywords: [
-    "événements",
+    "événements universitaires",
     "étudiants",
-    "université",
     "Bénin",
     "campus",
+    "vie étudiante",
+    "billetterie",
+    "soirées étudiantes",
   ],
   authors: [{ name: "UnivVibes" }],
+  creator: "UnivVibes",
+  publisher: "UnivVibes",
+  alternates: {
+    canonical: "https://univibes.com",
+    languages: {
+      "fr-FR": "https://univibes.com/fr",
+      "en-US": "https://univibes.com/en",
+    },
+  },
   openGraph: {
     type: "website",
     locale: "fr_FR",
     url: "https://univibes.com",
     siteName: "UnivVibes",
-    title: "UnivVibes — The Hub of Student Life",
-    description: "Découvre tous les événements universitaires de ta ville.",
+    title: "UnivVibes — Le Hub de la Vie Étudiante",
+    description: "Découvre, partage et rejoins tous les événements universitaires de ta ville.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "UnivVibes — Plateforme événementielle étudiante",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@univibes",
+    title: "UnivVibes — Le Hub de la Vie Étudiante",
+    description: "Découvre, partage et rejoins les événements de ton campus.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -45,8 +82,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#0F5132" },
-    { media: "(prefers-color-scheme: dark)", color: "#0D3323" },
+    { media: "(prefers-color-scheme: light)", color: "#7c3aed" },
+    { media: "(prefers-color-scheme: dark)", color: "#c084fc" },
   ],
 };
 
@@ -57,6 +94,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" suppressHydrationWarning className={`${inter.variable} ${calistoga.variable}`}>
+      <head>
+        {/* Preconnect to external origins for performance */}
+        <link rel="preconnect" href="https://picsum.photos" />
+        <link rel="dns-prefetch" href="https://picsum.photos" />
+        {/* Preload the hero image for LCP optimization */}
+      </head>
       <body className="min-h-dvh flex flex-col antialiased">
         {children}
       </body>

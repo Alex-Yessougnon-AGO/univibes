@@ -1,10 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { fadeUp } from "@/lib/motion";
+import { useState, useEffect } from "react";
 import { Users, Calendar, CreditCard, TrendingUp, ArrowUp, ArrowDown, Megaphone, Sparkles, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { adminService } from "@/lib/services/organizer-service";
 
 const PENDING_EVENTS = [
   { title: "Gala de Fin d'Année FASEG 2025", organizer: "BDE FASEG", date: "19 Juil 2025" },
@@ -20,30 +21,42 @@ const ACTIVITIES = [
 
 export default function AdminDashboardPage() {
   const t = useTranslations();
+  useScrollReveal();
+  const [dashboardData, setDashboardData] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    adminService.getDashboard()
+      .then((data: any) => setDashboardData(data))
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const d = dashboardData?.stats || {};
+  const formatNum = (n: any, fallback: string) => n != null ? Number(n).toLocaleString() : fallback;
   const STATS = [
-    { label: t("admin.activeUsers"), value: "2 847", icon: Users, change: "+12%", up: true, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
-    { label: t("admin.totalEvents"), value: "156", icon: Calendar, change: "+8%", up: true, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
-    { label: t("admin.payments"), value: "12.4M FCFA", icon: CreditCard, change: "+23%", up: true, color: "text-[var(--brand)]", bg: "bg-[var(--brand-subtle)]" },
-    { label: t("admin.boosts"), value: "18", icon: TrendingUp, change: "-5%", up: false, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/10" },
+    { label: t("admin.activeUsers"), value: loading ? "..." : formatNum(d.totalUsers, "2 847"), icon: Users, change: "+12%", up: true, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
+    { label: t("admin.totalEvents"), value: loading ? "..." : formatNum(d.totalEvents, "156"), icon: Calendar, change: "+8%", up: true, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
+    { label: t("admin.payments"), value: loading ? "..." : formatNum(d.totalRevenue, "12.4M"), icon: CreditCard, change: "+23%", up: true, color: "text-[var(--brand)]", bg: "bg-[var(--brand-subtle)]" },
+    { label: t("admin.boosts"), value: loading ? "..." : formatNum(d.totalBoosts ?? d.totalOrders, "18"), icon: TrendingUp, change: "-5%", up: false, color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/10" },
   ];
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }}
+    <div
+     
+     
+      
     >
-      <motion.div variants={fadeUp} className="mb-8">
+      <div className="mb-8">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-3">
           <ShieldCheck className="w-3 h-3" />
           {t("admin.dashboard")}
         </span>
         <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">Dashboard Admin</h1>
         <p className="text-sm text-[var(--text-secondary)]">{t("analytics.overview")}</p>
-      </motion.div>
+      </div>
 
-      <motion.div variants={fadeUp} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {STATS.map((stat) => (
           <div key={stat.label} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)]">
             <div className="flex items-center justify-between mb-3">
@@ -59,9 +72,9 @@ export default function AdminDashboardPage() {
             <p className="text-xs text-[var(--text-secondary)] mt-0.5">{stat.label}</p>
           </div>
         ))}
-      </motion.div>
+      </div>
 
-      <motion.div variants={fadeUp} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)]">
           <h2 className="font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[var(--accent)]" />
@@ -100,7 +113,7 @@ export default function AdminDashboardPage() {
             ))}
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }

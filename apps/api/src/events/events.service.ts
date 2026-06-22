@@ -7,6 +7,7 @@ import {
 import slugify from 'slugify';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../common/audit/audit.service';
+import { CacheService } from '../cache/cache.service';
 import { CreateEventDto, UpdateEventDto, QueryEventsDto } from './dto/create-event.dto';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class EventsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly audit: AuditService,
+    private readonly cache: CacheService,
   ) {}
 
   async create(userId: string, dto: CreateEventDto) {
@@ -26,6 +28,9 @@ export class EventsService {
         message: 'Vous devez être organisateur pour créer un événement.',
       });
     }
+
+    // Invalider le cache des événements
+    await this.cache.delPattern('events:*');
 
     const baseSlug = slugify(dto.title, { lower: true, strict: true });
     const uniqueSlug = `${baseSlug}-${Date.now().toString(36)}`;
@@ -63,6 +68,13 @@ export class EventsService {
   async findAll(query: QueryEventsDto) {
     const page = query.page ?? 1;
     const limit = Math.min(query.limit ?? 20, 100);
+
+    // Cache key basé sur les filtres (pas la page 1 seulement)
+    const cacheKey = `events:findAll:${JSON.stringify(query)}`;
+    if (page <= 3) {
+      const cached = await this.cache.get<any>(cacheKey);
+      if (cached) return cached;
+    }
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -93,7 +105,7 @@ export class EventsService {
       this.prisma.event.count({ where }),
     ]);
 
-    return {
+    const result = {
       data: events,
       meta: {
         total,
@@ -104,6 +116,13 @@ export class EventsService {
         hasPreviousPage: page > 1,
       },
     };
+
+    // Cache les premières pages (30s TTL)
+    if (page <= 3) {
+      await this.cache.set(cacheKey, result, 30);
+    }
+
+    return result;
   }
 
   async findOne(slug: string) {
@@ -170,6 +189,9 @@ export class EventsService {
       include: { category: true },
     });
 
+    // Invalider le cache
+    await this.cache.delPattern('events:*');
+
     this.logger.log(`Événement mis à jour: ${updated.title}`);
     await this.audit.log({
       actorId: userId,
@@ -194,6 +216,9 @@ export class EventsService {
 
     await this.prisma.event.delete({ where: { id: eventId } });
 
+    // Invalider le cache
+    await this.cache.delPattern('events:*');
+
     this.logger.log(`Événement supprimé: ${event.title}`);
     await this.audit.log({
       actorId: userId,
@@ -201,6 +226,61 @@ export class EventsService {
       entityType: 'event',
       entityId: eventId,
     });
+  }
+
+  async getCities() {
+    const cacheKey = 'events:cities';
+    const cached = await this.cache.get<any[]>(cacheKey);
+    if (cached) return cached;
+
+    const cities = await this.prisma.event.groupBy({
+      by: ['city'],
+      where: { status: 'approved' },
+      _count: { city: true },
+      orderBy: { _count: { city: 'desc' } },
+    });
+
+    const result = cities.map((c) => ({
+      city: c.city,
+      count: c._count.city,
+    }));
+
+    await this.cache.set(cacheKey, result, 120);
+    return result;
+  }
+
+  async searchSuggestions(query: string) {
+    if (!query || query.length < 2) {
+      return { suggestions: { titles: [], cities: [] } };
+    }
+
+    const [titles, cities] = await Promise.all([
+      this.prisma.event.findMany({
+        where: {
+          status: 'approved',
+          title: { contains: query, mode: 'insensitive' },
+        },
+        select: { title: true, slug: true },
+        take: 5,
+        orderBy: { views: 'desc' },
+      }),
+      this.prisma.event.findMany({
+        where: {
+          status: 'approved',
+          city: { contains: query, mode: 'insensitive' },
+        },
+        select: { city: true },
+        distinct: ['city'],
+        take: 5,
+      }),
+    ]);
+
+    return {
+      suggestions: {
+        titles: titles.map((t) => ({ text: t.title, slug: t.slug })),
+        cities: [...new Set(cities.map((c) => c.city))],
+      },
+    };
   }
 
   private async checkOwnership(userId: string, organizerId: string) {

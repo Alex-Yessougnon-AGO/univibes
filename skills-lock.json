@@ -19,6 +19,30 @@
       "skillPath": "skills/brandkit/SKILL.md",
       "computedHash": "b63012f3c3d21197e0185d3e9cc7ec40c589fb10e0b5a32a561739de31aa3f20"
     },
+    "brief-app-preview": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/brief-app-preview/SKILL.md",
+      "computedHash": "b7e2b2823e41617770712f7ea7ec84428d34d17b9033380f144e765480f084c4"
+    },
+    "brief-graphic": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/brief-graphic/SKILL.md",
+      "computedHash": "42acfd5b66dce85e19e9d72ac584ac8c8e0cce023b9ed808fd559d03c471b181"
+    },
+    "brief-landing-page": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/brief-landing-page/SKILL.md",
+      "computedHash": "fc92df75451b7bd5b96d5c2466138ffa174057b9ee396e0db4029af51472fc2a"
+    },
+    "brief-shortform": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/brief-shortform/SKILL.md",
+      "computedHash": "b4d1a36dab6501b6c277e0b15243602bddac0829453d11b3a254fc456e5c8f42"
+    },
     "ckm:banner-design": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",
@@ -55,11 +79,35 @@
       "skillPath": ".claude/skills/ui-styling/SKILL.md",
       "computedHash": "9ae38e4e201f338b6150e462b98a2db0f2ae7c180c77e8cfb1d33eba9d33bf33"
     },
+    "clean-artifacts": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/meta/clean-artifacts/SKILL.md",
+      "computedHash": "ecced43e38b6f269692781ea2395e9fe8e8faa1da96fdda975f048b3e8f56cfe"
+    },
+    "create-brand": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/create-brand/SKILL.md",
+      "computedHash": "c8068a3c653cf22953b4965583616ef1a1fbb3d485fa66a9878476c90240a0c9"
+    },
+    "debate-agents": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/meta/debate-agents/SKILL.md",
+      "computedHash": "ee0abe414d03738dcb77ac8e2c76d61be70cd6f7689d3043d2c0604c86ca4218"
+    },
     "design-critique": {
       "source": "slb2248/ai-ux-skills",
       "sourceType": "github",
       "skillPath": "skills/design-critique/SKILL.md",
       "computedHash": "f3ab99e9246e8efa0b9c61726490c23512ad3d7b2c95f545ebce49ed50cd0116"
+    },
+    "design-minigame": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/design-minigame/SKILL.md",
+      "computedHash": "81081eba07df65cde15badb749e8ee3a247d29e89ab746abce653bb4dc99b78a"
     },
     "design-motion-principles": {
       "source": "kylezantos/design-motion-principles",
@@ -85,11 +133,83 @@
       "skillPath": "skills/design-workshop-facilitation/SKILL.md",
       "computedHash": "a01788061639ca6d886ae3da522ff2ab2cf5d1e9a926adc3a0c5ea075951e33f"
     },
+    "diagnose": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/diagnose/SKILL.md",
+      "computedHash": "697124e4dd99f2071e1aea07b27899f2f57e2d2956e1427f3b6b221c053cf123"
+    },
+    "discover": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/meta/discover/SKILL.md",
+      "computedHash": "21037598b3a558612677cd77decdfa1ac016c5baf8911b48ae6d7af91fc8e2d0"
+    },
     "emil-design-eng": {
       "source": "emilkowalski/skill",
       "sourceType": "github",
       "skillPath": "skills/emil-design-eng/SKILL.md",
       "computedHash": "8bdf9e4e6de7a4969147bf4828a4ad2c5aacd9fba4b690b250a85e0467ca387d"
+    },
+    "evaluate-ad": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/evaluate-ad/SKILL.md",
+      "computedHash": "bd96d2b401f857535f786eb90cae316d078ee82d20a3e3b402cd5d84b9dc27f7"
+    },
+    "evaluate-asset": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/evaluate-asset/SKILL.md",
+      "computedHash": "b9e3ce855bbe3a64435369074ad72869632fee35a08d97ad3f1e673559cdd948"
+    },
+    "evaluate-campaign": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/evaluate-campaign/SKILL.md",
+      "computedHash": "8711a94dbcee0546a2c3869115d7417b67c974f274f40ec58ca0017e9ddd3140"
+    },
+    "evaluate-content": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/evaluate-content/SKILL.md",
+      "computedHash": "e2483ea5a9a38b871e47171602b8873bb5ac590cad99bab4b0649acb110cbe89"
+    },
+    "evaluate-landing-page": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/evaluate-landing-page/SKILL.md",
+      "computedHash": "be8f852e139a624a5171a57f9387f58decd7277d7f12c13fb31d2406b75da0a7"
+    },
+    "evaluate-outreach": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/evaluate-outreach/SKILL.md",
+      "computedHash": "8acc86578db4cd6c7401c1a7e22340fb0e82b27bf9029cf36147744ed69054f2"
+    },
+    "evaluate-seo": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/evaluate-seo/SKILL.md",
+      "computedHash": "d00a3d7922e88ae840c2ec6a8d87776d30b65ae6a1f26b2f21ab1624eb114b05"
+    },
+    "evaluate-shortform": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/evaluate-shortform/SKILL.md",
+      "computedHash": "ce4c82b5411e5c57409fbee6e4444c1d9ea56b994e9725015c869e051453bdab"
+    },
+    "event-runofshow": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/event-runofshow/SKILL.md",
+      "computedHash": "78855047c60a8b50703fe06b1451974468ac00fb129e1f53ab863a47b5d129a3"
+    },
+    "forsvn": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/meta/forsvn/SKILL.md",
+      "computedHash": "34efa2e904d8970bbfe3772aafa4f5d2dc3a1b891d31989f566b317dfd6cb029"
     },
     "full-output-enforcement": {
       "source": "Leonxlnx/taste-skill",
@@ -193,6 +313,12 @@
       "skillPath": "skills/soft-skill/SKILL.md",
       "computedHash": "7db385e4c5370e5a7fca9704a1361b056e4504ea6a03924bb86f33a4f00b5c73"
     },
+    "humanmaxxing": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/humanmaxxing/SKILL.md",
+      "computedHash": "e53309d9cee7fdc2100b42a685348b61e5db1823ee1e4b466736dfe3bbf89201"
+    },
     "image-to-code": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
@@ -223,11 +349,23 @@
       "skillPath": "skills/material-3/SKILL.md",
       "computedHash": "04bc70440f7edf4f8f76affca0013de7764e7cf0cea981c860b0ca5e321d4962"
     },
+    "measure-results": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/measure-results/SKILL.md",
+      "computedHash": "66360637436f172e44ff762d4a9b721ce6c35c340677591b3883761f036ab964"
+    },
     "minimalist-ui": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/minimalist-skill/SKILL.md",
       "computedHash": "08873a3131d3be27bef9bf3304b310b16b44ca6e3561aebe532797be3443f6bd"
+    },
+    "monitor-aeo": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/monitor-aeo/SKILL.md",
+      "computedHash": "0dd60da461bbfb6d8ac98c918b6038815bb732aefba9ad0328c78b5653448ab1"
     },
     "motion-design": {
       "source": "LottieFiles/motion-design-skill",
@@ -235,11 +373,119 @@
       "skillPath": "skills/motion-design/SKILL.md",
       "computedHash": "9fcf9130cc46ee8fd1d8e09a9263347a9d76efbcbfa46591cc4cefaf19bbb453"
     },
+    "muller-brockmann-grid-systems": {
+      "source": "alexmcdonnell-airtable/hyperagent-public-skills",
+      "sourceType": "github",
+      "skillPath": "skills/muller-brockmann-grid-systems/SKILL.md",
+      "computedHash": "built-in-install"
+    },
+    "optimize-seo": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/optimize-seo/SKILL.md",
+      "computedHash": "4e2a55bb359940bc1e0b4dbd86da9d76969e27f168823cc87f1fb8d17952b2ab"
+    },
+    "plan-campaign": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/plan-campaign/SKILL.md",
+      "computedHash": "b3e88d27a4b7736da601ad12717e2a5a769c0616221bb5ba3cc39d6a542743a9"
+    },
+    "plan-funnel": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/plan-funnel/SKILL.md",
+      "computedHash": "b053bfea0438540afedf192dcd5befaf0dc7a4500ea7f57b4d2644092c6e9aae"
+    },
+    "polish-vn": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/polish-vn/SKILL.md",
+      "computedHash": "1de3aca1aa6017c5d4d790a4663483d3fbbd1b47312e26792a5c05f76c2cf330"
+    },
+    "preview-og": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/preview-og/SKILL.md",
+      "computedHash": "f7de6b990e4776a1b1e7d09eadd4d1dafb59a251cc029e2ad9af759aef859a57"
+    },
+    "prioritize": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/prioritize/SKILL.md",
+      "computedHash": "ed7c2ede3768f4fa0b913e49e9c3d6cbb1b402485ce4d2fde5b0951067bac5d4"
+    },
+    "produce-asset": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/produce-asset/SKILL.md",
+      "computedHash": "a85bdc801f82f20476358c5818cbc886da6e673afe4c362221b08a9578e19e56"
+    },
+    "produce-ooh": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/produce-ooh/SKILL.md",
+      "computedHash": "156bec9103574e6712e8a6daa80eacfe730cbc616c9ae9f2facbff2893d31393"
+    },
+    "produce-video": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/produce-video/SKILL.md",
+      "computedHash": "8f412d29c676469dac7feea07f7a1927d636aa6fa3ada6aa482326e65c91e1a2"
+    },
+    "publish-social": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/publish-social/SKILL.md",
+      "computedHash": "70e334af3405fe4c491bbc1b8c11480f4d27ae773ebba3d9fa95836ca234261a"
+    },
     "redesign-existing-projects": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
       "skillPath": "skills/redesign-skill/SKILL.md",
       "computedHash": "b405eee0e0e80fc243f731d9aa368bca307e356db7e6157d27101d369dac6726"
+    },
+    "research-icp": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/research-icp/SKILL.md",
+      "computedHash": "0097d6c452d852ff82f3cf57ddc50836d9e1f8f9f87afbc8418a9b3e7a5f828e"
+    },
+    "research-market": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/research-market/SKILL.md",
+      "computedHash": "8782702318e24b754b5744e26d9352712f4c464738ca78bc72de42219a9187db"
+    },
+    "research-platform": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/research-platform/SKILL.md",
+      "computedHash": "2d64af919465aa78f3031c2e10c955c6ba1e778fa33b901eff6fd8665ea3fcb2"
+    },
+    "research-shortform": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/research/research-shortform/SKILL.md",
+      "computedHash": "25ca89bc07e62298f0878c2aa31ab0369a1fe6c55f4d44d2c01138dee0d79e44"
+    },
+    "review-work": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/meta/review-work/SKILL.md",
+      "computedHash": "5e76b69fd1dfad382836e2cd998f35d3e6f151af9ef455a116448c0db2bfe35f"
+    },
+    "run-launch": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/meta/run-launch/SKILL.md",
+      "computedHash": "231d57045f4f37562c2a893d2a1ac3f4e020e146579b828cfcfc6a11914cb889"
+    },
+    "run-pipeline": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/meta/run-pipeline/SKILL.md",
+      "computedHash": "06a9086e3359be12019f1898804d4519043c72d123f353f9760301687b879b59"
     },
     "stitch-design-taste": {
       "source": "Leonxlnx/taste-skill",
@@ -264,6 +510,36 @@
       "sourceType": "github",
       "skillPath": "skills/ux-writing/SKILL.md",
       "computedHash": "823f968ab26f95d37d74003c241d5b597f730a6312bca5a4df9548b9d716b37c"
+    },
+    "write-ad": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/write-ad/SKILL.md",
+      "computedHash": "291c67637176705d790d2c23df04bec7bd49bc822b6f0bbbea2af53590386c57"
+    },
+    "write-copy": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/write-copy/SKILL.md",
+      "computedHash": "836469bebc80b121d0d7019d9ac4602d8eb5a768b1bec815ad86c8eff32a5299"
+    },
+    "write-launch": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/write-launch/SKILL.md",
+      "computedHash": "cdd28d7ecac7440286e9ea7416b4a8f37d0e6731dae80d05a98954a0018ad5df"
+    },
+    "write-outreach": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/write-outreach/SKILL.md",
+      "computedHash": "99e72649d778ac0ae1ee8643fc34c7e814ac7844fc78a8ad6f7b51c50b4b7efc"
+    },
+    "write-social": {
+      "source": "hungv47/meta-skills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing/write-social/SKILL.md",
+      "computedHash": "73f0b1a2695da0905699da57bacfa1b079060523adf3f763cda4733a5d115f85"
     }
   }
 }

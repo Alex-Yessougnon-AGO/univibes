@@ -3,7 +3,6 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { ViewTransition } from "react";
-import { motion } from "framer-motion";
 import { Heart, MapPin, Calendar, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatShortDate, formatTime, formatCurrency } from "@/lib/utils";
@@ -16,9 +15,11 @@ interface EventCardProps {
   variant?: "featured" | "standard" | "compact";
   className?: string;
   priority?: boolean;
+  /** Unique instance ID to avoid ViewTransition name collisions when rendering multiple cards */
+  instanceId?: string;
 }
 
-export function EventCard({ event, variant = "standard", className, priority = false }: EventCardProps) {
+export function EventCard({ event, variant = "standard", className, priority = false, instanceId }: EventCardProps) {
   const [favorited, setFavorited] = useState(event.isFavorited);
   const t = useTranslations();
 
@@ -55,7 +56,7 @@ export function EventCard({ event, variant = "standard", className, priority = f
           className
         )}
       >
-        <ViewTransition name={`event-${event.slug}`} share="morph">
+        <ViewTransition name={`event-${event.slug}${instanceId ? `-${instanceId}` : ''}`} share="morph">
           <Image src={event.coverImage} alt={event.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" priority={priority} />
         </ViewTransition>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
@@ -88,17 +89,13 @@ export function EventCard({ event, variant = "standard", className, priority = f
 
   // Standard card
   return (
-    <motion.div
-      className={cn("group card-base overflow-hidden", className)}
-      whileHover={{ y: -3 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20, mass: 0.8 }}
-      style={{ willChange: "transform" }}
+    <div
+      className={cn("group card-base overflow-hidden card-interactive", className)}
     >
       <Link href={`/event/${event.slug}`} transitionTypes={["nav-forward"]} className="block">
         {/* Image */}
         <div className="relative aspect-[4/3] overflow-hidden">
-          <ViewTransition name={`event-${event.slug}`} share="morph">
+          <ViewTransition name={`event-${event.slug}${instanceId ? `-${instanceId}` : ''}`} share="morph">
             <Image src={event.coverImage} alt={event.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" priority={priority} />
           </ViewTransition>
           <div className="absolute top-3 left-3">
@@ -149,6 +146,6 @@ export function EventCard({ event, variant = "standard", className, priority = f
           </div>
         </div>
       </Link>
-    </motion.div>
+    </div>
   );
 }
