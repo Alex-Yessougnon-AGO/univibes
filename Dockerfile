@@ -35,17 +35,14 @@ RUN pnpm --filter api build
 # --- Couche 3 : pnpm deploy → node_modules autonome (sans symlinks) ---
 # Crée /app/deployed avec node_modules/ plat contenant toutes les dépendances
 # (dev comprises : prisma CLI pour les migrations)
-RUN pnpm --filter api deploy /app/deployed
-
-# Générer Prisma client dans le déploiement (sinon .prisma/client/ vide)
-RUN cd /app/deployed && \
-    ./node_modules/.bin/prisma generate --schema=/app/prisma/schema.prisma
+RUN pnpm --filter api deploy --legacy /app/deployed
 
 # Copier le build et le schéma Prisma dans le déploiement
-RUN cp -r /app/apps/api/dist /app/deployed/dist && \
-    cp -r /app/prisma /app/deployed/prisma && \
-    test -f /app/deployed/node_modules/.prisma/client/index.js && \
-    test -x /app/deployed/node_modules/.bin/prisma
+RUN cp -r /app/apps/api/dist /app/deployed/dist
+RUN cp -r /app/prisma /app/deployed/prisma
+
+# Générer Prisma client dans le déploiement
+RUN cd /app/deployed && ./node_modules/.bin/prisma generate --schema=/app/deployed/prisma/schema.prisma
 
 # =========================================
 # STAGE 2 : Exécution
