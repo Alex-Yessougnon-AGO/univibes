@@ -14,6 +14,7 @@ import { SanitizePipe } from './common/pipes/sanitize.pipe';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
+  // Production: Railway fournit PORT dynamiquement ; l'API écoute dessus.
   // Validation des secrets critiques — on ne démarre JAMAIS sans
   if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
     logger.fatal('JWT_ACCESS_SECRET et JWT_REFRESH_SECRET sont requis.');
