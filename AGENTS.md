@@ -1,6 +1,6 @@
 # UnivVibes — Agent guide
 
-pnpm workspace monorepo (3 apps, 4 packages). Student event platform (Next.js 16 + NestJS 10 + Prisma + PostgreSQL + Redis).
+pnpm workspace monorepo (2 apps, 4 packages). Student event platform (Next.js 16 + NestJS 10 + Prisma + PostgreSQL + Redis + Socket.io).
 
 ## Quick start
 
@@ -12,17 +12,15 @@ cp apps/web/.env.example apps/web/.env.local   # (if it exists)
 docker compose up -d             # postgres:16 + redis:7
 pnpm db:migrate && pnpm db:seed
 pnpm dev:api                     # NestJS on :3001
-pnpm dev:web                     # Next.js on :3000
-pnpm dev:admin                   # Next.js on :3002
+pnpm dev:web                     # Next.js on :3000 (inclut /admin)
 ```
 
 ## Monorepo structure
 
 | Path | Role |
 |---|---|
-| `apps/web/` | Student-facing Next.js 16 (App Router, Tailwind v4) |
-| `apps/api/` | NestJS 10 REST API (`api/v1` prefix, Swagger at `/api/docs`) |
-| `apps/admin/` | Admin Next.js (mostly scaffolded — no `src/` yet) |
+| `apps/web/` | Student-facing Next.js 16 (App Router, Tailwind v4) — **inclut `/admin/*`** |
+| `apps/api/` | NestJS 10 REST API (`api/v1` prefix, Swagger at `/api/docs`) + WebSocket `/notifications` |
 | `packages/types/` | Shared TS types (`@univibes/types`) |
 | `packages/utils/` | Shared utilities (`@univibes/utils`) |
 | `packages/ui/` | Shared React components (`@univibes/ui`) |
@@ -33,7 +31,7 @@ pnpm dev:admin                   # Next.js on :3002
 
 | Command | What |
 |---|---|
-| `pnpm dev:web / dev:api / dev:admin` | Per-app dev servers |
+| `pnpm dev:web / dev:api` | Per-app dev servers |
 | `pnpm -r build` | Build all |
 | `pnpm -r test` | Run all tests (only `api` has Jest config) |
 | `pnpm -r lint` | Lint all (only `api` has ESLint) |
@@ -46,7 +44,7 @@ pnpm dev:admin                   # Next.js on :3002
 
 ## Architecture notes
 
-- **API modules are all wired in `app.module.ts`** — Auth, Users, Events, Orders, Payments, Notifications, etc. are all imported.
+- **API modules are all wired in `app.module.ts`** — Auth, Users, Events, Orders, Payments, Notifications, Websockets, etc. are all imported.
 - **i18n** — Web app uses `next-intl` v4 with `fr`/`en` locales. All routes require `[locale]` prefix. Message files exist but `useTranslations` is wired in critical pages (navbar, bottom-nav, landing, login, explore, event-card). New pages created with full i18n support.
 - **API uses global pipes** — `ValidationPipe` with `whitelist: true`, `forbidNonWhitelisted: true`, `transform: true`.
 - **API uses global interceptors** — `TransformInterceptor` wraps responses.
@@ -55,7 +53,8 @@ pnpm dev:admin                   # Next.js on :3002
 - **AuditService** is a `@Global()` module — inject into any service for action tracing.
 - **Web** uses `@/` path alias → `apps/web/src/`.
 - **No ESLint/Prettier configs** at root level — only per-app. `web` uses `next lint`, `api` uses explicit ESLint.
-- **No CI workflows** yet (`.github/workflows/` is empty).
+- **CI** — `.github/workflows/ci.yml` lance lint + test + build sur push/PR.
+- **Realtime** — `WebsocketsGateway` (Socket.io, namespace `/notifications`) push les notifications en temps réel aux utilisateurs connectés via JWT.
 
 ## Observability
 

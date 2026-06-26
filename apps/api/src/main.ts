@@ -14,6 +14,16 @@ import { SanitizePipe } from './common/pipes/sanitize.pipe';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
+  // Validation des secrets critiques — on ne démarre JAMAIS sans
+  if (!process.env.JWT_ACCESS_SECRET || !process.env.JWT_REFRESH_SECRET) {
+    logger.fatal('JWT_ACCESS_SECRET et JWT_REFRESH_SECRET sont requis.');
+    process.exit(1);
+  }
+  if (!process.env.DATABASE_URL) {
+    logger.fatal('DATABASE_URL est requis.');
+    process.exit(1);
+  }
+
   // Sentry
   if (process.env.SENTRY_DSN) {
     Sentry.init({
@@ -27,6 +37,8 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, {
     bufferLogs: process.env.NODE_ENV === 'production',
+    // Raw body requis pour vérifier la signature HMAC du webhook FedaPay.
+    rawBody: true,
   });
 
   // Helmet (security headers)

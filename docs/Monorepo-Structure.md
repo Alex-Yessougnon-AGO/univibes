@@ -10,7 +10,6 @@ Gestionnaire : pnpm workspaces
 univibes/
 ├── apps/
 │   ├── web/          → Site principal (Next.js)
-│   ├── admin/        → Interface admin (Next.js)
 │   ├── api/          → Backend NestJS
 │   └── mobile/       → App Flutter (Phase 5)
 │
@@ -50,9 +49,9 @@ Pages :
 
 ---
 
-# apps/admin
+# apps/web — Interface d'administration
 
-Interface d'administration (Next.js)
+L'interface admin est intégrée à `apps/web` sous le préfixe `[locale]/admin/`.
 
 Pages :
 - `/admin` → Dashboard
@@ -61,6 +60,8 @@ Pages :
 - `/admin/payments` → Paiements
 - `/admin/boosts` → Boosts
 - `/admin/ads` → Publicités
+- `/admin/organizers`, `/admin/categories`, `/admin/cities`, `/admin/universities`,
+  `/admin/payouts`, `/admin/audit-logs`, `/admin/settings`
 
 ---
 

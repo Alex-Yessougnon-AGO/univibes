@@ -3,12 +3,16 @@ import {
   NotFoundException,
   BadRequestException,
   Logger,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../common/audit/audit.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import { FedaPayService } from './fedapay.service';
 import { InitiatePaymentDto, PaymentWebhookDto } from './dto/initiate-payment.dto';
+import { OrdersService } from '../orders/orders.service';
 
 @Injectable()
 export class PaymentsService {
@@ -19,6 +23,10 @@ export class PaymentsService {
     private readonly audit: AuditService,
     private readonly fedapay: FedaPayService,
     private readonly config: ConfigService,
+    @Inject(forwardRef(() => OrdersService))
+    private readonly ordersService: OrdersService,
+    @Inject(forwardRef(() => NotificationsService))
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async initiate(userId: string, dto: InitiatePaymentDto) {
@@ -123,7 +131,15 @@ export class PaymentsService {
       return;
     }
 
-    const statusMap: Record<string, any> = {
+    // Idempotency: un paiement déjà cloturé en success est ignoré (FedaPay
+    // renvoie parfois le webhook plusieurs fois). On évite ainsi de régénérer
+    // des billets en double.
+    if (payment.status === 'success') {
+      this.logger.log(`Paiement ${payment.id} déjà traité — webhook ignoré (idempotent)`);
+      return;
+    }
+
+    const statusMap: Record<string, 'success' | 'failed'> = {
       success: 'success',
       approved: 'success',
       completed: 'success',
@@ -148,20 +164,6 @@ export class PaymentsService {
           where: { id: payment.orderId },
           data: { status: 'paid' },
         });
-
-        // Générer les tickets
-        const order = await tx.order.findUnique({
-          where: { id: payment.orderId },
-          include: {
-            items: true,
-            user: true,
-            event: { select: { title: true } },
-          },
-        });
-
-        if (order) {
-          this.logger.log(`Paiement confirmé pour commande ${order.id}`);
-        }
       }
     });
 
@@ -172,6 +174,58 @@ export class PaymentsService {
       entityId: payment.id,
       metadata: { provider: dto.provider, status: newStatus },
     });
+
+    // Hors transaction : génération des billets + notification utilisateur.
+    // On reste idempotent : issueTickets ne crée rien si les billets existent déjà.
+    if (newStatus === 'success') {
+      try {
+        await this.fulfillOrder(payment.orderId);
+      } catch (err) {
+        // On ne fait pas échouer le webhook (réponse 2xx à FedaPay) : le statut
+        // commande/paiement est déjà cohérent, on log pour investigation.
+        this.logger.error(
+          `Échec fulfillment commande ${payment.orderId}: ${(err as Error).message}`,
+        );
+      }
+    }
+  }
+
+  /**
+   * Fulfillment post-paiement : génère les billets (idempotent) puis notifie
+   * l'utilisateur en base. Idempotent grâce à issueTickets qui vérifie les
+   * billets existants.
+   */
+  private async fulfillOrder(orderId: string) {
+    const existing = await this.prisma.issuedTicket.findFirst({
+      where: { orderId },
+      select: { id: true },
+    });
+    if (existing) {
+      this.logger.log(`Commande ${orderId} déjà fulfill — skip`);
+      return;
+    }
+
+    const issued = await this.ordersService.issueTickets(orderId);
+
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { event: { select: { title: true } } },
+    });
+
+    if (order) {
+      this.logger.log(
+        `${issued.length} billet(s) émis pour la commande ${orderId} (${order.event.title})`,
+      );
+
+      // Notification temps-réel + persistée
+      await this.notificationsService.create(
+        order.userId,
+        'payment_success',
+        'Paiement confirmé 🎉',
+        `Votre paiement pour « ${order.event.title} » a été confirmé. ${issued.length} billet(s) disponible(s).`,
+        { orderId, ticketsCount: issued.length },
+      );
+    }
   }
 
   async getPaymentStatus(orderId: string) {

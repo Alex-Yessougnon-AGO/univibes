@@ -15,7 +15,6 @@ docker-compose.yml
 
 # Hors contexte Docker — inutiles pour le build de l'API
 apps/web
-apps/admin
 
 # Généré par pnpm db:generate pendant le build — pas besoin de le copier
 apps/api/dist

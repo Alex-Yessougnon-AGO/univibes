@@ -166,6 +166,19 @@ export class OrdersService {
       });
     }
 
+    // Idempotency: si des billets ont déjà été émis pour cette commande, on
+    // retourne ceux qui existent sans en régénérer (protège contre les webhooks
+    // renvoyés et les appels multiples).
+    const alreadyIssued = await this.prisma.issuedTicket.findMany({
+      where: { orderId },
+    });
+    if (alreadyIssued.length > 0) {
+      this.logger.log(
+        `Billets déjà émis pour la commande ${orderId} — retour des existants`,
+      );
+      return alreadyIssued;
+    }
+
     const issuedTickets = [];
 
     for (const item of order.items) {

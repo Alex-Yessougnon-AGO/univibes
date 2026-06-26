@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
+import request from 'supertest';
 import { AppModule } from '../src/app.module';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const request = require('supertest');
 
 /**
  * E2E tests for Univibes API
@@ -79,7 +77,11 @@ describe('Univibes API (e2e)', () => {
       const res = await request(app.getHttpServer()).get('/api/v1/categories');
       expect([200, 500, 503]).toContain(res.status);
       if (res.status === 200) {
-        expect(Array.isArray(res.body.data)).toBe(true);
+        // En test le TransformInterceptor n'est pas wrappé globalement,
+        // donc le retour est soit le array brut, soit { success, data: [...] }.
+        const isArrayDirect = Array.isArray(res.body);
+        const isArrayNested = Array.isArray(res.body?.data);
+        expect(isArrayDirect || isArrayNested).toBe(true);
       }
     });
 

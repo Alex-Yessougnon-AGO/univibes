@@ -69,16 +69,27 @@ export class FedaPayService {
   }
 
   async verifyWebhook(signature: string, payload: string): Promise<boolean> {
-    if (!this.configured) return true;
-    try {
-      const webhookSecret = this.configService.get<string>('FEDAPAY_WEBHOOK_SECRET');
-      if (!webhookSecret) return true;
+    // Fail-closed : on n'accepte JAMAIS un webhook sans secret partagé.
+    // En production FEDAPAY_WEBHOOK_SECRET est obligatoire ; sans lui, tout
+    // webhook est rejeté (401).
+    const webhookSecret = this.configService.get<string>('FEDAPAY_WEBHOOK_SECRET');
+    if (!webhookSecret) {
+      this.logger.error('FEDAPAY_WEBHOOK_SECRET absent — webhook rejeté (fail-closed)');
+      return false;
+    }
 
+    try {
       const expected = createHmac('sha256', webhookSecret)
         .update(payload)
         .digest('hex');
 
-      return timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+      // timingSafeEqual exige des buffers de même longueur — on vérifie d'abord.
+      const sigBuf = Buffer.from(signature);
+      const expBuf = Buffer.from(expected);
+      if (sigBuf.length !== expBuf.length || sigBuf.length === 0) {
+        return false;
+      }
+      return timingSafeEqual(sigBuf, expBuf);
     } catch (err) {
       this.logger.warn(`Webhook verification failed: ${(err as Error).message}`);
       return false;

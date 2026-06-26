@@ -24,6 +24,7 @@ import { DebugModule } from './debug/debug.module';
 import { CheckinModule } from './checkin/checkin.module';
 import { UploadModule } from './upload/upload.module';
 import { CacheModule } from './cache/cache.module';
+import { WebsocketsModule } from './websockets/websockets.module';
 
 @Module({
   imports: [
@@ -70,6 +71,9 @@ import { CacheModule } from './cache/cache.module';
     DebugModule,
     CheckinModule,
     UploadModule,
+
+    // Temps réel (notifications WebSocket)
+    WebsocketsModule,
   ],
   controllers: [HealthController],
   providers: [

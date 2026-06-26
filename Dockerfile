@@ -59,4 +59,4 @@ COPY --from=builder /app/deployed ./
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "./node_modules/.bin/prisma db push --accept-data-loss && node dist/main.js"]
+CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && node dist/main.js"]

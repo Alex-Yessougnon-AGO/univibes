@@ -4,8 +4,13 @@ import {
   Get,
   Body,
   Param,
+  Headers,
+  Req,
+  UnauthorizedException,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
+import { Request } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -13,8 +18,10 @@ import {
   ApiBody,
   ApiParam,
   ApiResponse,
+  ApiExcludeEndpoint,
 } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
+import { FedaPayService } from './fedapay.service';
 import { InitiatePaymentDto, PaymentWebhookDto } from './dto/initiate-payment.dto';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../auth/strategies/jwt-auth.guard';
@@ -24,7 +31,12 @@ import { Public } from '../common/decorators/public.decorator';
 @ApiTags('payments')
 @Controller('payments')
 export class PaymentsController {
-  constructor(private readonly paymentsService: PaymentsService) {}
+  private readonly logger = new Logger(PaymentsController.name);
+
+  constructor(
+    private readonly paymentsService: PaymentsService,
+    private readonly fedapay: FedaPayService,
+  ) {}
 
   @Post('initiate')
   @UseGuards(JwtAuthGuard)
@@ -46,13 +58,38 @@ export class PaymentsController {
 
   @Post('webhook')
   @Public()
+  @ApiExcludeEndpoint()
   @ApiOperation({
     summary: 'Webhook de paiement',
-    description: "Endpoint pour recevoir les notifications de statut de paiement depuis FedaPay/Kkiapay. Met \u00e0 jour le statut de la commande et g\u00e9n\u00e8re les billets.",
+    description:
+      "Endpoint pour recevoir les notifications de statut de paiement depuis FedaPay/Kkiapay. Vérifie la signature HMAC puis met à jour le statut de la commande et génère les billets.",
   })
   @ApiBody({ type: PaymentWebhookDto })
   @ApiResponse({ status: 201, description: 'Webhook re\u00e7u' })
-  async webhook(@Body() dto: PaymentWebhookDto) {
+  @ApiResponse({ status: 401, description: 'Signature invalide' })
+  async webhook(
+    @Req() req: Request,
+    @Headers() headers: Record<string, string>,
+    @Body() dto: PaymentWebhookDto,
+  ) {
+    // Sécurité (P0-2) : vérification de la signature HMAC FedaPay.
+    // Le secret FEDAPAY_WEBHOOK_SECRET est obligatoire en production.
+    const signature =
+      headers['x-fedapay-signature'] ??
+      headers['x-fEDAPAY-Signature'] ??
+      '';
+
+    // rawBody est peuplé par `verify: 'webhook'"` (NestFactory raw body).
+    const raw =
+      (req as unknown as { rawBody?: Buffer }).rawBody?.toString('utf8') ??
+      JSON.stringify(dto);
+
+    const valid = await this.fedapay.verifyWebhook(signature, raw);
+    if (!valid) {
+      this.logger.warn(`Webhook rejeté — signature invalide`);
+      throw new UnauthorizedException({ code: 'INVALID_SIGNATURE' });
+    }
+
     await this.paymentsService.handleWebhook(dto);
     return { received: true };
   }

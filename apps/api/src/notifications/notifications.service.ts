@@ -1,9 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Optional, Inject, forwardRef } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { WebsocketsGateway } from '../websockets/websockets.gateway';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    // Optionnel pour casser une éventuelle circularité au bootstrap.
+    @Optional() @Inject(forwardRef(() => WebsocketsGateway))
+    private readonly ws?: WebsocketsGateway,
+  ) {}
 
   async findAll(userId: string, unreadOnly: boolean = false) {
     const where: any = { userId };
@@ -60,8 +66,13 @@ export class NotificationsService {
     body: string,
     data?: Record<string, unknown>,
   ) {
-    return this.prisma.notification.create({
+    const notification = await this.prisma.notification.create({
       data: { userId, type, title, body, data: (data ?? {}) as any },
     });
+
+    // Temps réel : pousse sur la socket de l'utilisateur si connecté.
+    this.ws?.emitToUser(userId, 'notification', notification);
+
+    return notification;
   }
 }
