@@ -47,3 +47,5 @@ coverage
 .playwright/
 .impeccable/
 .design/
+# CI workflow - ajouter via web UI GitHub (scope OAuth bloque git push)
+.github/workflows/
