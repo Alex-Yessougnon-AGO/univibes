@@ -87,7 +87,7 @@ export default function EventDetailPage() {
             {/* ── Main content ── */}
             <div className="lg:col-span-2 space-y-6">
               {/* Title & meta */}
-              <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover">
+              <div className="card-xl p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-xs font-medium text-[var(--brand-text)] mb-3">
@@ -130,7 +130,7 @@ export default function EventDetailPage() {
               </div>
 
               {/* Description */}
-              <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover">
+              <div className="card-xl p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover">
                 <h2 className="font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[var(--accent)]" aria-hidden="true" />
                   {t("event.about")}
@@ -152,7 +152,7 @@ export default function EventDetailPage() {
 
               {/* Tickets */}
               {event.tickets && event.tickets.length > 0 && (
-                <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover" id="tickets">
+                <div className="card-xl p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover" id="tickets">
                   <h2 className="font-semibold text-[var(--text)] mb-4">{t("event.availableTickets")}</h2>
                   <div className="space-y-3">
                     {event.tickets.map((tkt: any) => (
@@ -197,7 +197,7 @@ export default function EventDetailPage() {
               )}
 
               {/* Organizer */}
-              <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover">
+              <div className="card-xl p-6 md:p-8 shadow-[var(--shadow)] reveal card-hover">
                 <h2 className="font-semibold text-[var(--text)] mb-4">{t("event.organizer")}</h2>
                 <Link href={`/organizer/${event.organizer.slug}`} className="flex items-center gap-4 group">
                   <div className="relative w-16 h-16 rounded-xl overflow-hidden ring-2 ring-[var(--brand)]/20 group-hover:ring-[var(--brand)]/40 transition-all shrink-0">
@@ -228,9 +228,9 @@ export default function EventDetailPage() {
 
             {/* ── Sidebar ── */}
             <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-4">
+              <div className="sticky top-28 space-y-4">
                 {/* Price + CTA */}
-                <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] reveal card-hover">
+                <div className="card-xl p-6 shadow-[var(--shadow)] reveal card-hover">
                   <div className="text-center">
                     <p className="text-[11px] text-[var(--text-secondary)] uppercase tracking-wider font-semibold mb-1.5">
                       {t("event.from")}
@@ -278,7 +278,7 @@ export default function EventDetailPage() {
                 </div>
 
                 {/* Date & Location */}
-                <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] space-y-4 reveal card-hover">
+                <div className="card-xl p-5 shadow-[var(--shadow-sm)] space-y-4 reveal card-hover">
                   <div className="flex items-start gap-3">
                     <div className="w-9 h-9 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0 card-hover">
                       <Calendar className="w-4 h-4 text-[var(--brand)]" aria-hidden="true" />
@@ -305,7 +305,7 @@ export default function EventDetailPage() {
                 </div>
 
                 {/* Favorites + shares count */}
-                <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] reveal card-hover">
+                <div className="card-xl p-5 shadow-[var(--shadow-sm)] reveal card-hover">
                   <div className="flex items-center justify-around text-center">
                     <div>
                       <p className="font-bold text-lg text-[var(--text)] font-[family-name:var(--font-display)]">{event.favoritesCount.toLocaleString()}</p>

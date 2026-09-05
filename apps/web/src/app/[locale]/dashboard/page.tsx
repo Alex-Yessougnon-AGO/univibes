@@ -2,10 +2,19 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import Image from "next/image";
-import { Plus, Calendar, ArrowRight, Sparkles, LayoutDashboard } from "lucide-react";
+import {
+  Plus,
+  Calendar,
+  ArrowRight,
+  Eye,
+  Heart,
+  Ticket,
+  Wallet,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { PageHeader } from "@/components/shared/page-header";
+import { StatCard } from "@/components/shared/stat-card";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const RECENT_EVENTS = [
@@ -25,79 +34,72 @@ export default function DashboardPage() {
   useScrollReveal();
 
   const STATS = [
-    { label: t("event.views"), value: "12 400", icon: "Eye", change: "+12%", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-900/10" },
-    { label: t("event.favorites"), value: "843", icon: "Heart", change: "+8%", color: "text-rose-500", bg: "bg-rose-50 dark:bg-rose-900/10" },
-    { label: t("analytics.ticketsSold"), value: "156", icon: "Ticket", change: "+23%", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-900/10" },
-    { label: t("analytics.revenue"), value: "780 000 FCFA", icon: "DollarSign", change: "+15%", color: "text-[var(--brand)]", bg: "bg-[var(--brand-subtle)]" },
+    { label: t("event.views"), value: "12 400", icon: Eye, delta: "+12%" },
+    { label: t("event.favorites"), value: "843", icon: Heart, delta: "+8%" },
+    { label: t("analytics.ticketsSold"), value: "156", icon: Ticket, delta: "+23%" },
+    { label: t("analytics.revenue"), value: "780 000", icon: Wallet, delta: "+15%", hint: "FCFA · " + t("analytics.vsPrevious") },
   ];
 
   return (
-    <div
-     
-     
-      
-    >
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[11px] font-semibold text-[var(--brand-text)] tracking-wide mb-3">
-            <LayoutDashboard className="w-3 h-3" />
-            {t("nav.dashboard")}
-          </span>
-          <h1 className="text-[28px] font-[family-name:var(--font-display)] text-[var(--text)] tracking-tight leading-tight mb-1">
-            {t("nav.dashboard")}
-          </h1>
-          <p className="text-sm text-[var(--text-secondary)]">Bienvenue sur ton espace organisateur</p>
-        </div>
-        <Button variant="primary" size="md" asChild>
-          <Link href="/dashboard/events/new">
-            <Plus className="w-4 h-4 pressable" />
-            {t("hero.createEvent")}
-          </Link>
-        </Button>
-      </div>
+    <div>
+      <PageHeader
+        eyebrow={t("nav.dashboard")}
+        title={t("nav.dashboard")}
+        description={t("analytics.subtitle")}
+        actions={
+          <Button variant="primary" size="md" className="rounded-full" asChild>
+            <Link href="/dashboard/events/new">
+              <Plus className="w-4 h-4" aria-hidden="true" />
+              {t("hero.createEvent")}
+            </Link>
+          </Button>
+        }
+      />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 pressable">
-        {STATS.map((stat) => (
-          <div key={stat.label} className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 shadow-[var(--shadow-sm)] pressable">
-            <div className="flex items-center justify-between mb-3 pressable">
-              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
-                <span className={`w-5 h-5 ${stat.color}`}>
-                  {stat.icon === "Eye" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>}
-                  {stat.icon === "Heart" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>}
-                  {stat.icon === "Ticket" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>}
-                  {stat.icon === "DollarSign" && <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 pressable"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>}
-                </span>
-              </div>
-              <Badge variant="success" className="text-[10px] pressable">{stat.change}</Badge>
-            </div>
-            <p className="text-2xl font-extrabold text-[var(--text)] pressable">{stat.value}</p>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">{stat.label}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 mb-8">
+        {STATS.map((stat, i) => (
+          <div key={stat.label} className="reveal" style={{ transitionDelay: `${i * 70}ms` }}>
+            <StatCard
+              label={stat.label}
+              value={stat.value}
+              icon={stat.icon}
+              delta={stat.delta}
+              hint={"hint" in stat ? (stat as { hint: string }).hint : t("analytics.vsPrevious")}
+            />
           </div>
         ))}
       </div>
 
-      <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-6 shadow-[var(--shadow)] pressable">
-        <div className="flex items-center justify-between mb-4 pressable">
-          <h2 className="font-semibold text-[var(--text)] flex items-center gap-2 pressable">
-            <Calendar className="w-4 h-4 text-[var(--brand)] pressable" />
+      <div className="reveal card-xl p-6 md:p-7">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="font-bold text-[15px] text-[var(--text)] flex items-center gap-2.5">
+            <span className="w-9 h-9 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center">
+              <Calendar className="w-4 h-4 text-[var(--brand)]" aria-hidden="true" />
+            </span>
             {t("admin.events")}
           </h2>
-          <Button variant="ghost" size="sm" asChild>
+          <Button variant="ghost" size="sm" className="rounded-full" asChild>
             <Link href="/dashboard/events">
-              {t("common.seeAll")} <ArrowRight className="w-3.5 h-3.5 pressable" />
+              {t("common.seeAll")}
+              <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
             </Link>
           </Button>
         </div>
-        <div className="space-y-2 pressable">
+        <div className="space-y-1">
           {RECENT_EVENTS.map((evt) => (
-            <div key={evt.name} className="flex items-center justify-between p-3 rounded-xl hover:bg-[var(--border-subtle)] transition-colors pressable">
-              <div className="flex items-center gap-3 min-w-0 pressable">
-                <div className="w-10 h-10 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0 pressable">
-                  <Calendar className="w-4 h-4 text-[var(--brand)] pressable" />
+            <div
+              key={evt.name}
+              className="flex items-center justify-between gap-4 p-3.5 rounded-2xl hover:bg-[var(--border-subtle)] transition-colors"
+            >
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-11 h-11 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0">
+                  <Calendar className="w-[18px] h-[18px] text-[var(--brand)]" aria-hidden="true" />
                 </div>
-                <div className="min-w-0 pressable">
-                  <p className="text-sm font-medium text-[var(--text)] truncate pressable">{evt.name}</p>
-                  <p className="text-xs text-[var(--text-secondary)] pressable">{evt.views.toLocaleString()} {t("event.views")} · {evt.tickets} {t("ticket.title")}</p>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-[var(--text)] truncate">{evt.name}</p>
+                  <p className="text-[13px] text-[var(--text-secondary)] mt-0.5">
+                    {evt.views.toLocaleString()} {t("event.views")} · {evt.tickets} {t("ticket.title")}
+                  </p>
                 </div>
               </div>
               <Badge variant={statusVariant(evt.status)}>{evt.status}</Badge>
@@ -106,24 +108,35 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pressable">
-        <Link href="/dashboard/events/new" className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 card-hover flex items-center gap-4 shadow-[var(--shadow-sm)] pressable">
-          <div className="w-12 h-12 rounded-xl bg-[var(--brand-subtle)] flex items-center justify-center pressable">
-            <Plus className="w-5 h-5 text-[var(--brand)] pressable" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm text-[var(--text)] pressable">{t("hero.createEvent")}</h3>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">Ajoute un nouvel événement à la plateforme</p>
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5 mt-5">
+        <Link
+          href="/dashboard/events/new"
+          className="reveal card-xl p-6 card-hover flex items-center gap-4"
+        >
+          <span className="w-12 h-12 rounded-2xl bg-[var(--brand-subtle)] flex items-center justify-center shrink-0">
+            <Plus className="w-5 h-5 text-[var(--brand)]" aria-hidden="true" />
+          </span>
+          <span>
+            <span className="block font-bold text-sm text-[var(--text)]">{t("hero.createEvent")}</span>
+            <span className="block text-[13px] text-[var(--text-secondary)] mt-1">
+              {t("analytics.subtitle")}
+            </span>
+          </span>
         </Link>
-        <Link href="/dashboard/events" className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-5 card-hover flex items-center gap-4 shadow-[var(--shadow-sm)] pressable">
-          <div className="w-12 h-12 rounded-xl bg-[var(--accent-subtle)] flex items-center justify-center pressable">
-            <Calendar className="w-5 h-5 text-[var(--accent)] pressable" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-sm text-[var(--text)] pressable">{t("admin.events")}</h3>
-            <p className="text-xs text-[var(--text-secondary)] mt-0.5 pressable">Modifie ou archive tes événements</p>
-          </div>
+        <Link
+          href="/dashboard/analytics"
+          className="reveal card-xl p-6 card-hover flex items-center gap-4"
+          style={{ transitionDelay: "80ms" }}
+        >
+          <span className="w-12 h-12 rounded-2xl bg-[var(--accent-subtle)] flex items-center justify-center shrink-0">
+            <Eye className="w-5 h-5 text-[var(--accent)]" aria-hidden="true" />
+          </span>
+          <span>
+            <span className="block font-bold text-sm text-[var(--text)]">{t("analytics.title")}</span>
+            <span className="block text-[13px] text-[var(--text-secondary)] mt-1">
+              {t("analytics.overview")}
+            </span>
+          </span>
         </Link>
       </div>
     </div>

@@ -37,7 +37,7 @@ const sizeStyles: Record<ButtonSize, string> = {
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", asChild = false, loading, disabled, leftIcon, rightIcon, children, ...props }, ref) => {
     const commonClasses = cn(
-      "inline-flex items-center justify-center gap-2 font-medium transition-[transform,background-color,box-shadow,opacity] duration-150 cursor-pointer select-none",
+      "inline-flex items-center justify-center gap-2 font-semibold tracking-[-0.01em] transition-[transform,background-color,box-shadow,opacity] duration-150 cursor-pointer select-none whitespace-nowrap",
       "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed",
       "focus-visible:outline-2 focus-visible:outline-[var(--brand)] focus-visible:outline-offset-2",
       "pressable",

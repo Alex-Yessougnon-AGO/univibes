@@ -26,6 +26,9 @@
     "toEvents": "to events",
     "home": "Home"
   },
+  "error": {
+    "description": "Something went wrong. Try again or head back home."
+  },
   "nav": {
     "home": "Home",
     "explore": "Explore",
