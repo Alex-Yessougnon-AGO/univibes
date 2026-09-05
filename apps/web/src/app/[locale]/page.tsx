@@ -4,22 +4,36 @@ import { useState, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/routing";
 import Image from "next/image";
-import { Search, MapPin, ChevronRight, ArrowRight, Users, Sparkles, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import dynamic from "next/dynamic";
+import {
+  Search,
+  MapPin,
+  ChevronRight,
+  ChevronLeft,
+  ArrowRight,
+  Sparkles,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/navbar";
+import { SectionHeader } from "@/components/shared/section-header";
 import { getCategoryIcon } from "@/lib/icon-map";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { eventsService, categoriesService } from "@/lib/services/events-service";
 
-const EventCard = dynamic(() => import("@/components/events/event-card").then(m => ({ default: m.EventCard })));
-const BottomNav = dynamic(() => import("@/components/layout/bottom-nav").then(m => ({ default: m.BottomNav })));
+const EventCard = dynamic(() =>
+  import("@/components/events/event-card").then((m) => ({ default: m.EventCard }))
+);
+const BottomNav = dynamic(() =>
+  import("@/components/layout/bottom-nav").then((m) => ({ default: m.BottomNav }))
+);
+
+const CITIES_LIST = ["Cotonou", "Abomey-Calavi", "Porto-Novo", "Parakou", "Lokossa"];
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [city, setCity] = useState("");
   const [events, setEvents] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
   const t = useTranslations();
   const router = useRouter();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -28,15 +42,13 @@ export default function Home() {
     const loadData = async () => {
       try {
         const [eventsData, catsData] = await Promise.all([
-          eventsService.findAll({ limit: 6 }),
+          eventsService.findAll({ limit: 9 }),
           categoriesService.findAll(),
         ]);
         setEvents(Array.isArray(eventsData) ? eventsData : (eventsData as any)?.data ?? []);
-        setCategories(catsData);
+        setCategories(catsData ?? []);
       } catch {
-        // Fall back to empty state on error
-      } finally {
-        setLoading(false);
+        /* l'état vide s'affiche gracieusement */
       }
     };
     loadData();
@@ -45,477 +57,375 @@ export default function Home() {
   const FEATURED_EVENTS = events.slice(0, 5);
   const UPCOMING_EVENTS = events.slice(0, 6);
   const DISPLAY_CATEGORIES = categories.slice(0, 8);
-  // Static cities list as fallback
-  const CITIES_LIST = ["Cotonou", "Abomey-Calavi", "Porto-Novo", "Parakou", "Lokossa"];
 
   const handleHeroSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
-    const q = searchQuery.trim();
-    if (q) {
-      router.push(`/explore?q=${encodeURIComponent(q)}`);
-    } else {
-      router.push("/explore");
-    }
+    const params = new URLSearchParams();
+    if (searchQuery.trim()) params.set("q", searchQuery.trim());
+    if (city) params.set("city", city);
+    const qs = params.toString();
+    router.push(qs ? `/explore?${qs}` : "/explore");
   };
 
   const scrollFeatured = (direction: "left" | "right") => {
-    scrollRef.current?.scrollBy({ left: direction === "left" ? -400 : 400, behavior: "smooth" });
+    scrollRef.current?.scrollBy({
+      left: direction === "left" ? -440 : 440,
+      behavior: "smooth",
+    });
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowLeft") { scrollFeatured("left"); e.preventDefault(); }
-    if (e.key === "ArrowRight") { scrollFeatured("right"); e.preventDefault(); }
-  };
-
-  /* ── Scroll reveal — uses the shared hook ── */
   useScrollReveal();
 
   return (
     <>
       <Navbar />
       <main className="flex-1 pb-24 md:pb-0">
-        {/* ============================================= */}
-        {/* HERO — Premium Terra */}
-        {/* ============================================= */}
-        <section role="banner" className="relative min-h-[90dvh] max-sm:min-h-[80dvh] flex items-center overflow-hidden bg-gradient-to-b from-[var(--brand-subtle)] via-[var(--bg)] to-[var(--bg)] reveal">
-          <div className="absolute inset-0 pointer-events-none">
-            <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-[var(--brand)]/4 blur-[120px] ambient-float" />
-            <div className="absolute top-1/3 -left-20 w-80 h-80 rounded-full bg-[var(--accent)]/4 blur-[100px] ambient-float-slow" />
-            <div className="absolute bottom-20 right-1/3 w-72 h-72 rounded-full bg-[var(--brand)]/3 blur-[100px] ambient-float" />
-          </div>
+        {/* ═══════════ HERO — un message, une action ═══════════ */}
+        <section role="banner" className="relative overflow-hidden">
+          <div className="hero-halo" aria-hidden="true" />
+          <div className="hero-grid" aria-hidden="true" />
 
-          <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-12 md:pt-28 md:pb-20">
-            <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-            <div className="lg:col-span-7 max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[var(--brand-subtle)] border border-[var(--brand)]/15 text-[var(--brand-text)] text-[11px] font-semibold uppercase tracking-[0.15em] mb-8">
-                <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>{t("common.appTagline")}</span>
-              </div>
-
-              <h1 className="font-[family-name:var(--font-display)] text-[clamp(2rem,7vw,4.5rem)] leading-[1.05] tracking-tight text-[var(--text)] mb-5 text-balance">
-                {t("hero.titleBefore")}
-                <span className="text-[var(--brand)]">{t("hero.titleHighlight")}</span>
-              </h1>
-
-              <p className="text-base sm:text-lg text-[var(--text-secondary)] max-w-xl leading-relaxed mb-8">
-                {t("hero.subtitle")}
-              </p>
-
-              {/* Search — editorial clean */}
-              <form onSubmit={handleHeroSearch} className="max-w-xl mb-8 sm:mb-10" role="search" aria-label={t("explore.searchPlaceholder")}>
-                <div className="flex items-center bg-[var(--surface)] rounded-[1.5rem] border border-[var(--border)] shadow-[var(--shadow-sm)] transition-shadow duration-200 focus-within:shadow-[0_0_0_2px_var(--brand),0_4px_12px_rgba(0,0,0,0.08)]">
-                  <div className="hidden sm:flex items-center gap-2 pl-4 pr-2 py-1.5 border-r border-[var(--border)] shrink-0 rounded-l-[1.5rem]">
-                    <MapPin className="w-4 h-4 text-[var(--text-tertiary)]" aria-hidden="true" />
-                    <select className="bg-transparent text-sm text-[var(--text)] font-medium outline-none cursor-pointer py-1.5 pr-2" aria-label={t("explore.city")}>
-                      <option>{t("explore.allCities")}</option>
-                      {CITIES_LIST.map((city) => (
-                        <option key={city}>{city}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <Search className="w-4 h-4 text-[var(--text-tertiary)] ml-3 shrink-0" aria-hidden="true" />
-                  <label htmlFor="hero-search" className="sr-only">{t("explore.searchPlaceholder")}</label>
-                  <input
-                    id="hero-search"
-                    type="text"
-                    name="q"
-                    autoComplete="off"
-                    placeholder={t("explore.searchPlaceholder")}
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 bg-transparent px-2 sm:px-3 py-3 text-sm sm:py-3.5 text-[var(--text)] placeholder:text-[var(--text-tertiary)] outline-none min-w-0"
-                  />
-                  <Button variant="primary" size="sm" className="mr-1.5 rounded-full max-sm:px-2.5 max-sm:flex shrink-0 sm:px-3 pressable" type="submit" aria-label={t("common.search")}>
-                    <Search className="w-4 h-4 sm:hidden" aria-hidden="true" />
-                    <span className="hidden sm:inline">{t("common.search")}</span>
-                  </Button>
-                </div>
-              </form>
-
-              <div className="flex items-center gap-3 flex-wrap">
-                <Button variant="primary" size="lg" className="rounded-full pl-8 pr-2 pressable group" asChild>
-                  <Link href="/explore" transitionTypes={["nav-forward"]}>
-                    <span>{t("hero.cta")}</span>
-                    <span className="ml-3 w-8 h-8 rounded-full bg-white/15 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                      <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                    </span>
-                  </Link>
-                </Button>
-                <Button variant="outline" size="lg" className="rounded-full px-8 pressable" asChild>
-                  <Link href="/register">
-                    {t("nav.register")}
-                  </Link>
-                </Button>
-              </div>
+          <div className="relative container-narrow pt-16 pb-14 md:pt-28 md:pb-24 text-center">
+            <div className="reveal inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--surface)] border border-[var(--border)] shadow-[var(--shadow-sm)] text-xs font-bold text-[var(--text-secondary)]">
+              <Sparkles className="w-3.5 h-3.5 text-[var(--brand)]" aria-hidden="true" />
+              {t("common.appTagline")}
             </div>
 
-            {/* Hero image — desktop only */}
-            <div className="hidden lg:block lg:col-span-5">
-              <div className="relative">
-                {/* Main image collage */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-[var(--shadow-lg)] card-hover">
-                    <Image
-                      src="https://picsum.photos/seed/campus1/400/600"
-                      alt=""
-                      fill
-                      sizes="(max-width: 1024px) 0px, 240px"
-                      className="object-cover"
-                      priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--brand)]/30 via-transparent to-transparent" />
-                  </div>
-                  <div className="flex flex-col gap-3">
-                    <div className="relative aspect-square rounded-2xl overflow-hidden shadow-[var(--shadow)] card-hover">
-                      <Image
-                        src="https://picsum.photos/seed/campus2/400/400"
-                        alt=""
-                        fill
-                        sizes="(max-width: 1024px) 0px, 180px"
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-[var(--shadow)] card-hover">
-                      <Image
-                        src="https://picsum.photos/seed/campus3/400/300"
-                        alt=""
-                        fill
-                        sizes="(max-width: 1024px) 0px, 180px"
-                        className="object-cover"
-                        loading="lazy"
-                      />
-                    </div>
-                  </div>
-                </div>
-                {/* Floating stat badge */}
-                <div className="absolute -bottom-3 -left-3 bg-[var(--surface)] rounded-xl shadow-[var(--shadow-lg)] border border-[var(--border)] px-4 py-3 card-hover">
-                  <p className="text-xl font-bold text-[var(--brand)] font-[family-name:var(--font-display)]">500+</p>
-                  <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">{t("admin.events")}</p>
-                </div>
-                {/* Top-right accent badge */}
-                <div className="absolute -top-3 -right-3 bg-[var(--accent-subtle)] rounded-xl border border-[var(--accent)]/20 px-3 py-2 shadow-[var(--shadow)] card-hover">
-                  <div className="flex items-center gap-1.5">
-                    <Users className="w-3.5 h-3.5 text-[var(--accent)]" aria-hidden="true" />
-                    <span className="text-xs font-bold text-[var(--accent)]">10K+</span>
-                  </div>
-                  <p className="text-[9px] text-[var(--accent)]/70 uppercase tracking-wider">{t("about.stats.users")}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          </div>
-        </section>
+            <h1 className="reveal display text-[clamp(2.5rem,7vw,4.75rem)] text-[var(--text)] mt-7">
+              {t("hero.titleBefore")}
+              <span className="text-[var(--brand)]">{t("hero.titleHighlight")}</span>
+            </h1>
 
-        {/* ── Community Pulse — editorial statment ── */}
-        <section className="py-16 md:py-20 reveal">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="col-span-1 md:col-span-1">
-                <div className="h-full rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-8 flex flex-col justify-between card-hover">
-                  <div className="flex -space-x-3 mb-6">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div key={i} className="relative w-12 h-12 rounded-full border-2 border-[var(--surface)] overflow-hidden shadow-[var(--shadow-sm)] ring-2 ring-[var(--surface)] hover:z-10 hover:scale-110 transition-transform duration-200">
-                        <Image src={`https://picsum.photos/seed/student${i}/100/100`} alt="" width={48} height={48} className="object-cover" loading="lazy" />
-                      </div>
+            <p className="reveal lead max-w-xl mx-auto mt-5">{t("hero.subtitle")}</p>
+
+            {/* Recherche — l'unique porte d'entrée */}
+            <form
+              onSubmit={handleHeroSearch}
+              role="search"
+              aria-label={t("explore.searchPlaceholder")}
+              className="reveal max-w-2xl mx-auto mt-9"
+            >
+              <div className="flex items-center gap-1 bg-[var(--surface)] rounded-full border border-[var(--border)] shadow-[var(--shadow-md)] p-2 pl-2 transition-shadow focus-within:shadow-[var(--shadow-lg)] focus-within:border-[var(--brand)]/40">
+                <div className="hidden sm:flex items-center gap-1.5 pl-3 pr-4 border-r border-[var(--border)] shrink-0">
+                  <MapPin className="w-4 h-4 text-[var(--brand)]" aria-hidden="true" />
+                  <label htmlFor="hero-city" className="sr-only">
+                    {t("explore.city")}
+                  </label>
+                  <select
+                    id="hero-city"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="bg-transparent text-sm text-[var(--text)] font-semibold outline-none cursor-pointer py-2.5 pr-1 max-w-[130px]"
+                  >
+                    <option value="">{t("explore.allCities")}</option>
+                    {CITIES_LIST.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
                     ))}
-                    <div className="relative w-12 h-12 rounded-full border-2 border-[var(--surface)] bg-[var(--brand)] flex items-center justify-center shadow-[var(--shadow-sm)] ring-2 ring-[var(--surface)]">
-                      <span className="text-white text-xs font-bold">+99</span>
-                    </div>
-                  </div>                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                    <span className="font-bold text-[var(--text)]">2 400+</span> {t("about.stats.users").toLowerCase()} {t("homepage.communityLabel")}
-                  </p>
+                  </select>
                 </div>
+                <Search className="w-[18px] h-[18px] text-[var(--text-tertiary)] ml-3 shrink-0" aria-hidden="true" />
+                <label htmlFor="hero-search" className="sr-only">
+                  {t("explore.searchPlaceholder")}
+                </label>
+                <input
+                  id="hero-search"
+                  type="text"
+                  autoComplete="off"
+                  placeholder={t("explore.searchPlaceholder")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 bg-transparent px-2.5 py-2.5 text-[15px] text-[var(--text)] placeholder:text-[var(--text-tertiary)] outline-none min-w-0"
+                />
+                <Button type="submit" variant="primary" size="md" className="rounded-full px-6 shrink-0">
+                  <span className="hidden sm:inline">{t("common.search")}</span>
+                  <Search className="w-4 h-4 sm:hidden" aria-hidden="true" />
+                </Button>
               </div>
-              <div className="col-span-1 md:col-span-2">
-                <div className="grid grid-cols-2 gap-6 h-full">
-                  <div className="rounded-2xl bg-[var(--brand-subtle)]/60 border border-[var(--brand)]/10 p-7 flex flex-col justify-center items-start card-hover">
-                    <p className="font-[family-name:var(--font-display)] text-3xl md:text-4xl text-[var(--brand)] leading-none mb-1">150+</p>
-                    <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wider font-semibold">{t("admin.events")}</p>
-                    <p className="text-xs text-[var(--text-tertiary)] mt-2">{t("homepage.eventsMonthly")}</p>
-                  </div>
-                  <div className="rounded-2xl bg-[var(--accent-subtle)]/60 border border-[var(--accent)]/10 p-7 flex flex-col justify-center items-start card-hover">
-                    <p className="font-[family-name:var(--font-display)] text-3xl md:text-4xl text-[var(--accent)] leading-none mb-1">10K+</p>
-                    <p className="text-xs text-[var(--text-secondary)] uppercase tracking-wider font-semibold">{t("about.stats.users")}</p>
-                    <p className="text-xs text-[var(--text-tertiary)] mt-2">{t("homepage.activeStudents")}</p>
-                  </div>
-                  <div className="rounded-2xl bg-[var(--surface)] border border-[var(--border)] p-7 flex flex-col justify-center items-start col-span-2 card-hover">
-                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                      "{t("homepage.testimonialQuote")}"
-                    </p>
-                    <div className="flex items-center gap-2 mt-4">
-                      <div className="w-7 h-7 rounded-full bg-[var(--brand)] flex items-center justify-center text-white text-[10px] font-bold">M</div>
-                      <div>
-                        <p className="text-xs font-semibold text-[var(--text)]">{t("homepage.testimonialName")}</p>
-                        <p className="text-[10px] text-[var(--text-tertiary)]">{t("homepage.testimonialRole")}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            </form>
+
+            {/* Preuve sociale — discrète */}
+            <div className="reveal flex items-center justify-center gap-3 mt-8">
+              <div className="flex -space-x-2.5">
+                {[1, 2, 3, 4].map((i) => (
+                  <span
+                    key={i}
+                    className="relative w-8 h-8 rounded-full border-2 border-[var(--bg)] overflow-hidden"
+                  >
+                    <Image
+                      src={`https://picsum.photos/seed/student${i}/64/64`}
+                      alt=""
+                      width={32}
+                      height={32}
+                      className="object-cover"
+                    />
+                  </span>
+                ))}
               </div>
+              <p className="text-sm text-[var(--text-secondary)]">
+                <strong className="text-[var(--text)] font-bold">2 400+</strong>{" "}
+                {t("about.stats.users").replace(/^[\d\s+]+/, "").toLowerCase()}{" "}
+                {t("homepage.communityLabel")}
+              </p>
             </div>
           </div>
         </section>
 
-        {/* ── Categories — editorial bento ── */}
-        <section className="py-16 md:py-24 reveal">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl leading-tight text-[var(--text)]">
-                  {t("explore.title")}
-                </h2>
-                <p className="text-sm text-[var(--text-secondary)] mt-1.5">{t("home.forYou")}</p>
+        {/* ═══════════ CHIFFRES — trois preuves, rien de plus ═══════════ */}
+        <section className="border-y border-[var(--border)] bg-[var(--surface)]" aria-label="Chiffres clés">
+          <div className="container-x grid grid-cols-3 divide-x divide-[var(--border-subtle)]">
+            {[
+              { value: "150+", label: t("admin.events") },
+              { value: "10K+", label: t("homepage.activeStudents") },
+              { value: "50+", label: t("homepage.ctaOrganizers") },
+            ].map((stat) => (
+              <div key={stat.label} className="reveal text-center py-8 md:py-10 px-2">
+                <p className="display text-3xl md:text-[40px] text-[var(--brand)] tabular-nums">
+                  {stat.value}
+                </p>
+                <p className="text-xs md:text-[13px] text-[var(--text-secondary)] font-medium mt-1.5">
+                  {stat.label}
+                </p>
               </div>
-              <Button variant="ghost" size="sm" className="rounded-full hidden sm:inline-flex pressable" asChild>
-                <Link href="/explore" transitionTypes={["nav-forward"]}>
-                  {t("common.seeAll")} <ChevronRight className="w-4 h-4" aria-hidden="true" />
-                </Link>
-              </Button>
-            </div>
-            {/* Bento grid: varied sizes */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {DISPLAY_CATEGORIES.slice(0, 4).map((cat, index) => {
+            ))}
+          </div>
+        </section>
+
+        {/* ═══════════ CATÉGORIES ═══════════ */}
+        <section className="section">
+          <div className="container-x">
+            <SectionHeader
+              eyebrow={t("home.forYou")}
+              title={t("explore.title")}
+              action={
+                <Button variant="ghost" size="md" className="rounded-full" asChild>
+                  <Link href="/explore" transitionTypes={["nav-forward"]}>
+                    {t("common.seeAll")}
+                    <ChevronRight className="w-4 h-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              }
+            />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              {DISPLAY_CATEGORIES.map((cat, index) => {
                 const CatIcon = getCategoryIcon(cat.icon);
                 return (
                   <Link
                     key={cat.id}
                     href={`/explore?category=${cat.slug}`}
-                    className="group relative flex flex-col items-start justify-between p-6 min-h-[180px] md:min-h-[200px] rounded-2xl border overflow-hidden card-interactive reveal"
-                    style={{
-                      backgroundColor: `${cat.color}12`,
-                      borderColor: `${cat.color}25`,
-                      transitionDelay: `${index * 80}ms`
-                    }}
+                    className="reveal group flex items-center gap-4 p-5 md:p-6 card-xl card-hover"
+                    style={{ transitionDelay: `${index * 60}ms` }}
                   >
-                    {/* Decorative blob */}
-                    <div
-                      className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-40 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none"
-                      style={{ backgroundColor: `${cat.color}30` }}
-                    />
-                    <div
-                      className="relative w-11 h-11 rounded-xl flex items-center justify-center card-hover"
-                      style={{ backgroundColor: `${cat.color}25` }}
+                    <span
+                      className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105"
+                      style={{ backgroundColor: `${cat.color}1a` }}
                     >
-                      <CatIcon className="w-5 h-5" style={{ color: cat.color }} aria-hidden="true" />
-                    </div>
-                    <div className="relative">
-                      <span className="block text-sm font-bold text-[var(--text)]">{cat.name}</span>
-                      <span className="text-xs text-[var(--text-tertiary)] mt-0.5 block">{t("homepage.exploreCategory")}</span>
-                    </div>
+                      <CatIcon className="w-[22px] h-[22px]" style={{ color: cat.color }} aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-bold text-[15px] text-[var(--text)] leading-tight">
+                        {cat.name}
+                      </span>
+                      <span className="block text-[13px] text-[var(--text-tertiary)] mt-1">
+                        {t("homepage.exploreCategory")}
+                      </span>
+                    </span>
                   </Link>
                 );
               })}
-              {/* Second row: horizontal pills for remaining categories */}
-              <div className="col-span-2 md:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-3 reveal" style={{ transitionDelay: '350ms' }}>
-                {DISPLAY_CATEGORIES.slice(4).map((cat, index) => {
-                  const CatIcon = getCategoryIcon(cat.icon);
-                  return (
-                    <Link
-                      key={cat.id}
-                      href={`/explore?category=${cat.slug}`}
-                      className="group flex items-center gap-3 px-4 py-3.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] hover:border-[var(--brand)]/25 transition duration-200 ease-[var(--ease-out)] pressable"
-                      style={{ transitionDelay: `${index * 60}ms` }}
-                    >
-                      <div
-                        className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                        style={{ backgroundColor: `${cat.color}18` }}
-                      >
-                        <CatIcon className="w-4 h-4" style={{ color: cat.color }} aria-hidden="true" />
-                      </div>
-                      <span className="text-sm font-medium text-[var(--text)]">{cat.name}</span>
-                      <ChevronRight className="w-3.5 h-3.5 text-[var(--text-tertiary)] ml-auto shrink-0" aria-hidden="true" />
-                    </Link>
-                  );
-                })}
-              </div>
             </div>
           </div>
         </section>
 
-        {/* ============================================= */}
-        {/* FEATURED EVENTS */}
-        {/* ============================================= */}
-        <section className="py-14 md:py-20 bg-[var(--brand-subtle)]/40 reveal">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">              <div className="flex items-end justify-between mb-8">
-              <div>
-                <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl leading-tight text-[var(--text)]">
-                  {t("home.trending")}
-                </h2>
-                <p className="text-[var(--text-secondary)] text-sm mt-1.5">{t("home.recommended")}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => scrollFeatured("left")}
-                  className="w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--surface)] flex items-center justify-center hover:bg-[var(--border-subtle)] transition duration-150 ease-[var(--ease-out)]"
-                  aria-label={t("common.back")}
-                >
-                  <ChevronRight className="w-4 h-4 rotate-180" aria-hidden="true" />
-                </button>
-                <button
-                  onClick={() => scrollFeatured("right")}
-                  className="w-10 h-10 rounded-full border border-[var(--border)] bg-[var(--surface)] flex items-center justify-center hover:bg-[var(--border-subtle)] transition duration-150 ease-[var(--ease-out)]"
-                  aria-label={t("common.seeAll")}
-                >
-                  <ChevronRight className="w-4 h-4" aria-hidden="true" />
-                </button>
-              </div>
+        {/* ═══════════ À LA UNE ═══════════ */}
+        {FEATURED_EVENTS.length > 0 && (
+          <section className="section !pt-0">
+            <div className="container-x">
+              <SectionHeader
+                eyebrow={t("home.trending")}
+                title={t("home.mustSee")}
+                description={t("home.recommended")}
+                action={
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => scrollFeatured("left")}
+                      className="w-11 h-11 rounded-full border border-[var(--border)] bg-[var(--surface)] flex items-center justify-center text-[var(--text)] hover:border-[var(--brand)]/40 transition-colors pressable"
+                      aria-label={t("common.back")}
+                    >
+                      <ChevronLeft className="w-5 h-5" aria-hidden="true" />
+                    </button>
+                    <button
+                      onClick={() => scrollFeatured("right")}
+                      className="w-11 h-11 rounded-full border border-[var(--border)] bg-[var(--surface)] flex items-center justify-center text-[var(--text)] hover:border-[var(--brand)]/40 transition-colors pressable"
+                      aria-label={t("common.seeAll")}
+                    >
+                      <ChevronRight className="w-5 h-5" aria-hidden="true" />
+                    </button>
+                  </div>
+                }
+              />
             </div>
             <div
               ref={scrollRef}
-              onKeyDown={handleKeyDown}
-              tabIndex={0}
               role="region"
               aria-label={t("home.mustSee")}
-              className="flex gap-5 overflow-x-auto scrollbar-hide scroll-container-touch pb-2 -mx-4 px-4 snap-x snap-mandatory focus:outline-none focus:ring-2 focus:ring-[var(--brand)] focus:ring-offset-2 focus:ring-offset-transparent rounded-2xl card-hover"
+              className="flex gap-5 overflow-x-auto scrollbar-hide scroll-container-touch pb-2 px-4 sm:px-6 snap-x snap-mandatory"
+              style={{ paddingInline: "max(1rem, calc((100vw - 76rem) / 2 + 1.5rem))" }}
             >
               {FEATURED_EVENTS.map((event, index) => (
-                <div key={event.id} className="snap-start shrink-0 w-[300px] sm:w-[340px] md:w-[440px] reveal" style={{ transitionDelay: `${index * 100}ms` }}>
-                  <EventCard event={event} variant="featured" priority instanceId={`feat-${index}`} />
+                <div key={event.id} className="snap-start shrink-0 reveal" style={{ transitionDelay: `${index * 80}ms` }}>
+                  <EventCard event={event} variant="featured" priority={index === 0} instanceId={`feat-${index}`} />
                 </div>
               ))}
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
-        {/* ============================================= */}
-        {/* UPCOMING EVENTS */}
-        {/* ============================================= */}
-        <section className="py-14 md:py-20 reveal">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">              <div className="flex items-end justify-between mb-8">
-              <div>
-                <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl leading-tight text-[var(--text)]">
-                  {t("home.thisWeek")}
-                </h2>
-                <p className="text-[var(--text-secondary)] text-sm mt-1.5">{t("home.forYou")}</p>
-              </div>
-              <Button variant="ghost" size="sm" className="rounded-full hidden sm:inline-flex pressable" asChild>
-                <Link href="/explore" transitionTypes={["nav-forward"]}>
-                  {t("common.seeAll")} <ChevronRight className="w-4 h-4" aria-hidden="true" />
-                </Link>
-              </Button>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* ═══════════ CETTE SEMAINE ═══════════ */}
+        <section className="section !pt-0">
+          <div className="container-x">
+            <SectionHeader
+              eyebrow={t("home.thisWeek")}
+              title={t("home.forYou")}
+              action={
+                <Button variant="outline" size="md" className="rounded-full" asChild>
+                  <Link href="/explore" transitionTypes={["nav-forward"]}>
+                    {t("common.seeAll")}
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              }
+            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
               {UPCOMING_EVENTS.map((event, index) => (
-                <div key={event.id} className="reveal" style={{ transitionDelay: `${index * 80}ms` }}>
+                <div key={event.id} className="reveal" style={{ transitionDelay: `${index * 70}ms` }}>
                   <EventCard event={event} variant="standard" instanceId={`upcoming-${index}`} />
                 </div>
               ))}
             </div>
-            <div className="mt-12 text-center">                  <Button variant="outline" size="lg" className="rounded-full px-8 pressable" asChild>
-                    <Link href="/explore" transitionTypes={["nav-forward"]}>
-                  {t("common.seeAll")}
-                  <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                </Link>
-              </Button>
+          </div>
+        </section>
+
+        {/* ═══════════ ORGANISATEURS ═══════════ */}
+        <section className="section !pt-0">
+          <div className="container-x">
+            <div className="card-sheet p-8 md:p-12">
+              <SectionHeader
+                align="center"
+                eyebrow={t("home.nearYou")}
+                title={t("admin.organizers")}
+              />
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {events.slice(0, 4).map((ev: any, index: number) => (
+                  <Link
+                    key={ev?.id || index}
+                    href={`/organizer/${ev?.organizer?.slug || "#"}`}
+                    className="reveal group flex items-center gap-4 p-5 rounded-[1.25rem] border border-[var(--border)] bg-[var(--bg)] hover:border-[var(--brand)]/30 hover:shadow-[var(--shadow-md)] transition-all duration-200"
+                    style={{ transitionDelay: `${index * 80}ms` }}
+                  >
+                    <span className="relative w-14 h-14 rounded-2xl overflow-hidden shrink-0 ring-1 ring-[var(--border)]">
+                      <Image
+                        src={ev?.organizer?.logoUrl || `https://picsum.photos/seed/org${index}/112/112`}
+                        alt=""
+                        fill
+                        className="object-cover"
+                      />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block font-bold text-sm text-[var(--text)] truncate">
+                        {ev?.organizer?.name || t("admin.organizers")}
+                      </span>
+                      <span className="block text-[13px] text-[var(--text-secondary)] mt-0.5">
+                        {ev?.organizer?.eventsCount ?? ""} {t("admin.events").toLowerCase()}
+                      </span>
+                    </span>
+                    <ChevronRight
+                      className="w-4 h-4 text-[var(--text-tertiary)] shrink-0 group-hover:text-[var(--brand)] group-hover:translate-x-0.5 transition-all"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* ============================================= */}
-        {/* TOP ORGANIZERS */}
-        {/* ============================================= */}
-        <section className="py-14 md:py-20 bg-[var(--border-subtle)]/60 reveal">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">              <div className="mb-8">
-              <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl leading-tight text-[var(--text)]">
-                {t("admin.organizers")}
-              </h2>
-              <p className="text-[var(--text-secondary)] text-sm mt-1.5">{t("home.nearYou")}</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {events.slice(0, 4).map((ev: any, index: number) => (
-                <Link
-                  key={ev?.id || index}
-                  href={`/organizer/${ev?.organizer?.slug || '#'}`}
-                  className="flex items-center gap-4 p-5 rounded-2xl bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--brand)]/20 hover:shadow-[var(--shadow-md)] transition duration-200 ease-[var(--ease-out)] reveal"
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  <div className="relative w-16 h-16 rounded-xl overflow-hidden shrink-0 ring-2 ring-[var(--brand)]/15 card-hover">
-                    <Image src={`https://picsum.photos/seed/org${index}/100/100`} alt="" fill className="object-cover" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <h3 className="font-semibold text-sm text-[var(--text)] truncate">{ev?.title || t("admin.organizers")}</h3>
-                    </div>
-                    <p className="text-xs text-[var(--text-secondary)] mt-0.5">{t("admin.events")}</p>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-[var(--text-tertiary)] shrink-0" aria-hidden="true" />
-                </Link>
+        {/* ═══════════ TÉMOIGNAGE ═══════════ */}
+        <section className="section !pt-0">
+          <div className="container-narrow text-center reveal">
+            <div className="flex justify-center gap-1 mb-6" aria-label="5/5">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <svg key={i} viewBox="0 0 20 20" className="w-5 h-5 fill-[var(--brand)]" aria-hidden="true">
+                  <path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8L10 14.9 4.7 17.6l1-5.8L1.5 7.7l5.9-.9L10 1.5z" />
+                </svg>
               ))}
             </div>
+            <blockquote className="display text-2xl md:text-[32px] leading-snug text-[var(--text)]">
+              «&nbsp;{t("homepage.testimonialQuote")}&nbsp;»
+            </blockquote>
+            <div className="flex items-center justify-center gap-3 mt-7">
+              <span className="w-11 h-11 rounded-full bg-[var(--brand)] flex items-center justify-center text-white text-sm font-bold">
+                {t("homepage.testimonialName").charAt(0)}
+              </span>
+              <span className="text-left">
+                <span className="block text-sm font-bold text-[var(--text)]">
+                  {t("homepage.testimonialName")}
+                </span>
+                <span className="block text-[13px] text-[var(--text-secondary)]">
+                  {t("homepage.testimonialRole")}
+                </span>
+              </span>
+            </div>
           </div>
         </section>
 
-        {/* ============================================= */}
-        {/* CTA BANNER — premium split */}
-        {/* ============================================= */}
-        <section className="py-16 md:py-24 reveal">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6">
-            <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--brand)] to-[var(--brand-hover)] p-8 md:p-14">
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-white/5 blur-[100px] ambient-float-slow" />
-                <div className="absolute -bottom-10 -left-10 w-48 h-48 rounded-full bg-[var(--accent)]/10 blur-[80px] ambient-float" />
-                {/* Grid pattern overlay */}
-                <div className="absolute inset-0 opacity-[0.03]" style={{
-                  backgroundImage: `linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px)`,
-                  backgroundSize: '48px 48px'
-                }} />
-              </div>
-              <div className="relative grid md:grid-cols-2 gap-8 items-center">
-                <div className="text-center md:text-left">
-                  <TrendingUp className="w-8 h-8 text-white/60 mb-4 mx-auto md:mx-0" aria-hidden="true" />
-                  <h2 className="font-[family-name:var(--font-display)] text-2xl sm:text-3xl md:text-4xl text-white mb-3 leading-tight text-balance">
-                    {t("hero.createEvent")}
-                  </h2>
-                  <p className="text-white/70 max-w-md mx-auto md:mx-0 mb-6 text-sm md:text-base leading-relaxed">
-                    {t("common.appTagline")}
-                  </p>
-                  <div className="flex items-center gap-3 flex-wrap justify-center md:justify-start">
-                    <Button variant="accent" size="lg" className="rounded-full pl-8 pr-2 pressable group" asChild>
-                      <Link href="/register?role=organizer">
-                        <span>{t("hero.createEvent")}</span>
-                        <span className="ml-3 w-8 h-8 rounded-full bg-white/15 flex items-center justify-center transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                          <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                        </span>
-                      </Link>
-                    </Button>
-                    <Button variant="outline" size="lg" className="rounded-full px-8 border-white/20 text-white hover:bg-white/10 hover:border-white/30 pressable" asChild>
-                      <Link href="/explore">
-                        {t("common.learnMore")}
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
-                <div className="hidden md:flex flex-col gap-4">
-                  <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 p-6 card-hover">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-2 h-2 rounded-full bg-emerald-400" />
-                      <span className="text-white/70 text-xs font-mono">{t("homepage.growingEvents")}</span>
-                    </div>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold text-white font-[family-name:var(--font-display)]">+47%</span>
-                      <span className="text-white/50 text-xs">{t("homepage.ctaQuarter")}</span>
-                    </div>
-                    <p className="text-white/50 text-xs mt-1.5">{t("homepage.ctaDescription")}</p>
-                  </div>
-                  <div className="rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 p-6 card-hover">
-                    <div className="flex items-center gap-3">
-                      <div className="flex -space-x-1.5">
-                        {[1,2,3].map(i => (
-                          <div key={i} className="w-7 h-7 rounded-full border border-white/20 overflow-hidden">
-                            <Image src={`https://picsum.photos/seed/org${i}/50/50`} alt="" width={28} height={28} className="object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                      <span className="text-white/60 text-xs">50+ {t("homepage.ctaOrganizers")}</span>
-                    </div>
-                  </div>
+        {/* ═══════════ CTA ORGANISATEUR — simple, franc ═══════════ */}
+        <section className="section !pt-0">
+          <div className="container-x">
+            <div className="reveal relative overflow-hidden rounded-[2rem] bg-[var(--brand)] px-8 py-14 md:p-20 text-center">
+              <div
+                className="absolute inset-0 opacity-[0.07] pointer-events-none"
+                aria-hidden="true"
+                style={{
+                  backgroundImage: `linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px)`,
+                  backgroundSize: "44px 44px",
+                }}
+              />
+              <div className="relative">
+                <p className="eyebrow !text-white/70 justify-center mb-4">
+                  {t("homepage.ctaOrganizers")}
+                </p>
+                <h2 className="display text-3xl md:text-5xl text-white">
+                  {t("hero.createEvent")}
+                </h2>
+                <p className="text-white/75 max-w-md mx-auto mt-4 leading-relaxed">
+                  {t("homepage.ctaDescription")}
+                </p>
+                <div className="flex items-center justify-center gap-3 mt-9 flex-wrap">
+                  <Button
+                    size="lg"
+                    className="rounded-full bg-white text-[var(--brand-hover)] hover:bg-white/90 shadow-lg pressable font-bold"
+                    asChild
+                  >
+                    <Link href="/register?role=organizer">
+                      {t("hero.createEvent")}
+                      <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                    </Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="rounded-full border-white/25 text-white hover:bg-white/10 hover:border-white/40 pressable"
+                    asChild
+                  >
+                    <Link href="/pricing">{t("common.learnMore")}</Link>
+                  </Button>
                 </div>
               </div>
             </div>
           </div>
         </section>
-
-
       </main>
       <BottomNav />
     </>

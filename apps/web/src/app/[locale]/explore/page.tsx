@@ -322,12 +322,12 @@ function ExploreContent() {
         </section>
 
         {/* Main content */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-8 reveal">
+        <section className="container-x pb-16 reveal">
           <div className="flex gap-8">
             {/* Sidebar filters — desktop */}
-            <aside className="hidden lg:block w-64 shrink-0">
-              <div className="sticky top-24">
-                    <div className="flex items-center justify-between mb-5">
+            <aside className="hidden lg:block w-[280px] shrink-0">
+              <div className="sticky top-28 card-xl p-6">
+                <div className="flex items-center justify-between mb-6">
                   <h3 className="font-semibold text-sm text-[var(--text)]">{t("explore.filters")}</h3>
                   {hasActiveFilters && (
                     <button

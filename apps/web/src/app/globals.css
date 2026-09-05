@@ -70,6 +70,12 @@
     --gold: #f472b6;
     --gold-hover: #e11d48;
     --gold-subtle: #fdf2f8;
+    --success: #10b981;
+    --success-subtle: #ecfdf5;
+    --warning: #d97706;
+    --warning-subtle: #fffbeb;
+    --error: #ef4444;
+    --error-subtle: #fef2f2;
 
     /* Custom easing curves — Emil Kowalski inspired */
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
@@ -595,4 +601,247 @@ body {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+}
+
+/* ===================================================
+   NOVA ÉPURÉ — Unified design layer
+   Un seul design, une seule voix : air, hiérarchie,
+   un focus par écran. Règles :
+   - Calistoga (.display) = hero + chiffres display ONLY
+   - Titres de section (.h-section) = Inter 700 tight
+   - Rose (accent) ≤ 15% des éléments
+   =================================================== */
+
+:root {
+    --container: 76rem;          /* 1216px */
+    --container-narrow: 56rem;   /* 896px */
+    --radius-card: 1.25rem;      /* 20px — cartes */
+    --radius-sheet: 1.75rem;     /* 28px — sheets, hero cards */
+}
+
+::selection {
+    background: var(--brand);
+    color: #fff;
+}
+
+/* Fine scrollbars — ne voler jamais l'attention */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 999px;
+}
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* ── Layout primitives : le souffle du design ── */
+.container-x {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+    .container-x {
+        padding-inline: 1.5rem;
+    }
+}
+.container-narrow {
+    width: 100%;
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+    .container-narrow {
+        padding-inline: 1.5rem;
+    }
+}
+
+/* Vertical rhythm — UNE seule échelle pour tout le produit */
+.section {
+    padding-block: 4rem;
+}
+@media (min-width: 768px) {
+    .section {
+        padding-block: 6.5rem;
+    }
+}
+.section-tight {
+    padding-block: 2.5rem;
+}
+@media (min-width: 768px) {
+    .section-tight {
+        padding-block: 4rem;
+    }
+}
+
+/* ── Typography roles — stricts ── */
+.display {
+    font-family: var(--font-display), "Calistoga", serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.06;
+    text-wrap: balance;
+}
+.h-section {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+    font-size: 1.625rem;
+}
+@media (min-width: 768px) {
+    .h-section {
+        font-size: 2.125rem;
+    }
+}
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brand-text);
+}
+.lead {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+@media (min-width: 768px) {
+    .lead {
+        font-size: 1.125rem;
+    }
+}
+
+/* ── Surfaces ── */
+.card-xl {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+}
+.card-sheet {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sheet);
+}
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* ── Form field — base unique pour tous les formulaires ── */
+.field {
+    width: 100%;
+    height: 3rem;
+    padding-inline: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0.875rem;
+    font-size: 0.9375rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+.field::placeholder {
+    color: var(--text-tertiary);
+}
+.field:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 18%, transparent);
+}
+textarea.field {
+    height: auto;
+    min-height: 7.5rem;
+    padding-block: 0.875rem;
+    resize: vertical;
+}
+select.field {
+    appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a89fb8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+}
+.field-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+/* ── Filter pill — base unique explore + chips ── */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.125rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 200ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+    .pill:hover {
+        border-color: var(--brand);
+        color: var(--text);
+    }
+}
+.pill-active {
+    background: var(--text);
+    border-color: var(--text);
+    color: var(--bg);
+}
+@media (hover: hover) and (pointer: fine) {
+    .pill-active:hover {
+        color: var(--bg);
+        border-color: var(--text);
+    }
+}
+
+/* ── Halo décoratif du hero — une seule signature visuelle ── */
+.hero-halo {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+.hero-halo::before {
+    content: "";
+    position: absolute;
+    top: -12rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 56rem;
+    height: 30rem;
+    background: radial-gradient(ellipse 50% 60% at 50% 40%, color-mix(in srgb, var(--brand) 14%, transparent), transparent 70%);
+    filter: blur(10px);
+}
+.hero-grid {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 55% at 50% 0%, black 30%, transparent 75%);
+    background-image:
+        linear-gradient(color-mix(in srgb, var(--brand) 9%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, var(--brand) 9%, transparent) 1px, transparent 1px);
+    background-size: 44px 44px;
 }

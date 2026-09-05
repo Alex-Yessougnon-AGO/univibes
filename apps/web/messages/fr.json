@@ -26,6 +26,9 @@
     "toEvents": "aux événements",
     "home": "Accueil"
   },
+  "error": {
+    "description": "Quelque chose s'est mal passé. Réessaie ou retourne à l'accueil."
+  },
   "nav": {
     "home": "Accueil",
     "explore": "Explorer",
